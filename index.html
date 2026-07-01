@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fariha's Collection</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Icons (Phosphor Icons or FontAwesome) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <!-- Header with integrated nav -->
+    <header class="header scrolled" style="flex-direction:column;padding:0.75rem 2rem 0;gap:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;padding-bottom:0.65rem;">
+            <div class="header-left">
+                <button class="icon-btn" id="menuToggle"><i class="ph ph-list"></i></button>
+                <button class="icon-btn" id="searchToggle"><i class="ph ph-magnifying-glass"></i></button>
+            </div>
+            <div class="header-center">
+                <a href="index.html" style="text-decoration:none;color:inherit;"><h1 class="logo">FARIHA'S COLLECTION</h1></a>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" id="cartToggle" style="position:relative;"><i class="ph ph-shopping-bag"></i><span class="cart-badge">0</span></button>
+            </div>
+        </div>
+        <nav style="display:flex;gap:2.5rem;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
+            <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#111;text-decoration:none;padding:2px 0;border-bottom:2px solid #111;">Home</a>
+            <a href="shoes (1).html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">All Shoes</a>
+            <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero reveal">
+        <div class="hero-image">
+            <img src="images/hero_closet.jpg" alt="Fariha's Collection Premium Footwear">
+            <div class="hero-overlay"></div>
+            <h2 class="hero-title reveal-up delay-1">LATEST ARRIVALS</h2>
+        </div>
+    </section>
+
+    <!-- Features Bar -->
+    <div class="features-bar">
+        <div class="feature-item"><i class="ph ph-check"></i> Free worldwide shipping</div>
+        <div class="feature-item"><i class="ph ph-check"></i> 30 days return</div>
+        <div class="feature-item"><i class="ph ph-check"></i> Secure payment</div>
+        <div class="feature-item"><i class="ph ph-check"></i> 100% authentic</div>
+    </div>
+
+    <!-- Shop By Category -->
+    <section class="section category-section reveal">
+        <h3 class="section-title">Shop By Category</h3>
+        <div class="category-grid">
+            <a href="shoes.html" class="category-card reveal-up delay-1">
+                <img src="images/IMG_5818.jpg" alt="Men">
+                <div class="category-info">
+                    <h4>Men's Collection</h4>
+                    <p>High Quality Shoes</p>
+                </div>
+            </a>
+            <a href="shoes.html" class="category-card reveal-up delay-2">
+                <img src="images/IMG_5819.jpg" alt="Women">
+                <div class="category-info">
+                    <h4>Women's Collection</h4>
+                    <p>Trendy & Elegant</p>
+                </div>
+            </a>
+            <a href="shoes.html" class="category-card reveal-up delay-3">
+                <img src="images/IMG_5820.jpg" alt="Accessories">
+                <div class="category-info">
+                    <h4>Accessories</h4>
+                    <p>Complete Your Look</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonial-section reveal">
+        <div class="testimonial-content">
+            <div class="testimonial-text reveal-up">
+                <h3>Our Satisfied Customers</h3>
+                <p>At Fariha's Collection, we prioritize quality, comfort, and style in every piece we offer. Our customers love the premium feel and perfect fit. With worldwide shipping and dedicated support, we're proud to serve footwear enthusiasts globally. Join our community and step into style with confidence.</p>
+            </div>
+            <div class="testimonial-images reveal-scale delay-2">
+                <!-- Stacking effect -->
+                <div class="test-img-stack" style="background-color: #333; height: 300px; width: 200px; border-radius: 4px; box-shadow: -10px 10px 30px rgba(0,0,0,0.5);"></div>
+                <div class="test-img-stack" style="background-color: #444; height: 300px; width: 200px; border-radius: 4px; box-shadow: -10px 10px 30px rgba(0,0,0,0.5); position: absolute; top: 20px; left: 20px;"></div>
+                <div class="test-img-stack" style="background-image: url('images/IMG_5821.jpg'); background-size: cover; height: 300px; width: 200px; border-radius: 4px; box-shadow: -10px 10px 30px rgba(0,0,0,0.5); position: absolute; top: 40px; left: 40px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trendy Items -->
+    <section class="section trendy-section reveal">
+        <h3 class="section-title">Trendy Item</h3>
+        
+        <div class="product-grid" id="productGrid">
+            <p id="homeProductLoading" class="col-span-full" style="text-align:center;color:#aaa;font-size:0.9rem;padding:40px 0;">Loading products…</p>
+        </div>
+        <a href="shoes (1).html" class="view-all-btn btn-outline reveal-up" style="display:inline-block;text-decoration:none;text-align:center;">View All Items</a>
+    </section>
+
+    <script>
+    // ===== SANITY DYNAMIC PRODUCTS ON HOME PAGE =====
+    (async function loadHomeProducts() {
+        const SANITY_PROJECT_ID = 'kxnjofhp';
+        const SANITY_DATASET = 'production';
+        const SANITY_API_VERSION = '2024-01-01';
+
+        const query = `*[_type == "shoe"] | order(order asc) [0...8]{
+            _id, name, price, tag,
+            "image": image.asset->url
+        }`;
+
+        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+
+        const grid = document.getElementById('productGrid');
+
+        try {
+            const res = await fetch(url);
+            const json = await res.json();
+            const products = json.result || [];
+
+            if (!products.length) {
+                grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No products yet.</p>';
+                return;
+            }
+
+            grid.innerHTML = products.map((p, i) => {
+                const id    = p._id || '';
+                const name  = p.name || 'Untitled';
+                const price = Number(p.price) || 0;
+                const image = p.image || '';
+                const tag   = p.tag || "Fariha's Collection";
+                const delay = i + 1;
+                const params = new URLSearchParams({ id, name, price, image, tag });
+                const esc = s => String(s).replace(/"/g, '&quot;');
+
+                return `
+                    <a href="product-detail.html?${params.toString()}"
+                       class="product-card reveal-up delay-${delay}"
+                       style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
+                        <div class="product-img-wrap" style="border-radius:0;margin-bottom:0;">
+                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                        </div>
+                        <div class="product-info" style="padding:12px 14px 14px;">
+                            <p class="brand">${esc(tag)}</p>
+                            <h4>${esc(name)}</h4>
+                            <p class="price">Rs${price.toLocaleString()}</p>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+
+            // Re-trigger scroll reveal for newly added cards
+            document.querySelectorAll('#productGrid .reveal-up').forEach(el => {
+                if (typeof scrollObserver !== 'undefined') scrollObserver.observe(el);
+                else el.classList.add('visible');
+            });
+
+        } catch (err) {
+            console.error('Failed to load home products:', err);
+            grid.innerHTML = '<p style="text-align:center;color:#e53935;padding:40px 0;">Could not load products.</p>';
+        }
+    })();
+    </script>
+
+    <!-- Banners Section -->
+    <section class="banner-section reveal">
+        <div class="banner-grid">
+            <a href="shoes.html" class="banner-card reveal-fade delay-1" style="display:block;">
+                <img src="images/IMG_5830.jpg" alt="Banner 1">
+            </a>
+            <a href="shoes.html" class="banner-card reveal-fade delay-2" style="display:block;">
+                <img src="images/IMG_5831.jpg" alt="Banner 2">
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer reveal">
+        <div class="footer-top">
+            <div class="footer-col">
+                <h2 class="footer-logo">FARIHA'S COLLECTION</h2>
+                <p>123 Premium Boulevard,<br>Fashion District, NY 10001</p>
+                <p>Phone: +1 (800) 123-4567</p>
+                <p>Email: hello@farihascollection.com</p>
+            </div>
+            <div class="footer-col reveal-fade delay-3">
+                <h4>Information</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Delivery Information</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p>Subscribe to receive updates, access to exclusive deals, and more.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email address">
+                    <button type="submit" class="btn-dark">Subscribe</button>
+                </form>
+                <div class="social-links">
+                    <a href="#"><i class="ph ph-facebook-logo"></i></a>
+                    <a href="#"><i class="ph ph-instagram-logo"></i></a>
+                    <a href="#"><i class="ph ph-twitter-logo"></i></a>
+                    <a href="#"><i class="ph ph-tiktok-logo"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Fariha's Collection. All rights reserved. | <a href="checkout.html" style="color:#888;text-decoration:none;">Checkout</a></p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout – FARIHA'S COLLECTION</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Outfit', sans-serif; background: #f7f7f7; color: #111; min-height: 100vh; }
+        a { text-decoration: none; color: inherit; }
+
+        /* HEADER */
+        .co-header {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid #eee;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .co-logo { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; }
+        .co-header-back { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: #555; cursor: pointer; transition: color 0.2s; background: none; border: none; font-family: 'Outfit', sans-serif; }
+        .co-header-back:hover { color: #000; }
+
+        /* STEPS */
+        .co-steps {
+            display: flex; justify-content: center; align-items: center;
+            gap: 0; padding: 1.5rem 2rem;
+            background: #fff; border-bottom: 1px solid #eee;
+        }
+        .co-step { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: #aaa; font-weight: 500; }
+        .co-step.active { color: #000; font-weight: 700; }
+        .co-step.done { color: #25D366; }
+        .co-step-num { width: 26px; height: 26px; border-radius: 50%; background: #eee; color: #aaa; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+        .co-step.active .co-step-num { background: #000; color: #fff; }
+        .co-step.done .co-step-num { background: #25D366; color: #fff; }
+        .co-step-divider { width: 40px; height: 1px; background: #ddd; margin: 0 8px; }
+
+        /* LAYOUT */
+        .co-layout { max-width: 1100px; margin: 2rem auto; display: grid; grid-template-columns: 1fr 400px; gap: 2rem; padding: 0 1.5rem; }
+        @media (max-width: 820px) { .co-layout { grid-template-columns: 1fr; } .co-order-summary { order: -1; } }
+
+        /* FORM PANEL */
+        .co-panel { background: #fff; border-radius: 12px; border: 1px solid #eee; padding: 2rem; }
+        .co-panel h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; padding-bottom: 0.8rem; border-bottom: 1px solid #f0f0f0; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; }
+        .form-group.full { grid-column: 1 / -1; }
+        label { font-size: 0.78rem; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+        input, select, textarea { padding: 12px 14px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 0.95rem; color: #111; outline: none; transition: border 0.2s; background: #fff; width: 100%; }
+        input:focus, select:focus, textarea:focus { border-color: #000; }
+        input::placeholder { color: #bbb; }
+        textarea { resize: vertical; min-height: 80px; }
+
+        /* SIZE SELECTOR */
+        .size-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+        .size-opt { padding: 8px 14px; border: 1.5px solid #ddd; border-radius: 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; user-select: none; }
+        .size-opt:hover { border-color: #000; }
+        .size-opt.selected { border-color: #000; background: #000; color: #fff; }
+
+        /* ORDER SUMMARY */
+        .co-order-summary { display: flex; flex-direction: column; gap: 1rem; }
+        .co-summary-panel { background: #fff; border-radius: 12px; border: 1px solid #eee; padding: 1.5rem; }
+        .co-summary-panel h2 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid #f0f0f0; }
+        .co-cart-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
+        .co-cart-item:last-child { border-bottom: none; }
+        .co-item-img { width: 64px; height: 64px; background: #f5f5f5; border-radius: 8px; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .co-item-img img { width: 100%; height: 100%; object-fit: cover; }
+        .co-item-info { flex: 1; }
+        .co-item-name { font-size: 0.85rem; font-weight: 600; }
+        .co-item-price { font-size: 0.8rem; color: #666; margin-top: 2px; }
+        .co-item-qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+        .co-qty-btn { width: 26px; height: 26px; border: 1px solid #ddd; border-radius: 4px; background: #fff; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+        .co-qty-btn:hover { background: #f0f0f0; }
+        .co-item-total { font-size: 0.9rem; font-weight: 700; color: #111; }
+        .co-remove-btn { background: none; border: none; color: #ccc; cursor: pointer; font-size: 1rem; transition: color 0.2s; }
+        .co-remove-btn:hover { color: #e53935; }
+        .co-empty { text-align: center; padding: 2rem; color: #aaa; }
+        .co-empty i { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+        .co-totals { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0; }
+        .co-total-row { display: flex; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.88rem; color: #555; }
+        .co-total-row.grand { font-size: 1rem; font-weight: 700; color: #000; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #eee; }
+
+        /* PAYMENT METHOD */
+        .payment-methods { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+        .payment-opt { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1.5px solid #ddd; border-radius: 8px; cursor: pointer; transition: border 0.2s; }
+        .payment-opt:hover { border-color: #999; }
+        .payment-opt.selected { border-color: #000; background: #fafafa; }
+        .payment-opt input[type="radio"] { width: 18px; height: 18px; accent-color: #000; flex-shrink: 0; }
+        .payment-opt-label { font-size: 0.9rem; font-weight: 600; }
+        .payment-opt-sub { font-size: 0.75rem; color: #888; margin-top: 2px; }
+        .payment-icon { font-size: 1.5rem; }
+
+        /* BUTTONS */
+        .co-checkout-btn { width: 100%; padding: 16px; background: #25D366; color: #fff; border: none; border-radius: 10px; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.3s, transform 0.15s; box-shadow: 0 4px 20px rgba(37,211,102,0.35); }
+        .co-checkout-btn:hover { background: #1da851; transform: translateY(-1px); }
+        .co-place-order-btn { width: 100%; padding: 16px; background: #000; color: #fff; border: none; border-radius: 10px; font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.3s, transform 0.15s; margin-top: 10px; }
+        .co-place-order-btn:hover { background: #222; transform: translateY(-1px); }
+        .secure-badge { text-align: center; font-size: 0.75rem; color: #aaa; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+
+        /* ===== RECEIPT OVERLAY ===== */
+        .receipt-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.65); z-index: 9999;
+            align-items: center; justify-content: center;
+            padding: 1rem; overflow-y: auto;
+        }
+        .receipt-overlay.show { display: flex; }
+
+        .receipt-box {
+            background: #fff; border-radius: 16px;
+            width: 100%; max-width: 500px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.35s cubic-bezier(0.16,1,0.3,1);
+            position: relative;
+        }
+        .receipt-close-btn {
+            position: absolute; top: 14px; right: 14px; z-index: 10;
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(0,0,0,0.07); border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: #555; transition: background 0.2s, color 0.2s;
+        }
+        .receipt-close-btn:hover { background: #e53935; color: #fff; }
+        @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+
+        /* Receipt printable area */
+        #receiptCard {
+            padding: 2rem 2rem 1.5rem;
+            background: #fff;
+        }
+        .receipt-header { text-align: center; border-bottom: 2px dashed #eee; padding-bottom: 1.2rem; margin-bottom: 1.2rem; }
+        .receipt-logo { font-size: 1.3rem; font-weight: 800; letter-spacing: 3px; color: #111; }
+        .receipt-tagline { font-size: 0.7rem; color: #aaa; letter-spacing: 1px; margin-top: 2px; }
+        .receipt-title { font-size: 1rem; font-weight: 700; color: #111; margin-top: 0.8rem; }
+        .receipt-date { font-size: 0.72rem; color: #aaa; margin-top: 2px; }
+
+        .receipt-section { margin-bottom: 1rem; }
+        .receipt-section-title { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 0.5rem; }
+        .receipt-row { display: flex; justify-content: space-between; font-size: 0.82rem; color: #444; margin-bottom: 4px; }
+        .receipt-row span:last-child { font-weight: 600; color: #111; text-align: right; max-width: 60%; }
+
+        .receipt-items { border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; padding: 0.8rem 0; margin-bottom: 1rem; }
+        .receipt-item { display: flex; justify-content: space-between; font-size: 0.82rem; color: #333; margin-bottom: 5px; }
+        .receipt-item-name { flex: 1; }
+        .receipt-item-price { font-weight: 600; }
+
+        .receipt-total-row { display: flex; justify-content: space-between; font-size: 0.82rem; color: #666; margin-bottom: 4px; }
+        .receipt-grand { display: flex; justify-content: space-between; font-size: 1rem; font-weight: 800; color: #000; margin-top: 8px; padding-top: 8px; border-top: 2px solid #111; }
+
+        .receipt-payment-badge {
+            margin-top: 1rem; padding: 10px 16px; border-radius: 8px;
+            background: #f0faf4; border: 1.5px solid #25D366;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.82rem; font-weight: 600; color: #1a7a40;
+        }
+
+        .receipt-bank-info {
+            margin-top: 1.2rem;
+            background: linear-gradient(135deg, #fffbf0 0%, #fff8e8 100%);
+            border: 2px solid #f5a623;
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 4px 16px rgba(245,166,35,0.15);
+        }
+        .receipt-bank-info .bank-title {
+            font-size: 1rem; font-weight: 800; color: #c17a00;
+            margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+            padding-bottom: 10px; border-bottom: 1.5px dashed #f5c842;
+        }
+        .receipt-bank-info .bank-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 14px; background: #fff; border-radius: 8px;
+            margin-bottom: 8px; border: 1px solid #f5dea0;
+        }
+        .receipt-bank-info .bank-row-label {
+            font-size: 0.78rem; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .receipt-bank-info .bank-row-value {
+            font-size: 0.95rem; font-weight: 800; color: #111; letter-spacing: 0.5px;
+        }
+        .receipt-bank-info .bank-footer {
+            margin-top: 12px; padding: 10px 14px;
+            background: rgba(245,166,35,0.12); border-radius: 8px;
+            font-size: 0.82rem; color: #7a5a00; font-weight: 600; text-align: center;
+        }
+
+        .receipt-footer { text-align: center; margin-top: 1.2rem; padding-top: 1rem; border-top: 2px dashed #eee; }
+        .receipt-footer p { font-size: 0.72rem; color: #aaa; }
+        .receipt-footer strong { color: #111; }
+
+        /* Action buttons at bottom of overlay */
+        .receipt-actions { display: flex; gap: 10px; padding: 1rem 2rem 1.5rem; background: #f9f9f9; border-top: 1px solid #eee; }
+        .receipt-btn {
+            flex: 1; padding: 13px; border-radius: 9px; font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 7px;
+        }
+        .receipt-btn.screenshot { background: #111; color: #fff; }
+        .receipt-btn.screenshot:hover { background: #333; }
+        .receipt-btn.whatsapp { background: #25D366; color: #fff; box-shadow: 0 4px 16px rgba(37,211,102,0.3); }
+        .receipt-btn.whatsapp:hover { background: #1da851; }
+
+        /* SUCCESS OVERLAY */
+        .co-success { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 10000; align-items: center; justify-content: center; }
+        .co-success.show { display: flex; }
+        .co-success-box { background: #fff; border-radius: 16px; padding: 2.5rem 2rem; text-align: center; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+        .co-success-icon { font-size: 4rem; color: #25D366; margin-bottom: 1rem; }
+        .co-success-box h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .co-success-box p { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.6; }
+        .co-success-actions { display: flex; gap: 10px; }
+        .co-success-btn { flex: 1; padding: 12px; border-radius: 8px; font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .co-success-btn.primary { background: #000; color: #fff; }
+        .co-success-btn.primary:hover { background: #333; }
+        .co-success-btn.secondary { background: #f0f0f0; color: #333; }
+        .co-success-btn.secondary:hover { background: #e0e0e0; }
+
+        .cod-note { display: none; margin-top: 8px; padding: 10px 14px; background: #fffbf0; border: 1px solid #f5a623; border-radius: 8px; font-size: 0.78rem; color: #7a5a00; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="co-header">
+        <button class="co-header-back" onclick="window.location.href='shoes (1).html'">
+            <i class="ph ph-arrow-left"></i> Back to Shop
+        </button>
+        <div class="co-logo">FARIHA'S COLLECTION</div>
+        <div style="width:120px;"></div>
+    </header>
+
+    <!-- Steps -->
+    <div class="co-steps">
+        <div class="co-step active" id="step1"><div class="co-step-num">1</div> Details</div>
+        <div class="co-step-divider"></div>
+        <div class="co-step" id="step2"><div class="co-step-num">2</div> Payment</div>
+        <div class="co-step-divider"></div>
+        <div class="co-step" id="step3"><div class="co-step-num">3</div> Confirm</div>
+    </div>
+
+    <!-- Layout -->
+    <div class="co-layout">
+
+        <!-- LEFT: Form -->
+        <div>
+            <!-- Contact Info -->
+            <div class="co-panel" style="margin-bottom:1.5rem;">
+                <h2><i class="ph ph-user" style="margin-right:8px;"></i>Contact Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="firstName" placeholder="Fariha" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="lastName" placeholder="Khan" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone / WhatsApp</label>
+                        <input type="tel" id="phone" placeholder="+92 300 0000000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email (Optional)</label>
+                        <input type="email" id="email" placeholder="you@email.com">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping -->
+            <div class="co-panel" style="margin-bottom:1.5rem;">
+                <h2><i class="ph ph-truck" style="margin-right:8px;"></i>Shipping Address</h2>
+                <div class="form-grid">
+                    <div class="form-group full">
+                        <label>Street Address</label>
+                        <input type="text" id="address" placeholder="House/Flat No., Street, Area" required>
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <select id="city" required>
+                            <option value="">Select City</option>
+                            <option value="Karachi">Karachi</option>
+                            <option value="Lahore">Lahore</option>
+                            <option value="Islamabad">Islamabad</option>
+                            <option value="Rawalpindi">Rawalpindi</option>
+                            <option value="Faisalabad">Faisalabad</option>
+                            <option value="Multan">Multan</option>
+                            <option value="Peshawar">Peshawar</option>
+                            <option value="Quetta">Quetta</option>
+                            <option value="Sialkot">Sialkot</option>
+                            <option value="Gujranwala">Gujranwala</option>
+                            <option value="Hyderabad">Hyderabad</option>
+                            <option value="Sukkur">Sukkur</option>
+                            <option value="Larkana">Larkana</option>
+                            <option value="Bahawalpur">Bahawalpur</option>
+                            <option value="Sargodha">Sargodha</option>
+                            <option value="Abbottabad">Abbottabad</option>
+                            <option value="Mardan">Mardan</option>
+                            <option value="Kasur">Kasur</option>
+                            <option value="Rahim Yar Khan">Rahim Yar Khan</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Province</label>
+                        <select id="province">
+                            <option value="">Select Province</option>
+                            <option>Sindh</option>
+                            <option>Punjab</option>
+                            <option>KPK</option>
+                            <option>Balochistan</option>
+                            <option>Gilgit-Baltistan</option>
+                            <option>AJK</option>
+                        </select>
+                    </div>
+                    <div class="form-group full" id="sizeDisplayRow">
+                        <label>Size Selected</label>
+                        <div id="sizeDisplay" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid #111;border-radius:8px;background:#f9f9f9;">
+                            <i class="ph ph-sneaker" style="font-size:1.2rem;color:#555;"></i>
+                            <span id="sizeDisplayVal" style="font-size:1rem;font-weight:700;color:#111;">—</span>
+                            <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">Selected on product page</span>
+                        </div>
+                        <!-- Fallback: manual size select if no size was saved -->
+                        <select id="sizeFallback" style="display:none;margin-top:8px;">
+                            <option value="">Select a size</option>
+                            <option>UK 36</option><option>UK 37</option><option>UK 38</option>
+                            <option>UK 39</option><option>UK 40</option><option>UK 41</option>
+                            <option>UK 42</option><option>UK 43</option><option>UK 44</option>
+                            <option>UK 45</option><option>UK 46</option>
+                        </select>
+                    </div>
+                    <div class="form-group full">
+                        <label>Order Notes (Optional)</label>
+                        <textarea id="notes" placeholder="Any special instructions for your order..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment -->
+            <div class="co-panel">
+                <h2><i class="ph ph-credit-card" style="margin-right:8px;"></i>Payment Method</h2>
+                <div class="payment-methods">
+                    <label class="payment-opt selected" id="pay-whatsapp">
+                        <input type="radio" name="payment" value="whatsapp" checked>
+                        <span class="payment-icon" style="color:#25D366;"><i class="ph-fill ph-whatsapp-logo"></i></span>
+                        <div>
+                            <div class="payment-opt-label">WhatsApp Order</div>
+                            <div class="payment-opt-sub">Place order via WhatsApp — pay on delivery</div>
+                        </div>
+                    </label>
+                    <label class="payment-opt" id="pay-cod" style="display:none;">
+                        <input type="radio" name="payment" value="cod">
+                        <span class="payment-icon"><i class="ph ph-money"></i></span>
+                        <div>
+                            <div class="payment-opt-label">Cash on Delivery</div>
+                            <div class="payment-opt-sub">Pay when your order arrives (Karachi only)</div>
+                        </div>
+                    </label>
+                    <label class="payment-opt" id="pay-bank">
+                        <input type="radio" name="payment" value="bank">
+                        <span class="payment-icon" style="color:#1a56db;"><i class="ph ph-bank"></i></span>
+                        <div>
+                            <div class="payment-opt-label">Bank Transfer</div>
+                            <div class="payment-opt-sub">Transfer before dispatch — receipt generated</div>
+                        </div>
+                    </label>
+                    <label class="payment-opt" id="pay-easypaisa">
+                        <input type="radio" name="payment" value="easypaisa">
+                        <span class="payment-icon" style="color:#6cc04a;"><i class="ph ph-device-mobile"></i></span>
+                        <div>
+                            <div class="payment-opt-label">EasyPaisa</div>
+                            <div class="payment-opt-sub">Send payment via EasyPaisa — receipt generated</div>
+                        </div>
+                    </label>
+                </div>
+                <div class="cod-note" id="codNote">
+                    <i class="ph ph-info"></i> <strong>Cash on Delivery</strong> is only available in <strong>Karachi</strong>. Please select a different payment method for other cities.
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Order Summary -->
+        <div class="co-order-summary">
+            <div class="co-summary-panel">
+                <h2><i class="ph ph-shopping-bag" style="margin-right:8px;"></i>Order Summary</h2>
+                <div id="coCartItems">
+                    <div class="co-empty"><i class="ph ph-shopping-bag"></i>Your cart is empty</div>
+                </div>
+                <div class="co-totals" id="coTotals" style="display:none;">
+                    <div class="co-total-row"><span>Subtotal</span><span id="coSubtotal">Rs0</span></div>
+                    <div class="co-total-row"><span>Shipping</span><span style="color:#25D366;font-weight:600;">FREE</span></div>
+                    <div class="co-total-row grand"><span>Total</span><span id="coTotal">Rs0</span></div>
+                </div>
+            </div>
+
+            <div class="co-summary-panel">
+                <button class="co-checkout-btn" id="whatsappBtn">
+                    <i class="ph-fill ph-whatsapp-logo" style="font-size:1.3rem;"></i>
+                    Order via WhatsApp
+                </button>
+                <button class="co-place-order-btn" id="placeOrderBtn">
+                    <i class="ph ph-check-circle" style="font-size:1.2rem;"></i>
+                    Place Order
+                </button>
+                <div class="secure-badge">
+                    <i class="ph ph-lock-simple"></i> Secure & Encrypted Checkout
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RECEIPT OVERLAY ===== -->
+    <div class="receipt-overlay" id="receiptOverlay">
+        <div class="receipt-box">
+            <button class="receipt-close-btn" onclick="document.getElementById('receiptOverlay').classList.remove('show')" title="Close">
+                <i class="ph ph-x"></i>
+            </button>
+            <div id="receiptCard">
+                <div class="receipt-header">
+                    <div class="receipt-logo">FARIHA'S COLLECTION</div>
+                    <div class="receipt-tagline">PREMIUM FOOTWEAR · PAKISTAN</div>
+                    <div class="receipt-title">Order Receipt</div>
+                    <div class="receipt-date" id="receiptDate"></div>
+                </div>
+
+                <div class="receipt-section">
+                    <div class="receipt-section-title">Customer Details</div>
+                    <div class="receipt-row"><span>Name</span><span id="rName"></span></div>
+                    <div class="receipt-row"><span>Phone</span><span id="rPhone"></span></div>
+                    <div class="receipt-row" id="rEmailRow"><span>Email</span><span id="rEmail"></span></div>
+                    <div class="receipt-row"><span>Address</span><span id="rAddress"></span></div>
+                    <div class="receipt-row"><span>City</span><span id="rCity"></span></div>
+                    <div class="receipt-row" id="rProvinceRow"><span>Province</span><span id="rProvince"></span></div>
+                    <div class="receipt-row"><span>Size</span><span id="rSize"></span></div>
+                </div>
+
+                <div class="receipt-items">
+                    <div class="receipt-section-title">Items Ordered</div>
+                    <div id="rItems"></div>
+                </div>
+
+                <div>
+                    <div class="receipt-total-row"><span>Subtotal</span><span id="rSubtotal"></span></div>
+                    <div class="receipt-total-row"><span>Shipping</span><span style="color:#25D366;font-weight:700;">FREE</span></div>
+                    <div class="receipt-grand"><span>Total</span><span id="rTotal"></span></div>
+                </div>
+
+                <div class="receipt-payment-badge" id="rPaymentBadge">
+                    <i class="ph ph-check-circle"></i>
+                    <span id="rPaymentLabel"></span>
+                </div>
+
+                <div class="receipt-bank-info" id="rBankInfo" style="display:none;">
+                    <p style="font-weight:700;margin-bottom:8px;">Payment Instructions:</p>
+                    <p id="rBankDetails"></p>
+                </div>
+
+                <div id="rNoteRow" style="display:none; margin-top:1rem; padding:10px 14px; background:#f9f9f9; border-radius:8px;">
+                    <div class="receipt-section-title" style="margin-bottom:4px;">Order Notes</div>
+                    <div style="font-size:0.82rem;color:#444;" id="rNotes"></div>
+                </div>
+
+                <div class="receipt-footer">
+                    <p>Thank you for shopping with us! 🙏</p>
+                    <p>Questions? WhatsApp: <strong>0300-2757988</strong></p>
+                    <p style="margin-top:4px;">farihascollection.pk</p>
+                </div>
+            </div>
+
+            <div class="receipt-actions">
+                <button class="receipt-btn screenshot" id="screenshotBtn">
+                    <i class="ph ph-camera"></i> Screenshot
+                </button>
+                <button class="receipt-btn whatsapp" id="receiptWhatsappBtn">
+                    <i class="ph-fill ph-whatsapp-logo"></i> Send via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div class="co-success" id="successOverlay">
+        <div class="co-success-box">
+            <div class="co-success-icon"><i class="ph-fill ph-check-circle"></i></div>
+            <h2>Order Placed! 🎉</h2>
+            <p id="successMsg">Your order has been received. We'll confirm via WhatsApp shortly.</p>
+            <div class="co-success-actions">
+                <button class="co-success-btn secondary" onclick="window.location.href='shoes (1).html'">Continue Shopping</button>
+                <button class="co-success-btn primary" onclick="window.location.href='index.html'">Go Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const WHATSAPP_NUMBER = '923002757988';
+
+    function getCart() { return JSON.parse(localStorage.getItem('fc_cart') || '[]'); }
+    function saveCart(c) { localStorage.setItem('fc_cart', JSON.stringify(c)); renderCart(); }
+    function formatPrice(n) { return 'Rs' + Number(n).toLocaleString('en-PK') + '.00'; }
+
+    // ===== RENDER CART =====
+    function renderCart() {
+        const cart = getCart();
+        const container = document.getElementById('coCartItems');
+        const totalsEl = document.getElementById('coTotals');
+
+        if (!cart.length) {
+            container.innerHTML = '<div class="co-empty"><i class="ph ph-shopping-bag"></i><p>Your cart is empty</p></div>';
+            totalsEl.style.display = 'none';
+            return;
+        }
+
+        let html = ''; let subtotal = 0;
+        cart.forEach((item, i) => {
+            const lineTotal = item.price * item.qty;
+            subtotal += lineTotal;
+            html += `
+            <div class="co-cart-item">
+                <div class="co-item-img"><img src="${item.image}" alt="${item.name}"></div>
+                <div class="co-item-info">
+                    <div class="co-item-name">${item.name}</div>
+                    <div class="co-item-price">${formatPrice(item.price)} each</div>
+                    <div class="co-item-qty">
+                        <button class="co-qty-btn" onclick="changeQty(${i},-1)">−</button>
+                        <span style="font-weight:600;min-width:20px;text-align:center;">${item.qty}</span>
+                        <button class="co-qty-btn" onclick="changeQty(${i},1)">+</button>
+                    </div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+                    <div class="co-item-total">${formatPrice(lineTotal)}</div>
+                    <button class="co-remove-btn" onclick="removeItem(${i})"><i class="ph ph-trash"></i></button>
+                </div>
+            </div>`;
+        });
+
+        container.innerHTML = html;
+        document.getElementById('coSubtotal').textContent = formatPrice(subtotal);
+        document.getElementById('coTotal').textContent = formatPrice(subtotal);
+        totalsEl.style.display = 'block';
+    }
+
+    function changeQty(i, d) { const c = getCart(); c[i].qty += d; if (c[i].qty <= 0) c.splice(i,1); saveCart(c); }
+    function removeItem(i) { const c = getCart(); c.splice(i,1); saveCart(c); }
+
+    // ===== SIZE SELECTOR =====
+    document.querySelectorAll('.size-opt').forEach(opt => {
+        opt.addEventListener('click', () => {
+            document.querySelectorAll('.size-opt').forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+        });
+    });
+
+    // ===== PAYMENT METHOD HIGHLIGHT =====
+    document.querySelectorAll('.payment-opt').forEach(opt => {
+        opt.addEventListener('click', () => {
+            document.querySelectorAll('.payment-opt').forEach(o => o.classList.remove('selected'));
+            opt.classList.add('selected');
+        });
+    });
+
+    // ===== CITY → COD TOGGLE =====
+    const citySelect = document.getElementById('city');
+    const payCodOpt = document.getElementById('pay-cod');
+    const codNote = document.getElementById('codNote');
+
+    citySelect.addEventListener('change', () => {
+        const city = citySelect.value;
+        if (city === 'Karachi') {
+            payCodOpt.style.display = '';
+            codNote.style.display = 'none';
+        } else {
+            payCodOpt.style.display = 'none';
+            codNote.style.display = city ? 'block' : 'none';
+            // If COD was selected, switch back to WhatsApp
+            const checked = document.querySelector('input[name="payment"]:checked');
+            if (checked && checked.value === 'cod') {
+                document.querySelector('#pay-whatsapp input').checked = true;
+                document.querySelectorAll('.payment-opt').forEach(o => o.classList.remove('selected'));
+                document.getElementById('pay-whatsapp').classList.add('selected');
+            }
+        }
+    });
+
+    // ===== STEP INDICATOR =====
+    function setStep(n) {
+        [1,2,3].forEach(s => {
+            const el = document.getElementById('step'+s);
+            el.classList.remove('active','done');
+            if (s < n) el.classList.add('done');
+            else if (s === n) el.classList.add('active');
+        });
+    }
+
+    // ===== VALIDATE =====
+    function validate() {
+        const first = document.getElementById('firstName').value.trim();
+        const last  = document.getElementById('lastName').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const addr  = document.getElementById('address').value.trim();
+        const city  = document.getElementById('city').value;
+        const size  = document.querySelector('.size-opt.selected')?.dataset.size || '';
+        const cart  = getCart();
+
+        if (!cart.length) { alert('Your cart is empty!'); return null; }
+        if (!first || !last) { alert('Please enter your full name.'); return null; }
+        if (!phone) { alert('Please enter your phone/WhatsApp number.'); return null; }
+        if (!addr || !city) { alert('Please fill in your complete shipping address.'); return null; }
+        if (!size) { alert('Please select a shoe size.'); return null; }
+
+        return {
+            first, last, phone, addr, city, size,
+            email:    document.getElementById('email').value.trim(),
+            province: document.getElementById('province').value,
+            notes:    document.getElementById('notes').value.trim()
+        };
+    }
+
+    // ===== BUILD RECEIPT =====
+    function buildReceipt(info, payMethod) {
+        const cart = getCart();
+        let subtotal = 0;
+
+        document.getElementById('receiptDate').textContent = new Date().toLocaleString('en-PK', { dateStyle:'long', timeStyle:'short' });
+        document.getElementById('rName').textContent    = info.first + ' ' + info.last;
+        document.getElementById('rPhone').textContent   = info.phone;
+        document.getElementById('rAddress').textContent = info.addr;
+        document.getElementById('rCity').textContent    = info.city;
+        document.getElementById('rSize').textContent    = info.size;
+
+        if (info.email) {
+            document.getElementById('rEmail').textContent = info.email;
+            document.getElementById('rEmailRow').style.display = '';
+        } else {
+            document.getElementById('rEmailRow').style.display = 'none';
+        }
+
+        if (info.province) {
+            document.getElementById('rProvince').textContent = info.province;
+            document.getElementById('rProvinceRow').style.display = '';
+        } else {
+            document.getElementById('rProvinceRow').style.display = 'none';
+        }
+
+        // Items
+        let itemsHtml = '';
+        cart.forEach(item => {
+            const lt = item.price * item.qty;
+            subtotal += lt;
+            itemsHtml += `<div class="receipt-item">
+                <span class="receipt-item-name">${item.name} × ${item.qty}</span>
+                <span class="receipt-item-price">${formatPrice(lt)}</span>
+            </div>`;
+        });
+        document.getElementById('rItems').innerHTML = itemsHtml;
+        document.getElementById('rSubtotal').textContent = formatPrice(subtotal);
+        document.getElementById('rTotal').textContent    = formatPrice(subtotal);
+
+        // Payment label
+        const labels = { whatsapp: '✅ WhatsApp Order — Pay on Delivery', cod: '✅ Cash on Delivery', bank: '🏦 Bank Transfer — Pending Payment', easypaisa: '📱 EasyPaisa — Pending Payment' };
+        document.getElementById('rPaymentLabel').textContent = labels[payMethod] || payMethod;
+
+        // Bank/EasyPaisa instructions
+        const bankInfo = document.getElementById('rBankInfo');
+        const bankDetails = document.getElementById('rBankDetails');
+        if (payMethod === 'bank') {
+            bankInfo.style.display = 'block';
+            bankInfo.innerHTML = `
+                <div class="bank-title"><i class="ph ph-bank"></i> Bank Transfer Instructions</div>
+                <div class="bank-row">
+                    <span class="bank-row-label">Bank</span>
+                    <span class="bank-row-value">HBL / Meezan Bank</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-row-label">Account Name</span>
+                    <span class="bank-row-value">Fariha's Collection</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-row-label">Account No.</span>
+                    <span class="bank-row-value">0123-4567890-001</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-row-label">IBAN</span>
+                    <span class="bank-row-value">PK00HBL000000000001</span>
+                </div>
+                <div class="bank-footer">
+                    📲 After transfer, send screenshot to WhatsApp: <strong>0300-2757988</strong>
+                </div>
+            `;
+        } else if (payMethod === 'easypaisa') {
+            bankInfo.style.display = 'block';
+            bankInfo.innerHTML = `
+                <div class="bank-title"><i class="ph ph-device-mobile"></i> EasyPaisa Payment Instructions</div>
+                <div class="bank-row">
+                    <span class="bank-row-label">EasyPaisa Number</span>
+                    <span class="bank-row-value">0300-2757988</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-row-label">Account Name</span>
+                    <span class="bank-row-value">Fariha Collection</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-row-label">Amount to Send</span>
+                    <span class="bank-row-value" id="epAmount"></span>
+                </div>
+                <div class="bank-footer">
+                    📲 After payment, send screenshot to WhatsApp: <strong>0300-2757988</strong>
+                </div>
+            `;
+            // Fill in amount after rendering
+            const epEl = document.getElementById('epAmount');
+            if (epEl) epEl.textContent = document.getElementById('rTotal').textContent;
+        } else {
+            bankInfo.style.display = 'none';
+        }
+
+        // Notes
+        if (info.notes) {
+            document.getElementById('rNotes').textContent = info.notes;
+            document.getElementById('rNoteRow').style.display = 'block';
+        } else {
+            document.getElementById('rNoteRow').style.display = 'none';
+        }
+    }
+
+    // ===== SHOW RECEIPT =====
+    function showReceipt(info, payMethod) {
+        buildReceipt(info, payMethod);
+        document.getElementById('receiptOverlay').classList.add('show');
+    }
+
+    // ===== SCREENSHOT BUTTON =====
+    document.getElementById('screenshotBtn').addEventListener('click', () => {
+        const card = document.getElementById('receiptCard');
+        html2canvas(card, { scale: 2, useCORS: true, backgroundColor: '#fff' }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'FarihasCollection-Receipt.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    });
+
+    // ===== SEND VIA WHATSAPP (screenshot auto-download + open WA) =====
+    document.getElementById('receiptWhatsappBtn').addEventListener('click', async () => {
+        const btn = document.getElementById('receiptWhatsappBtn');
+        btn.textContent = 'Preparing...';
+        btn.disabled = true;
+
+        const card = document.getElementById('receiptCard');
+        const canvas = await html2canvas(card, { scale: 2, useCORS: true, backgroundColor: '#fff' });
+
+        // Auto-download screenshot
+        const link = document.createElement('a');
+        link.download = 'FarihasCollection-Receipt.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        // Build WhatsApp message
+        const name = document.getElementById('rName').textContent;
+        const phone = document.getElementById('rPhone').textContent;
+        const city = document.getElementById('rCity').textContent;
+        const size = document.getElementById('rSize').textContent;
+        const total = document.getElementById('rTotal').textContent;
+        const payment = document.getElementById('rPaymentLabel').textContent;
+
+        const msg = `🧾 *Order Receipt — Fariha's Collection*\n\n`
+            + `👤 *Name:* ${name}\n`
+            + `📞 *Phone:* ${phone}\n`
+            + `📍 *City:* ${city}\n`
+            + `👟 *Size:* ${size}\n`
+            + `💰 *Total:* ${total}\n`
+            + `💳 *Payment:* ${payment}\n\n`
+            + `📎 _Receipt screenshot has been downloaded — please attach it to this chat._\n\n`
+            + `Please confirm my order. Thank you! 🙏`;
+
+        setTimeout(() => {
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+            btn.innerHTML = '<i class="ph-fill ph-whatsapp-logo"></i> Send via WhatsApp';
+            btn.disabled = false;
+        }, 800);
+    });
+
+    // ===== WHATSAPP ORDER BUTTON =====
+    document.getElementById('whatsappBtn').addEventListener('click', () => {
+        const info = validate();
+        if (!info) return;
+        setStep(2);
+
+        const cart = getCart();
+        let total = 0;
+        let msg = `🛍️ *New Order — Fariha's Collection*\n\n`;
+        msg += `👤 *Customer:* ${info.first} ${info.last}\n`;
+        msg += `📞 *Phone:* ${info.phone}\n`;
+        if (info.email) msg += `📧 *Email:* ${info.email}\n`;
+        msg += `📍 *Address:* ${info.addr}, ${info.city}${info.province ? ', '+info.province : ''}\n`;
+        msg += `👟 *Size:* ${info.size}\n\n`;
+        msg += `🛒 *Order Items:*\n`;
+        cart.forEach((item, i) => {
+            const lt = item.price * item.qty;
+            total += lt;
+            msg += `${i+1}. ${item.name} × ${item.qty} = Rs${lt.toLocaleString()}\n`;
+        });
+        msg += `\n💰 *Total: Rs${total.toLocaleString()}.00*\n🚚 *Shipping: FREE*\n`;
+        if (info.notes) msg += `📝 *Notes:* ${info.notes}\n`;
+        msg += `\nPlease confirm my order. Thank you! 🙏`;
+
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+
+        setTimeout(() => {
+            setStep(3);
+            document.getElementById('successMsg').textContent = `Your order via WhatsApp has been sent! We'll confirm your order for ${info.first} shortly.`;
+            document.getElementById('successOverlay').classList.add('show');
+            localStorage.removeItem('fc_cart');
+        }, 1500);
+    });
+
+    // ===== PLACE ORDER BUTTON =====
+    document.getElementById('placeOrderBtn').addEventListener('click', () => {
+        const info = validate();
+        if (!info) return;
+
+        const payMethod = document.querySelector('input[name="payment"]:checked').value;
+        setStep(2);
+
+        if (payMethod === 'bank' || payMethod === 'easypaisa') {
+            // Show receipt overlay instead of success
+            setTimeout(() => {
+                setStep(2);
+                showReceipt(info, payMethod);
+            }, 400);
+        } else {
+            // COD or WhatsApp — show success
+            setTimeout(() => {
+                setStep(3);
+                const cart = getCart();
+                let total = 0; cart.forEach(i => total += i.price * i.qty);
+                const methodLabel = payMethod === 'cod' ? 'Cash on Delivery' : 'WhatsApp Order';
+                document.getElementById('successMsg').textContent =
+                    `Order confirmed for ${info.first} ${info.last}! Payment: ${methodLabel}. Total: Rs${total.toLocaleString()}.00. We'll contact you at ${info.phone}.`;
+                document.getElementById('successOverlay').classList.add('show');
+                localStorage.removeItem('fc_cart');
+            }, 800);
+        }
+    });
+
+    // ===== INIT =====
+    renderCart();
+    </script>
+</body>
+</html>

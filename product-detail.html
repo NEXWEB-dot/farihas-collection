@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">TOMS Classic Alpargata – Pastel Pink | Fariha's Collection</title>
+    <meta name="description" content="Shop the New-With-Tags TOMS Classic Alpargata in Pastel Pink. Pristine unworn condition with original tags, canvas upper and espadrille woven rope trim.">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* ===== PRODUCT DETAIL PAGE STYLES ===== */
+        body { font-family: 'Outfit', sans-serif; background: #fafafa; }
+
+        /* Sticky header override for this page (always visible) */
+        .pd-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 100;
+            border-bottom: 1px solid #f0f0f0;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+        }
+        .pd-header-left, .pd-header-right { display: flex; align-items: center; gap: 1rem; }
+        .pd-header-center a {
+            font-size: 1.3rem; font-weight: 800; letter-spacing: 3px;
+            text-decoration: none; color: #000;
+        }
+        .pd-icon-btn { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: #333; transition: color 0.2s; }
+        .pd-icon-btn:hover { color: #000; }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            max-width: 1200px; margin: 0 auto; padding: 1rem 2rem 0;
+            display: flex; align-items: center; gap: 0.5rem;
+            font-size: 0.78rem; color: #aaa; font-weight: 500;
+        }
+        .breadcrumb a { color: #aaa; text-decoration: none; transition: color 0.2s; }
+        .breadcrumb a:hover { color: #111; }
+        .breadcrumb span { color: #111; }
+
+        /* ===== MAIN PRODUCT LAYOUT ===== */
+        .pd-main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem 4rem;
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        /* ===== IMAGE GALLERY ===== */
+        .pd-gallery { position: sticky; top: 90px; max-width: 420px; }
+
+        .pd-main-img-wrap {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #f5f5f5;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 14px;
+            position: relative;
+        }
+        .pd-main-img-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+        }
+        .pd-main-img-wrap:hover img { transform: scale(1.04); }
+
+        /* NWT badge */
+        .nwt-badge {
+            position: absolute;
+            top: 16px; left: 16px;
+            background: #111; color: #fff;
+            font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase;
+            padding: 5px 12px; border-radius: 20px;
+        }
+
+        .pd-thumbs {
+            display: flex; gap: 10px;
+        }
+        .pd-thumb {
+            width: 80px; height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s, transform 0.2s;
+            flex-shrink: 0;
+            background: #f5f5f5;
+        }
+        .pd-thumb.active { border-color: #111; }
+        .pd-thumb:hover { transform: scale(1.04); border-color: #999; }
+        .pd-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* ===== PRODUCT INFO PANEL ===== */
+        .pd-info { padding-top: 0.5rem; }
+
+        .pd-brand-tag {
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 2px;
+            text-transform: uppercase; color: #e8699a; margin-bottom: 8px;
+        }
+        .pd-title {
+            font-size: 1.75rem; font-weight: 800; color: #111;
+            line-height: 1.2; margin-bottom: 10px;
+        }
+
+        /* Star rating row */
+        .pd-rating {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 18px;
+        }
+        .pd-stars { color: #f5a623; font-size: 1rem; letter-spacing: 2px; }
+        .pd-rating-count { font-size: 0.8rem; color: #999; }
+
+        /* Price */
+        .pd-price-row {
+            display: flex; align-items: baseline; gap: 12px;
+            margin-bottom: 20px;
+        }
+        .pd-price { font-size: 1.8rem; font-weight: 800; color: #111; }
+        .pd-price-original {
+            font-size: 1.1rem; font-weight: 500; color: #bbb;
+            text-decoration: line-through;
+        }
+        .pd-price-badge {
+            background: #fde8f0; color: #c62a6d;
+            font-size: 0.72rem; font-weight: 700;
+            padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
+        }
+
+        /* Condition bar */
+        .pd-condition-bar {
+            display: flex; align-items: center; gap: 8px;
+            background: #f0fdf4; border: 1px solid #bbf7d0;
+            border-radius: 10px; padding: 10px 14px;
+            font-size: 0.8rem; color: #166534;
+            font-weight: 600; margin-bottom: 22px;
+        }
+        .pd-condition-bar i { font-size: 1.1rem; color: #22c55e; }
+
+        /* Divider */
+        .pd-divider { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; }
+
+        /* Size selector */
+        .pd-label {
+            font-size: 0.8rem; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; color: #555; margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .pd-label a { font-weight: 500; color: #e8699a; text-decoration: underline; font-size: 0.75rem; letter-spacing: 0; }
+
+        .pd-sizes {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+        }
+        .pd-size-btn {
+            min-width: 56px; height: 44px; padding: 0 12px;
+            border: 1.5px solid #e0e0e0; border-radius: 10px;
+            background: #fff; font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem; font-weight: 600; color: #333;
+            cursor: pointer; transition: all 0.2s; position: relative;
+        }
+        .pd-size-btn:hover { border-color: #111; color: #111; }
+        .pd-size-btn.selected {
+            border-color: #111; background: #111; color: #fff;
+        }
+        .pd-size-btn.out-of-stock {
+            color: #bbb;
+            border-color: #eee;
+            cursor: not-allowed;
+            background: #fafafa;
+            overflow: hidden;
+        }
+        .pd-size-btn.out-of-stock::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0;
+            width: 100%; height: 1.5px;
+            background: #ccc;
+            transform: translateY(-50%) rotate(-20deg);
+        }
+        .pd-size-btn.out-of-stock::before { display: none; }
+
+        /* Action buttons */
+        .pd-actions { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+
+        .pd-btn-cart {
+            width: 100%; padding: 16px;
+            background: #111; color: #fff; border: none;
+            border-radius: 12px; font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem; font-weight: 700; letter-spacing: 0.5px;
+            cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 8px;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .pd-btn-cart:hover { background: #333; transform: translateY(-1px); }
+        .pd-btn-cart:active { transform: translateY(0); }
+
+        .pd-btn-wa {
+            width: 100%; padding: 16px;
+            background: #25D366; color: #fff; border: none;
+            border-radius: 12px; font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem; font-weight: 700; letter-spacing: 0.5px;
+            cursor: pointer; display: flex; align-items: center;
+            justify-content: center; gap: 8px;
+            transition: background 0.2s, transform 0.15s;
+            text-decoration: none;
+        }
+        .pd-btn-wa:hover { background: #1da851; transform: translateY(-1px); }
+
+        /* Trust badges */
+        .pd-trust {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 8px; margin-bottom: 24px;
+        }
+        .pd-trust-item {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 4px; padding: 12px 8px; background: #fafafa;
+            border-radius: 10px; border: 1px solid #f0f0f0;
+            text-align: center;
+        }
+        .pd-trust-item i { font-size: 1.3rem; color: #e8699a; }
+        .pd-trust-item span { font-size: 0.68rem; color: #666; font-weight: 600; line-height: 1.3; }
+
+        /* ===== ACCORDION ===== */
+        .pd-accordion { border-top: 1px solid #f0f0f0; }
+        .pd-acc-item { border-bottom: 1px solid #f0f0f0; }
+        .pd-acc-header {
+            width: 100%; display: flex; align-items: center;
+            justify-content: space-between; padding: 16px 0;
+            background: none; border: none; cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem; font-weight: 700; color: #111;
+            text-align: left; letter-spacing: 0.3px;
+        }
+        .pd-acc-icon {
+            font-size: 1.1rem; color: #aaa;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        .pd-acc-item.open .pd-acc-icon { transform: rotate(45deg); }
+        .pd-acc-body {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.35s ease-out, padding 0.3s ease;
+        }
+        .pd-acc-item.open .pd-acc-body { max-height: 600px; }
+        .pd-acc-content {
+            padding: 0 0 18px; font-size: 0.875rem;
+            color: #555; line-height: 1.75;
+        }
+        .pd-acc-content ul {
+            list-style: none; padding: 0; margin: 0; display: flex;
+            flex-direction: column; gap: 8px;
+        }
+        .pd-acc-content ul li {
+            display: flex; align-items: flex-start; gap: 8px;
+        }
+        .pd-acc-content ul li::before {
+            content: '✓'; color: #e8699a; font-weight: 700;
+            font-size: 0.85rem; flex-shrink: 0; margin-top: 1px;
+        }
+        .pd-detail-grid {
+            display: grid; grid-template-columns: auto 1fr; gap: 6px 16px;
+        }
+        .pd-detail-key { font-weight: 600; color: #333; font-size: 0.82rem; }
+        .pd-detail-val { color: #666; font-size: 0.82rem; }
+
+        /* ===== SUGGESTED SECTION ===== */
+        .pd-suggested {
+            max-width: 1200px; margin: 0 auto;
+            padding: 0 2rem 5rem;
+        }
+        .pd-suggested-title {
+            font-size: 1.4rem; font-weight: 800; color: #111;
+            margin-bottom: 1.5rem; position: relative;
+            padding-bottom: 12px;
+        }
+        .pd-suggested-title::after {
+            content: ''; position: absolute;
+            bottom: 0; left: 0; width: 40px; height: 3px;
+            background: #e8699a; border-radius: 2px;
+        }
+        .pd-suggested-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        /* Suggestion card */
+        .sug-card {
+            position: relative; cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
+            border-radius: 14px; overflow: hidden; background: #fff;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .sug-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+        }
+        .sug-img-wrap {
+            width: 100%; aspect-ratio: 1 / 1;
+            overflow: hidden; background: #f5f5f5;
+        }
+        .sug-img-wrap img {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block;
+            transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+        }
+        .sug-card:hover .sug-img-wrap img { transform: scale(1.06); }
+        .sug-info { padding: 12px 14px 14px; }
+        .sug-brand { font-size: 0.65rem; color: #bbb; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
+        .sug-name { font-size: 0.88rem; font-weight: 600; color: #111; margin-bottom: 4px; line-height: 1.3; }
+        .sug-price { font-size: 0.88rem; font-weight: 700; color: #111; }
+
+        /* Notification */
+        #pd-notif {
+            position: fixed; top: 80px; right: 20px;
+            background: #111; color: #fff; padding: 14px 22px;
+            border-radius: 10px; font-size: 0.88rem; z-index: 99999;
+            opacity: 0; transform: translateY(-15px);
+            transition: all 0.3s ease; font-family: 'Outfit', sans-serif;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+            pointer-events: none;
+        }
+        #pd-notif.show { opacity: 1; transform: translateY(0); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .pd-main { grid-template-columns: 1fr; gap: 2rem; }
+            .pd-gallery { position: static; }
+            .pd-suggested-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .pd-main { padding: 1rem 1rem 3rem; }
+            .pd-title { font-size: 1.4rem; }
+            .pd-price { font-size: 1.5rem; }
+            .pd-suggested { padding: 0 1rem 3rem; }
+            .pd-suggested-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .pd-header { padding: 0.8rem 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="pd-header">
+        <div class="pd-header-left">
+            <button class="pd-icon-btn" id="backBtn" title="Go back"><i class="ph ph-arrow-left"></i></button>
+            <button class="pd-icon-btn" id="menuBtn" title="Menu"><i class="ph ph-list"></i></button>
+        </div>
+        <div class="pd-header-center">
+            <a href="index.html">FARIHA'S COLLECTION</a>
+        </div>
+        <div class="pd-header-right">
+            <button class="pd-icon-btn" id="cartBtn" title="Cart" style="position:relative;">
+                <i class="ph ph-shopping-bag"></i>
+                <span class="cart-badge" id="cartBadge" style="position:absolute;top:-6px;right:-8px;background:#e53935;color:#fff;font-size:0.65rem;font-weight:700;width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;">0</span>
+            </button>
+            <button class="pd-icon-btn" title="Search"><i class="ph ph-magnifying-glass"></i></button>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html">Home</a>
+        <i class="ph ph-caret-right" style="font-size:0.7rem;"></i>
+        <a href="shoes (1).html">Shoes</a>
+        <i class="ph ph-caret-right" style="font-size:0.7rem;"></i>
+        <span id="breadcrumbName">TOMS Alpargata – Pastel Pink</span>
+    </nav>
+
+    <!-- Product Main -->
+    <main class="pd-main" style="opacity: 0; transition: opacity 0.3s ease;">
+
+        <!-- Left: Image Gallery -->
+        <div class="pd-gallery">
+            <div class="pd-main-img-wrap" id="mainImgWrap">
+                <span class="nwt-badge">✦ New With Tags</span>
+                <img id="mainImg" src="images/pink-toms-1.jpg" alt="TOMS Classic Alpargata Pastel Pink – Side View">
+            </div>
+            <div class="pd-thumbs" id="thumbStrip">
+                <div class="pd-thumb active" data-img="images/pink-toms-1.jpg" data-alt="Side view">
+                    <img src="images/pink-toms-1.jpg" alt="Side view">
+                </div>
+                <div class="pd-thumb" data-img="images/pink-toms-2.jpg" data-alt="Front view">
+                    <img src="images/pink-toms-2.jpg" alt="Front view">
+                </div>
+                <div class="pd-thumb" data-img="images/pink-toms-3.jpg" data-alt="Alternate view">
+                    <img src="images/pink-toms-3.jpg" alt="Alternate view">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Product Info -->
+        <div class="pd-info">
+
+            <p class="pd-brand-tag" id="pdBrand">TOMS · Alpargata Collection</p>
+            <h1 class="pd-title" id="pdTitleName">Classic Alpargata<br>Pastel Pink</h1>
+
+            <!-- Stars -->
+            <div class="pd-rating">
+                <span class="pd-stars">★★★★★</span>
+                <span class="pd-rating-count">4.9 · 128 reviews</span>
+            </div>
+
+            <!-- Price -->
+            <div class="pd-price-row">
+                <span class="pd-price" id="pdPriceVal">Rs13,500.00</span>
+                <span class="pd-price-original" id="pdPriceOriginal">Rs18,000.00</span>
+                <span class="pd-price-badge" id="pdDiscountBadge">25% OFF</span>
+            </div>
+
+            <!-- Condition Badge -->
+            <div class="pd-condition-bar">
+                <i class="ph-fill ph-seal-check"></i>
+                New With Tags (NWT) — Pristine, Unworn Condition
+            </div>
+
+            <hr class="pd-divider">
+
+            <!-- Size Selector -->
+            <div>
+                <p class="pd-label">
+                    Select Size (UK)
+                    <a href="#">Size Guide</a>
+                </p>
+                <div class="pd-sizes" id="sizeSelector">
+                    <button class="pd-size-btn" data-size="UK 36">36</button>
+                    <button class="pd-size-btn" data-size="UK 37">37</button>
+                    <button class="pd-size-btn selected" data-size="UK 38">38</button>
+                    <button class="pd-size-btn" data-size="UK 39">39</button>
+                    <button class="pd-size-btn" data-size="UK 40">40</button>
+                    <button class="pd-size-btn out-of-stock" data-size="UK 41" disabled>41</button>
+                    <button class="pd-size-btn out-of-stock" data-size="UK 42" disabled>42</button>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pd-actions">
+                <button class="pd-btn-cart" id="pdAddToCart">
+                    <i class="ph ph-shopping-bag"></i> Add to Cart
+                </button>
+                <a href="https://wa.me/923412173887?text=Hi! I'm interested in the TOMS Classic Alpargata Pastel Pink. Is it available?" target="_blank" class="pd-btn-wa">
+                    <i class="ph-fill ph-whatsapp-logo"></i> Order via WhatsApp
+                </a>
+            </div>
+
+            <!-- Trust badges -->
+            <div class="pd-trust">
+                <div class="pd-trust-item">
+                    <i class="ph ph-package"></i>
+                    <span>Free Shipping</span>
+                </div>
+                <div class="pd-trust-item">
+                    <i class="ph ph-arrows-counter-clockwise"></i>
+                    <span>30-Day Returns</span>
+                </div>
+                <div class="pd-trust-item">
+                    <i class="ph ph-shield-check"></i>
+                    <span>100% Authentic</span>
+                </div>
+            </div>
+
+            <!-- Accordion Sections -->
+            <div class="pd-accordion">
+
+                <!-- Description -->
+                <div class="pd-acc-item open">
+                    <button class="pd-acc-header">
+                        <span>Product Description</span>
+                        <i class="ph ph-plus pd-acc-icon"></i>
+                    </button>
+                    <div class="pd-acc-body">
+                        <div class="pd-acc-content">
+                            <p>Score a brand-new classic for less! These authentic TOMS Classic Alpargatas are a rare find, coming to you <strong>brand new with tags (NWT)</strong>. Featuring a gorgeous pastel pink canvas upper, these slip-ons offer the ultimate blend of sustainable shopping and pristine, unworn quality.</p>
+                            <br>
+                            <p>They showcase the signature TOMS tucked-toe detailing and the recognizable blue logo patch on the heel, finished with a classic espadrille-style woven rope trim. Completely unworn, perfectly clean, and ready to become your new favourite casual staple.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Condition -->
+                <div class="pd-acc-item">
+                    <button class="pd-acc-header">
+                        <span>Condition Report</span>
+                        <i class="ph ph-plus pd-acc-icon"></i>
+                    </button>
+                    <div class="pd-acc-body">
+                        <div class="pd-acc-content">
+                            <ul>
+                                <li><strong>Condition:</strong> New With Tags (NWT) / Pristine</li>
+                                <li><strong>Details:</strong> Unworn with original retail tags still attached</li>
+                                <li><strong>Upper:</strong> Flawless pink canvas, zero marks or blemishes</li>
+                                <li><strong>Sole:</strong> Completely clean outsoles with zero street wear</li>
+                                <li><strong>Note:</strong> Images show the exact item you will receive</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Details -->
+                <div class="pd-acc-item">
+                    <button class="pd-acc-header">
+                        <span>Product Details</span>
+                        <i class="ph ph-plus pd-acc-icon"></i>
+                    </button>
+                    <div class="pd-acc-body">
+                        <div class="pd-acc-content">
+                            <div class="pd-detail-grid">
+                                <span class="pd-detail-key">Brand</span>
+                                <span class="pd-detail-val">TOMS</span>
+                                <span class="pd-detail-key">Style</span>
+                                <span class="pd-detail-val">Alpargata Slip-On</span>
+                                <span class="pd-detail-key">Color</span>
+                                <span class="pd-detail-val">Pastel Pink</span>
+                                <span class="pd-detail-key">Material</span>
+                                <span class="pd-detail-val">Canvas upper, rubber outsole, woven jute trim</span>
+                                <span class="pd-detail-key">Eco Benefit</span>
+                                <span class="pd-detail-val">Buying NWT secondhand keeps unworn retail items out of landfills</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping -->
+                <div class="pd-acc-item">
+                    <button class="pd-acc-header">
+                        <span>Shipping & Returns</span>
+                        <i class="ph ph-plus pd-acc-icon"></i>
+                    </button>
+                    <div class="pd-acc-body">
+                        <div class="pd-acc-content">
+                            <ul>
+                                <li>Free nationwide shipping on all orders</li>
+                                <li>Dispatched within 1–2 business days</li>
+                                <li>Cash on delivery available</li>
+                                <li>30-day hassle-free return policy</li>
+                                <li>Contact us via WhatsApp for fastest support</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end accordion -->
+
+        </div>
+    </main>
+
+    <!-- Suggested Shoes -->
+    <section class="pd-suggested">
+        <h2 class="pd-suggested-title">You May Also Like</h2>
+        <div class="pd-suggested-grid" id="suggestedGrid">
+            <!-- Populated dynamically from Sanity (see script below) -->
+        </div>
+    </section>
+
+
+    <!-- Notification -->
+    <div id="pd-notif"></div>
+
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/923412173887?text=Hi! I'm interested in your shoes collection." target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
+        <i class="ph-fill ph-whatsapp-logo"></i>
+    </a>
+
+    <script>
+        // ===== SANITY CONFIG =====
+        const SANITY_PROJECT_ID = 'kxnjofhp';
+        const SANITY_DATASET = 'production';
+        const SANITY_API_VERSION = '2024-01-01';
+
+        function sanityQueryUrl(query, params) {
+            const base = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
+            const qs = new URLSearchParams({ query });
+            for (const [k, v] of Object.entries(params || {})) qs.set(`$${k}`, JSON.stringify(v));
+            return `${base}?${qs.toString()}`;
+        }
+
+        // ===== CART =====
+        // Populated with URL fallback values immediately (so the page isn't blank
+        // while Sanity loads), then overwritten once the full product arrives.
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        const PRODUCT = {
+            name: urlParams.get('name') || 'TOMS Classic Alpargata – Pastel Pink',
+            price: parseInt(urlParams.get('price')) || 13500,
+            image: urlParams.get('image') || 'images/pink-toms-1.jpg'
+        };
+        let selectedSize = null;
+
+        // ===== INITIAL (FALLBACK) POPULATION FROM URL PARAMS =====
+        const pdName = urlParams.get('name');
+        const pdPrice = urlParams.get('price');
+        const pdImage = urlParams.get('image');
+        const pdTag = urlParams.get('tag');
+
+        if (pdName) {
+            document.getElementById('pageTitle').textContent = pdName + " | Fariha's Collection";
+            document.getElementById('breadcrumbName').textContent = pdName;
+            document.getElementById('pdTitleName').textContent = pdName;
+            
+            // For non-TOMS products loaded from URL params: hide TOMS-specific static content
+            // but keep the size selector visible (Sanity will populate it)
+            if (!pdName.toLowerCase().includes('toms classic alpargata')) {
+                // Hide the Pink TOMS static thumbnails
+                const thumbStrip = document.getElementById('thumbStrip');
+                if (thumbStrip) thumbStrip.style.display = 'none';
+
+                // Replace description with generic placeholder
+                const accItems = document.querySelectorAll('.pd-acc-item');
+                if (accItems.length > 0) {
+                    const descBody = accItems[0].querySelector('.pd-acc-content');
+                    if (descBody) descBody.innerHTML = `<p>Experience premium comfort and style with the <strong>${pdName}</strong>. Crafted with high-quality materials for everyday wear.</p>`;
+                }
+                // Hide TOMS-only accordion tabs (Condition & Details)
+                if (accItems.length > 1) accItems[1].style.display = 'none';
+                if (accItems.length > 2) accItems[2].style.display = 'none';
+
+                // Show size selector with a loading state — Sanity will fill it
+                const sizeContainer = document.getElementById('sizeSelector');
+                if (sizeContainer) {
+                    sizeContainer.parentElement.style.display = '';
+                    sizeContainer.innerHTML = '<p style="font-size:0.8rem;color:#aaa;padding:4px 0;">Loading sizes…</p>';
+                }
+
+                // Hide the NWT condition bar
+                const conditionBar = document.querySelector('.pd-condition-bar');
+                if (conditionBar) conditionBar.style.display = 'none';
+            }
+        }
+        if (pdPrice) {
+            document.getElementById('pdPriceVal').textContent = "Rs" + parseInt(pdPrice).toLocaleString();
+            document.getElementById('pdPriceOriginal').style.display = 'none';
+            document.getElementById('pdDiscountBadge').style.display = 'none';
+        }
+        if (pdImage) {
+            document.getElementById('mainImg').src = pdImage;
+            const badge = document.querySelector('.nwt-badge');
+            if (badge) badge.style.display = 'none';
+        }
+        if (pdTag) {
+            document.getElementById('pdBrand').textContent = pdTag;
+        }
+
+        // ===== FETCH FULL PRODUCT FROM SANITY (description, gallery, sizes) =====
+        async function loadProductFromSanity() {
+            if (!productId) return; // no id passed, fallback data above is all we have
+
+            const query = `*[_type == "shoe" && _id == $id][0]{
+                name,
+                price,
+                tag,
+                description,
+                "image": image.asset->url,
+                "gallery": gallery[].asset->url,
+                sizes
+            }`;
+
+            try {
+                const res = await fetch(sanityQueryUrl(query, { id: productId }));
+                if (!res.ok) throw new Error(`Sanity request failed: ${res.status}`);
+                const json = await res.json();
+                const product = json.result;
+                if (!product) return; // product not found, keep fallback data
+
+                applyProduct(product);
+            } catch (err) {
+                console.error('Failed to load product from Sanity:', err);
+                // Fallback URL-param data stays on screen; page remains usable.
+            }
+        }
+
+        function applyProduct(p) {
+            const name = p.name || PRODUCT.name;
+            const price = Number(p.price) || PRODUCT.price;
+            const mainImage = p.image || PRODUCT.image;
+            const gallery = Array.isArray(p.gallery) ? p.gallery : [];
+            const allImages = [mainImage, ...gallery].filter(Boolean);
+
+            PRODUCT.name = name;
+            PRODUCT.price = price;
+            PRODUCT.image = mainImage;
+
+            document.getElementById('pageTitle').textContent = name + " | Fariha's Collection";
+            document.getElementById('breadcrumbName').textContent = name;
+            document.getElementById('pdTitleName').textContent = name;
+            document.getElementById('pdPriceVal').textContent = "Rs" + price.toLocaleString();
+            document.getElementById('pdPriceOriginal').style.display = 'none';
+            document.getElementById('pdDiscountBadge').style.display = 'none';
+
+            if (p.tag) document.getElementById('pdBrand').textContent = p.tag;
+
+            const badge = document.querySelector('.nwt-badge');
+            if (badge) badge.style.display = 'none';
+
+            // ----- Gallery: main image + thumbnails -----
+            const mainImg = document.getElementById('mainImg');
+            mainImg.src = allImages[0] || '';
+            mainImg.alt = name;
+
+            const thumbStrip = document.getElementById('thumbStrip');
+            if (allImages.length > 1) {
+                thumbStrip.innerHTML = allImages.map((url, i) => `
+                    <div class="pd-thumb${i === 0 ? ' active' : ''}" data-img="${url}" data-alt="${name} view ${i + 1}">
+                        <img src="${url}" alt="${name} view ${i + 1}">
+                    </div>
+                `).join('');
+                thumbStrip.style.display = 'flex';
+                wireGalleryThumbs();
+            } else {
+                thumbStrip.style.display = 'none';
+            }
+
+            // ----- Description -----
+            if (p.description) {
+                const descBody = document.querySelector('.pd-acc-item .pd-acc-content');
+                if (descBody) descBody.innerHTML = `<p>${p.description.replace(/\n/g, '<br>')}</p>`;
+            }
+
+            // ----- Sizes -----
+            const sizeSelector = document.getElementById('sizeSelector');
+            const sizeBlock = sizeSelector ? sizeSelector.closest('div') : null;
+
+            if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                // Always make the size block visible
+                if (sizeBlock) sizeBlock.style.display = '';
+
+                sizeSelector.innerHTML = p.sizes.map((s) => {
+                    const outOfStock = s.inStock === false;
+                    return `<button
+                        class="pd-size-btn${outOfStock ? ' out-of-stock' : ''}"
+                        data-size="${s.size}"
+                        ${outOfStock ? 'disabled title="Out of Stock"' : ''}>
+                        ${s.size}
+                    </button>`;
+                }).join('');
+
+                // Auto-select first available size
+                const firstAvail = sizeSelector.querySelector('.pd-size-btn:not(.out-of-stock)');
+                if (firstAvail) {
+                    firstAvail.classList.add('selected');
+                    selectedSize = firstAvail.dataset.size;
+                } else {
+                    selectedSize = null;
+                }
+                wireSizeButtons();
+            } else {
+                // No sizes in Sanity — show all standard UK sizes as available
+                if (sizeBlock) sizeBlock.style.display = '';
+                const defaultSizes = ['36','37','38','39','40','41','42','43','44','45','46'];
+                sizeSelector.innerHTML = defaultSizes.map(s =>
+                    `<button class="pd-size-btn" data-size="UK ${s}">UK ${s}</button>`
+                ).join('');
+                const firstBtn = sizeSelector.querySelector('.pd-size-btn');
+                if (firstBtn) { firstBtn.classList.add('selected'); selectedSize = firstBtn.dataset.size; }
+                wireSizeButtons();
+            }
+        }
+
+        function getCart() { return JSON.parse(localStorage.getItem('fc_cart') || '[]'); }
+        function saveCart(c) { localStorage.setItem('fc_cart', JSON.stringify(c)); updateBadge(); }
+
+        function updateBadge() {
+            const count = getCart().reduce((s, i) => s + i.qty, 0);
+            const badge = document.getElementById('cartBadge');
+            badge.textContent = count;
+            badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+
+        function addToCart() {
+            const cart = getCart();
+            const key = PRODUCT.name + (selectedSize ? ' · ' + selectedSize : '');
+            const ex = cart.find(i => i.name === key);
+            if (ex) ex.qty++;
+            else cart.push({ name: key, price: PRODUCT.price, image: PRODUCT.image, qty: 1 });
+            saveCart(cart);
+            showNotif('✓ Added to cart' + (selectedSize ? ' — ' + selectedSize : ''));
+        }
+
+        function showNotif(msg) {
+            const n = document.getElementById('pd-notif');
+            n.textContent = msg;
+            n.classList.add('show');
+            clearTimeout(n._t);
+            n._t = setTimeout(() => n.classList.remove('show'), 2800);
+        }
+
+        // Size buttons (re-bindable since sizes render dynamically)
+        function wireSizeButtons() {
+            document.querySelectorAll('.pd-size-btn:not(.out-of-stock)').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.pd-size-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedSize = btn.dataset.size;
+                    // Save to localStorage so checkout can read it
+                    localStorage.setItem('fc_selected_size', selectedSize);
+                });
+            });
+            // Save initial selection too
+            if (selectedSize) localStorage.setItem('fc_selected_size', selectedSize);
+        }
+
+        // Add to cart
+        document.getElementById('pdAddToCart').addEventListener('click', addToCart);
+
+        // Cart icon → checkout
+        document.getElementById('cartBtn').addEventListener('click', () => window.location.href = 'checkout.html');
+
+        // Back button
+        document.getElementById('backBtn').addEventListener('click', () => {
+            if (document.referrer) window.history.back();
+            else window.location.href = 'shoes (1).html';
+        });
+
+        // ===== IMAGE GALLERY ===== (re-bindable since thumbs render dynamically)
+        function wireGalleryThumbs() {
+            document.querySelectorAll('.pd-thumb').forEach(thumb => {
+                thumb.addEventListener('click', () => {
+                    document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
+                    thumb.classList.add('active');
+                    const mainImg = document.getElementById('mainImg');
+                    mainImg.style.opacity = '0';
+                    mainImg.style.transform = 'scale(0.97)';
+                    setTimeout(() => {
+                        mainImg.src = thumb.dataset.img;
+                        mainImg.alt = thumb.dataset.alt;
+                        mainImg.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        mainImg.style.opacity = '1';
+                        mainImg.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+        }
+
+        // ===== ACCORDION =====
+        document.querySelectorAll('.pd-acc-header').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.parentElement;
+                const isOpen = item.classList.contains('open');
+                document.querySelectorAll('.pd-acc-item').forEach(i => i.classList.remove('open'));
+                if (!isOpen) item.classList.add('open');
+            });
+        });
+
+        // ===== SUGGESTED PRODUCTS ("You May Also Like") =====
+        async function loadSuggestedProducts() {
+            const grid = document.getElementById('suggestedGrid');
+            if (!grid) return;
+
+            // Pull up to 8 other shoes, excluding the current product, then show 4 at random
+            const query = `*[_type == "shoe" && _id != $id] | order(order asc) [0...8]{
+                _id, name, price, "image": image.asset->url
+            }`;
+
+            try {
+                const res = await fetch(sanityQueryUrl(query, { id: productId || '' }));
+                if (!res.ok) throw new Error(`Sanity request failed: ${res.status}`);
+                const json = await res.json();
+                let products = json.result || [];
+
+                if (products.length === 0) {
+                    grid.closest('.pd-suggested').style.display = 'none';
+                    return;
+                }
+
+                // Shuffle then take 4, so it feels fresh across visits
+                products = products.sort(() => Math.random() - 0.5).slice(0, 4);
+
+                grid.innerHTML = products.map(p => {
+                    const name = p.name || 'Untitled Product';
+                    const price = Number(p.price) || 0;
+                    const image = p.image || '';
+                    const params = new URLSearchParams({ id: p._id, name, price, image });
+                    return `
+                        <div class="sug-card" onclick="window.location='product-detail.html?${params.toString()}'">
+                            <div class="sug-img-wrap"><img src="${image}" alt="${name}" loading="lazy"></div>
+                            <div class="sug-info">
+                                <p class="sug-brand">Fariha's Collection</p>
+                                <h3 class="sug-name">${name}</h3>
+                                <p class="sug-price">Rs${price.toLocaleString()}</p>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Failed to load suggested products from Sanity:', err);
+                grid.closest('.pd-suggested').style.display = 'none';
+            }
+        }
+
+        // Initialize
+        updateBadge();
+        
+        // Execute main data fetching — always show page when done (success or fail)
+        loadProductFromSanity().finally(() => {
+            document.querySelector('.pd-main').style.opacity = '1';
+        });
+        loadSuggestedProducts();
+    </script>
+
+</body>
+</html>
