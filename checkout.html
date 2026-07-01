@@ -548,13 +548,20 @@
     function changeQty(i, d) { const c = getCart(); c[i].qty += d; if (c[i].qty <= 0) c.splice(i,1); saveCart(c); }
     function removeItem(i) { const c = getCart(); c.splice(i,1); saveCart(c); }
 
-    // ===== SIZE SELECTOR =====
-    document.querySelectorAll('.size-opt').forEach(opt => {
-        opt.addEventListener('click', () => {
-            document.querySelectorAll('.size-opt').forEach(o => o.classList.remove('selected'));
-            opt.classList.add('selected');
-        });
-    });
+    // ===== SIZE SELECTOR (FALLBACK) =====
+    // Not needed if size was saved in localStorage, but keeping for fallback select
+    let checkoutSize = localStorage.getItem('fc_selected_size');
+    const sizeDisplayVal = document.getElementById('sizeDisplayVal');
+    const sizeDisplayRow = document.getElementById('sizeDisplay');
+    const sizeFallback = document.getElementById('sizeFallback');
+
+    if (checkoutSize) {
+        sizeDisplayVal.textContent = checkoutSize;
+        sizeFallback.style.display = 'none';
+    } else {
+        sizeDisplayRow.style.display = 'none';
+        sizeFallback.style.display = 'block';
+    }
 
     // ===== PAYMENT METHOD HIGHLIGHT =====
     document.querySelectorAll('.payment-opt').forEach(opt => {
@@ -604,7 +611,10 @@
         const phone = document.getElementById('phone').value.trim();
         const addr  = document.getElementById('address').value.trim();
         const city  = document.getElementById('city').value;
-        const size  = document.querySelector('.size-opt.selected')?.dataset.size || '';
+        let size = checkoutSize;
+        if (!size && sizeFallback.style.display !== 'none') {
+            size = sizeFallback.value;
+        }
         const cart  = getCart();
 
         if (!cart.length) { alert('Your cart is empty!'); return null; }

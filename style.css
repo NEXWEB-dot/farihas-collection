@@ -1071,3 +1071,64 @@ button {
     0%, 100% { box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); }
     50% { box-shadow: 0 4px 30px rgba(37, 211, 102, 0.6); }
 }
+
+/* ================= MOBILE RESPONSIVENESS ================= */
+@media (max-width: 768px) {
+    /* Hide inline nav items as we have the drawer for mobile */
+    .header nav, .shoes-nav { 
+        display: none !important; 
+    }
+    
+    /* Hero section adjustments */
+    .hero { 
+        height: 60vh !important; 
+    }
+    .hero-title { 
+        font-size: 2.2rem !important; 
+        bottom: 15% !important; 
+        letter-spacing: 2px !important;
+    }
+    
+    /* Features bar stack */
+    .features-bar { 
+        flex-direction: column; 
+        align-items: flex-start; 
+        padding: 1.5rem !important;
+    }
+    
+    /* Product grid 1-column */
+    .product-grid { 
+        grid-template-columns: 1fr !important; 
+        gap: 2rem !important; 
+    }
+    #productGrid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Shoes page specific layout */
+    .shoes-header {
+        padding: 0.75rem 1rem 0 !important;
+    }
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    
+    /* Checkout layout adjustments */
+    .co-layout { 
+        grid-template-columns: 1fr !important; 
+    }
+    .form-grid { 
+        grid-template-columns: 1fr !important; 
+    }
+    
+    /* Testimonial stack */
+    .testimonial-content {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Category section */
+    .category-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
