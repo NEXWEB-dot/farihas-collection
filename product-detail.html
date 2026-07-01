@@ -92,9 +92,12 @@
 
         .pd-thumbs {
             display: flex; gap: 10px;
+            overflow-x: auto; padding-bottom: 5px;
+            scrollbar-width: none;
         }
+        .pd-thumbs::-webkit-scrollbar { display: none; }
         .pd-thumb {
-            width: 80px; height: 80px;
+            width: 80px; height: 80px; flex-shrink: 0;
             border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
@@ -349,7 +352,7 @@
             .pd-title { font-size: 1.4rem; }
             .pd-price { font-size: 1.5rem; }
             .pd-suggested { padding: 0 1rem 3rem; }
-            .pd-suggested-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .pd-suggested-grid { grid-template-columns: 1fr; gap: 12px; }
             .pd-header { padding: 0.8rem 1rem; }
         }
     </style>
@@ -902,6 +905,12 @@
                 grid.closest('.pd-suggested').style.display = 'none';
             }
         }
+        // ===== NAVIGATION =====
+        document.getElementById('backBtn').addEventListener('click', () => window.location.href = 'shoes (1).html');
+        document.getElementById('menuBtn').addEventListener('click', () => {
+            if (typeof openMenu === 'function') openMenu();
+        });
+        document.getElementById('cartBtn').addEventListener('click', () => window.location.href = 'checkout.html');
 
         // Initialize
         updateBadge();
@@ -912,6 +921,6 @@
         });
         loadSuggestedProducts();
     </script>
-
+    <script src="main.js"></script>
 </body>
 </html>

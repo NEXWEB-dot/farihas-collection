@@ -123,12 +123,13 @@
         }
         .receipt-close-btn {
             position: absolute; top: 14px; right: 14px; z-index: 10;
-            width: 34px; height: 34px; border-radius: 50%;
-            background: rgba(0,0,0,0.07); border: none; cursor: pointer;
+            width: 38px; height: 38px; border-radius: 50%;
+            background: #f1f1f1; border: 1px solid #ddd; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem; color: #555; transition: background 0.2s, color 0.2s;
+            font-size: 1.6rem; color: #333; line-height: 1;
+            transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        .receipt-close-btn:hover { background: #e53935; color: #fff; }
+        .receipt-close-btn:hover { background: #e53935; color: #fff; border-color: #e53935; }
         @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
 
         /* Receipt printable area */
@@ -419,7 +420,7 @@
     <div class="receipt-overlay" id="receiptOverlay">
         <div class="receipt-box">
             <button class="receipt-close-btn" onclick="document.getElementById('receiptOverlay').classList.remove('show')" title="Close">
-                <i class="ph ph-x"></i>
+                &times;
             </button>
             <div id="receiptCard">
                 <div class="receipt-header">
