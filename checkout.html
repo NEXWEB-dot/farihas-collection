@@ -327,14 +327,6 @@
                             <span id="sizeDisplayVal" style="font-size:1rem;font-weight:700;color:#111;">—</span>
                             <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">Selected on product page</span>
                         </div>
-                        <!-- Fallback: manual size select if no size was saved -->
-                        <select id="sizeFallback" style="display:none;margin-top:8px;">
-                            <option value="">Select a size</option>
-                            <option>UK 36</option><option>UK 37</option><option>UK 38</option>
-                            <option>UK 39</option><option>UK 40</option><option>UK 41</option>
-                            <option>UK 42</option><option>UK 43</option><option>UK 44</option>
-                            <option>UK 45</option><option>UK 46</option>
-                        </select>
                     </div>
                     <div class="form-group full">
                         <label>Order Notes (Optional)</label>
@@ -401,16 +393,12 @@
             </div>
 
             <div class="co-summary-panel">
-                <button class="co-checkout-btn" id="whatsappBtn">
+                <button class="co-checkout-btn" id="placeOrderBtn" style="background:#25D366; box-shadow:0 4px 20px rgba(37,211,102,0.35);">
                     <i class="ph-fill ph-whatsapp-logo" style="font-size:1.3rem;"></i>
-                    Order via WhatsApp
-                </button>
-                <button class="co-place-order-btn" id="placeOrderBtn">
-                    <i class="ph ph-check-circle" style="font-size:1.2rem;"></i>
                     Place Order
                 </button>
                 <div class="secure-badge">
-                    <i class="ph ph-lock-simple"></i> Secure & Encrypted Checkout
+                    <i class="ph ph-lock-simple"></i> Secure &amp; Encrypted Checkout
                 </div>
             </div>
         </div>
@@ -549,19 +537,16 @@
     function changeQty(i, d) { const c = getCart(); c[i].qty += d; if (c[i].qty <= 0) c.splice(i,1); saveCart(c); }
     function removeItem(i) { const c = getCart(); c.splice(i,1); saveCart(c); }
 
-    // ===== SIZE SELECTOR (FALLBACK) =====
-    // Not needed if size was saved in localStorage, but keeping for fallback select
+    // ===== SIZE DISPLAY =====
     let checkoutSize = localStorage.getItem('fc_selected_size');
     const sizeDisplayVal = document.getElementById('sizeDisplayVal');
-    const sizeDisplayRow = document.getElementById('sizeDisplay');
-    const sizeFallback = document.getElementById('sizeFallback');
 
     if (checkoutSize) {
         sizeDisplayVal.textContent = checkoutSize;
-        sizeFallback.style.display = 'none';
     } else {
-        sizeDisplayRow.style.display = 'none';
-        sizeFallback.style.display = 'block';
+        sizeDisplayVal.textContent = 'Not selected — go back and pick a size';
+        sizeDisplayVal.style.color = '#e53935';
+        sizeDisplayVal.style.fontSize = '0.82rem';
     }
 
     // ===== PAYMENT METHOD HIGHLIGHT =====
@@ -572,28 +557,38 @@
         });
     });
 
-    // ===== CITY → COD TOGGLE =====
+    // ===== CITY → PAYMENT OPTIONS TOGGLE =====
     const citySelect = document.getElementById('city');
-    const payCodOpt = document.getElementById('pay-cod');
-    const codNote = document.getElementById('codNote');
+    const payCodOpt  = document.getElementById('pay-cod');
+    const payWaOpt   = document.getElementById('pay-whatsapp');
+    const codNote    = document.getElementById('codNote');
 
-    citySelect.addEventListener('change', () => {
+    function updatePaymentOptions() {
         const city = citySelect.value;
-        if (city === 'Karachi') {
-            payCodOpt.style.display = '';
-            codNote.style.display = 'none';
-        } else {
-            payCodOpt.style.display = 'none';
-            codNote.style.display = city ? 'block' : 'none';
-            // If COD was selected, switch back to WhatsApp
-            const checked = document.querySelector('input[name="payment"]:checked');
-            if (checked && checked.value === 'cod') {
-                document.querySelector('#pay-whatsapp input').checked = true;
-                document.querySelectorAll('.payment-opt').forEach(o => o.classList.remove('selected'));
-                document.getElementById('pay-whatsapp').classList.add('selected');
-            }
+        const isKarachi = city === 'Karachi';
+        const noCitySelected = !city;
+
+        // COD: only Karachi
+        payCodOpt.style.display = isKarachi ? '' : 'none';
+
+        // WhatsApp pay-on-delivery: only Karachi
+        payWaOpt.style.display = isKarachi || noCitySelected ? '' : 'none';
+
+        // Info note for non-Karachi
+        codNote.style.display = (!isKarachi && !noCitySelected) ? 'block' : 'none';
+
+        // If a now-hidden option was selected, switch to Bank Transfer
+        const checked = document.querySelector('input[name="payment"]:checked');
+        if (checked && (checked.value === 'cod' || checked.value === 'whatsapp') && !isKarachi && !noCitySelected) {
+            document.querySelector('#pay-bank input').checked = true;
+            document.querySelectorAll('.payment-opt').forEach(o => o.classList.remove('selected'));
+            document.getElementById('pay-bank').classList.add('selected');
         }
-    });
+    }
+
+
+    citySelect.addEventListener('change', updatePaymentOptions);
+
 
     // ===== STEP INDICATOR =====
     function setStep(n) {
@@ -613,9 +608,6 @@
         const addr  = document.getElementById('address').value.trim();
         const city  = document.getElementById('city').value;
         let size = checkoutSize;
-        if (!size && sizeFallback.style.display !== 'none') {
-            size = sizeFallback.value;
-        }
         const cart  = getCart();
 
         if (!cart.length) { alert('Your cart is empty!'); return null; }
@@ -796,41 +788,7 @@
         }, 800);
     });
 
-    // ===== WHATSAPP ORDER BUTTON =====
-    document.getElementById('whatsappBtn').addEventListener('click', () => {
-        const info = validate();
-        if (!info) return;
-        setStep(2);
-
-        const cart = getCart();
-        let total = 0;
-        let msg = `🛍️ *New Order — Fariha's Collection*\n\n`;
-        msg += `👤 *Customer:* ${info.first} ${info.last}\n`;
-        msg += `📞 *Phone:* ${info.phone}\n`;
-        if (info.email) msg += `📧 *Email:* ${info.email}\n`;
-        msg += `📍 *Address:* ${info.addr}, ${info.city}${info.province ? ', '+info.province : ''}\n`;
-        msg += `👟 *Size:* ${info.size}\n\n`;
-        msg += `🛒 *Order Items:*\n`;
-        cart.forEach((item, i) => {
-            const lt = item.price * item.qty;
-            total += lt;
-            msg += `${i+1}. ${item.name} × ${item.qty} = Rs${lt.toLocaleString()}\n`;
-        });
-        msg += `\n💰 *Total: Rs${total.toLocaleString()}.00*\n🚚 *Shipping: FREE*\n`;
-        if (info.notes) msg += `📝 *Notes:* ${info.notes}\n`;
-        msg += `\nPlease confirm my order. Thank you! 🙏`;
-
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-
-        setTimeout(() => {
-            setStep(3);
-            document.getElementById('successMsg').textContent = `Your order via WhatsApp has been sent! We'll confirm your order for ${info.first} shortly.`;
-            document.getElementById('successOverlay').classList.add('show');
-            localStorage.removeItem('fc_cart');
-        }, 1500);
-    });
-
-    // ===== PLACE ORDER BUTTON =====
+    // ===== PLACE ORDER (always via WhatsApp) =====
     document.getElementById('placeOrderBtn').addEventListener('click', () => {
         const info = validate();
         if (!info) return;
@@ -839,23 +797,40 @@
         setStep(2);
 
         if (payMethod === 'bank' || payMethod === 'easypaisa') {
-            // Show receipt overlay instead of success
-            setTimeout(() => {
-                setStep(2);
-                showReceipt(info, payMethod);
-            }, 400);
+            // Show receipt first so customer sees payment instructions,
+            // then they use the 'Send via WhatsApp' button inside the receipt.
+            setTimeout(() => showReceipt(info, payMethod), 400);
         } else {
-            // COD or WhatsApp — show success
+            // WhatsApp / COD — build message and open WhatsApp directly
+            const cart = getCart();
+            let total = 0;
+            let msg = `🛍️ *New Order — Fariha's Collection*\n\n`;
+            msg += `👤 *Customer:* ${info.first} ${info.last}\n`;
+            msg += `📞 *Phone:* ${info.phone}\n`;
+            if (info.email) msg += `📧 *Email:* ${info.email}\n`;
+            msg += `📍 *Address:* ${info.addr}, ${info.city}${info.province ? ', ' + info.province : ''}\n`;
+            msg += `👟 *Size:* ${info.size}\n\n`;
+            msg += `🛒 *Order Items:*\n`;
+            cart.forEach((item, i) => {
+                const lt = item.price * item.qty;
+                total += lt;
+                msg += `${i + 1}. ${item.name} × ${item.qty} = Rs${lt.toLocaleString()}\n`;
+            });
+            msg += `\n💰 *Total: Rs${total.toLocaleString()}.00*\n🚚 *Shipping: FREE*\n`;
+            msg += `💳 *Payment:* ${payMethod === 'cod' ? 'Cash on Delivery' : 'WhatsApp Order'}\n`;
+            if (info.notes) msg += `📝 *Notes:* ${info.notes}\n`;
+            msg += `\nPlease confirm my order. Thank you! 🙏`;
+
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+
             setTimeout(() => {
                 setStep(3);
-                const cart = getCart();
-                let total = 0; cart.forEach(i => total += i.price * i.qty);
                 const methodLabel = payMethod === 'cod' ? 'Cash on Delivery' : 'WhatsApp Order';
                 document.getElementById('successMsg').textContent =
-                    `Order confirmed for ${info.first} ${info.last}! Payment: ${methodLabel}. Total: Rs${total.toLocaleString()}.00. We'll contact you at ${info.phone}.`;
+                    `Order sent for ${info.first} ${info.last}! Payment: ${methodLabel}. Total: Rs${total.toLocaleString()}.00. We'll confirm via WhatsApp at ${info.phone}.`;
                 document.getElementById('successOverlay').classList.add('show');
                 localStorage.removeItem('fc_cart');
-            }, 800);
+            }, 1500);
         }
     });
 
