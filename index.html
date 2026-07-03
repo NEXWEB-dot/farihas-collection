@@ -5,30 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fariha's Collection</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts for Typography -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Literata Font -->
+    <link href="literata/css/literata.css" rel="stylesheet">
     <!-- Icons (Phosphor Icons or FontAwesome) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
-
+    <!-- Top Pinned Banner -->
+    <div style="background-color:#111; color:#fff; text-align:center; padding:10px 15px; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300;">
+        <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel. Claims for damage or exchange will only be accepted with an unboxing video.
+    </div>
     <!-- Header with integrated nav -->
     <header class="header scrolled" style="flex-direction:column;padding:0.75rem 2rem 0;gap:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;width:100%;padding-bottom:0.65rem;">
-            <div class="header-left">
+            <div class="header-left" style="flex:1; display:flex; gap:12px;">
                 <button class="icon-btn" id="menuToggle"><i class="ph ph-list"></i></button>
                 <button class="icon-btn" id="searchToggle"><i class="ph ph-magnifying-glass"></i></button>
             </div>
-            <div class="header-center">
-                <a href="index.html" style="text-decoration:none;color:inherit;"><h1 class="logo">FARIHA'S COLLECTION</h1></a>
+            <div class="header-center" style="flex:2; text-align:center;">
+                <a href="index.html" style="text-decoration:none;color:inherit;">
+                    <h1 class="logo" style="font-family:'Literata', serif; font-weight:800; font-size:1.35rem; line-height:1.1; margin:0; letter-spacing:1px;">FARIHA'S<br>COLLECTION</h1>
+                </a>
             </div>
-            <div class="header-right">
+            <div class="header-right" style="flex:1; display:flex; justify-content:flex-end;">
                 <button class="icon-btn" id="cartToggle" style="position:relative;"><i class="ph ph-shopping-bag"></i><span class="cart-badge">0</span></button>
             </div>
         </div>
-        <nav style="display:flex;gap:2.5rem;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
+        <nav style="font-family:'Literata', serif; display:flex;gap:2.5rem;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
             <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#111;text-decoration:none;padding:2px 0;border-bottom:2px solid #111;">Home</a>
             <a href="shoes (1).html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">All Shoes</a>
+            <a href="shipping-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Shipping Policy</a>
             <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
         </nav>
     </header>
@@ -44,8 +51,8 @@
 
     <!-- Features Bar -->
     <div class="features-bar">
-        <div class="feature-item"><i class="ph ph-check"></i> Free worldwide shipping</div>
-        <div class="feature-item"><i class="ph ph-check"></i> 30 days return</div>
+        <div class="feature-item"><i class="ph ph-check"></i> Shipping Across Pakistan</div>
+        <div class="feature-item"><i class="ph ph-check"></i> Trusted by Customers</div>
         <div class="feature-item"><i class="ph ph-check"></i> Secure payment</div>
         <div class="feature-item"><i class="ph ph-check"></i> 100% authentic</div>
     </div>
@@ -55,14 +62,14 @@
         <h3 class="section-title">Shop By Category</h3>
         <div class="category-grid">
             <a href="shoes (1).html" class="category-card reveal-up delay-1">
-                <img src="images/IMG_5818.jpg" alt="Men's Collection">
+                <img src="images/mens_slippers_sand.jpg" alt="Men's Collection" style="object-fit:cover;object-position:center;">
                 <div class="category-info">
                     <h4>Men's Collection</h4>
                     <p>High Quality Shoes</p>
                 </div>
             </a>
             <a href="shoes (1).html" class="category-card reveal-up delay-2">
-                <img src="images/image (12).jpg" alt="Women's Collection">
+                <img src="images/womens_heels_bazar.jpg" alt="Women's Collection" style="object-fit:cover;object-position:center top;">
                 <div class="category-info">
                     <h4>Women's Collection</h4>
                     <p>Trendy &amp; Elegant</p>
@@ -76,7 +83,7 @@
         <div class="testimonial-content">
             <div class="testimonial-text reveal-up">
                 <h3>Our Satisfied Customers</h3>
-                <p>At Fariha's Collection, we prioritize quality, comfort, and style in every piece we offer. Our customers love the premium feel and perfect fit. With worldwide shipping and dedicated support, we're proud to serve footwear enthusiasts globally. Join our community and step into style with confidence.</p>
+                <p>At Fariha's Collection, we carefully handpick authentic preloved shoes that combine quality, comfort, and style. Every pair is thoroughly inspected to ensure you receive the best value at an affordable price. We proudly ship across Pakistan and are committed to providing a smooth shopping experience with dedicated customer support. Find your next favorite pair and step out with confidence.</p>
             </div>
             <div class="testimonial-images reveal-scale delay-2">
                 <!-- Stacking effect -->
@@ -179,15 +186,15 @@
         <div class="footer-top">
             <div class="footer-col">
                 <h2 class="footer-logo">FARIHA'S COLLECTION</h2>
-                <p>123 Premium Boulevard,<br>Fashion District, NY 10001</p>
-                <p>Phone: +1 (800) 123-4567</p>
-                <p>Email: hello@farihascollection.com</p>
+                <p>Pakistan</p>
+                <p>Phone: +92 3090625199</p>
+                <p>Email: fariha6484preloved@gmail.com</p>
             </div>
             <div class="footer-col reveal-fade delay-3">
                 <h4>Information</h4>
                 <ul>
                     <li><a href="#">About Us</a></li>
-                    <li><a href="#">Delivery Information</a></li>
+                    <li><a href="shipping-policy.html">Shipping Policy &amp; Delivery Info</a></li>
                     <li><a href="#">Privacy Policy</a></li>
                     <li><a href="#">Terms & Conditions</a></li>
                 </ul>

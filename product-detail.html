@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="literata/css/literata.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
     <style>
@@ -30,10 +31,13 @@
             border-bottom: 1px solid #f0f0f0;
             box-shadow: 0 2px 16px rgba(0,0,0,0.04);
         }
-        .pd-header-left, .pd-header-right { display: flex; align-items: center; gap: 1rem; }
+        .pd-header-left, .pd-header-right { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .pd-header-right { justify-content: flex-end; }
+        .pd-header-center { flex: 2; text-align: center; }
         .pd-header-center a {
-            font-size: 1.3rem; font-weight: 800; letter-spacing: 3px;
-            text-decoration: none; color: #000;
+            font-family: 'Literata', serif;
+            font-size: 1.35rem; font-weight: 800; letter-spacing: 1px; line-height: 1.1;
+            text-decoration: none; color: #000; display: inline-block; margin: 0;
         }
         .pd-icon-btn { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: #333; transition: color 0.2s; }
         .pd-icon-btn:hover { color: #000; }
@@ -92,12 +96,9 @@
 
         .pd-thumbs {
             display: flex; gap: 10px;
-            overflow-x: auto; padding-bottom: 5px;
-            scrollbar-width: none;
         }
-        .pd-thumbs::-webkit-scrollbar { display: none; }
         .pd-thumb {
-            width: 80px; height: 80px; flex-shrink: 0;
+            width: 80px; height: 80px;
             border-radius: 12px;
             overflow: hidden;
             cursor: pointer;
@@ -182,21 +183,14 @@
             border-color: #111; background: #111; color: #fff;
         }
         .pd-size-btn.out-of-stock {
-            color: #bbb;
-            border-color: #eee;
-            cursor: not-allowed;
-            background: #fafafa;
-            overflow: hidden;
+            color: #ccc; border-color: #eee; cursor: not-allowed;
         }
         .pd-size-btn.out-of-stock::after {
-            content: '';
-            position: absolute;
-            top: 50%; left: 0;
-            width: 100%; height: 1.5px;
-            background: #ccc;
-            transform: translateY(-50%) rotate(-20deg);
+            content: ''; position: absolute;
+            top: 50%; left: 50%; width: 80%; height: 1px;
+            background: #ddd;
+            transform: translate(-50%, -50%) rotate(-45deg);
         }
-        .pd-size-btn.out-of-stock::before { display: none; }
 
         /* Action buttons */
         .pd-actions { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
@@ -352,7 +346,7 @@
             .pd-title { font-size: 1.4rem; }
             .pd-price { font-size: 1.5rem; }
             .pd-suggested { padding: 0 1rem 3rem; }
-            .pd-suggested-grid { grid-template-columns: 1fr; gap: 12px; }
+            .pd-suggested-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .pd-header { padding: 0.8rem 1rem; }
         }
     </style>
@@ -387,7 +381,7 @@
     </nav>
 
     <!-- Product Main -->
-    <main class="pd-main" style="opacity: 0; transition: opacity 0.3s ease;">
+    <main class="pd-main">
 
         <!-- Left: Image Gallery -->
         <div class="pd-gallery">
@@ -425,6 +419,12 @@
                 <span class="pd-price" id="pdPriceVal">Rs13,500.00</span>
                 <span class="pd-price-original" id="pdPriceOriginal">Rs18,000.00</span>
                 <span class="pd-price-badge" id="pdDiscountBadge">25% OFF</span>
+            </div>
+
+            <!-- Stock Count -->
+            <div id="pdStockRow" style="margin:8px 0 4px; font-size:0.85rem; font-weight:600; display:none;">
+                <span id="pdStockIcon" style="margin-right:6px;">🟢</span>
+                <span id="pdStockText">In Stock</span>
             </div>
 
             <!-- Condition Badge -->
@@ -616,35 +616,6 @@
             document.getElementById('pageTitle').textContent = pdName + " | Fariha's Collection";
             document.getElementById('breadcrumbName').textContent = pdName;
             document.getElementById('pdTitleName').textContent = pdName;
-            
-            // For non-TOMS products loaded from URL params: hide TOMS-specific static content
-            // but keep the size selector visible (Sanity will populate it)
-            if (!pdName.toLowerCase().includes('toms classic alpargata')) {
-                // Hide the Pink TOMS static thumbnails
-                const thumbStrip = document.getElementById('thumbStrip');
-                if (thumbStrip) thumbStrip.style.display = 'none';
-
-                // Replace description with generic placeholder
-                const accItems = document.querySelectorAll('.pd-acc-item');
-                if (accItems.length > 0) {
-                    const descBody = accItems[0].querySelector('.pd-acc-content');
-                    if (descBody) descBody.innerHTML = `<p>Experience premium comfort and style with the <strong>${pdName}</strong>. Crafted with high-quality materials for everyday wear.</p>`;
-                }
-                // Hide TOMS-only accordion tabs (Condition & Details)
-                if (accItems.length > 1) accItems[1].style.display = 'none';
-                if (accItems.length > 2) accItems[2].style.display = 'none';
-
-                // Show size selector with a loading state — Sanity will fill it
-                const sizeContainer = document.getElementById('sizeSelector');
-                if (sizeContainer) {
-                    sizeContainer.parentElement.style.display = '';
-                    sizeContainer.innerHTML = '<p style="font-size:0.8rem;color:#aaa;padding:4px 0;">Loading sizes…</p>';
-                }
-
-                // Hide the NWT condition bar
-                const conditionBar = document.querySelector('.pd-condition-bar');
-                if (conditionBar) conditionBar.style.display = 'none';
-            }
         }
         if (pdPrice) {
             document.getElementById('pdPriceVal').textContent = "Rs" + parseInt(pdPrice).toLocaleString();
@@ -736,42 +707,83 @@
             }
 
             // ----- Sizes -----
+            // ----- Sizes + Stock -----
             const sizeSelector = document.getElementById('sizeSelector');
-            const sizeBlock = sizeSelector ? sizeSelector.closest('div') : null;
-
+            let totalStock = 0;
             if (Array.isArray(p.sizes) && p.sizes.length > 0) {
-                // Always make the size block visible
-                if (sizeBlock) sizeBlock.style.display = '';
-
-                sizeSelector.innerHTML = p.sizes.map((s) => {
-                    const outOfStock = s.inStock === false;
-                    return `<button
-                        class="pd-size-btn${outOfStock ? ' out-of-stock' : ''}"
-                        data-size="${s.size}"
-                        ${outOfStock ? 'disabled title="Out of Stock"' : ''}>
-                        ${s.size}
-                    </button>`;
+                totalStock = p.sizes.reduce((sum, s) => sum + (Number(s.stock) || 0), 0);
+                sizeSelector.innerHTML = p.sizes.map((s, i) => {
+                    const outOfStock = !s.stock || s.stock <= 0;
+                    const isFirstAvailable = !outOfStock && !sizeSelector.dataset.firstSet;
+                    if (isFirstAvailable) sizeSelector.dataset.firstSet = 'true';
+                    return `<button class="pd-size-btn${outOfStock ? ' out-of-stock' : ''}${isFirstAvailable ? ' selected' : ''}"
+                                data-size="${s.size}" ${outOfStock ? 'disabled' : ''}>${s.size}</button>`;
                 }).join('');
-
-                // Auto-select first available size
-                const firstAvail = sizeSelector.querySelector('.pd-size-btn:not(.out-of-stock)');
-                if (firstAvail) {
-                    firstAvail.classList.add('selected');
-                    selectedSize = firstAvail.dataset.size;
-                } else {
-                    selectedSize = null;
-                }
+                delete sizeSelector.dataset.firstSet;
+                const firstSelected = sizeSelector.querySelector('.selected');
+                selectedSize = firstSelected ? firstSelected.dataset.size : null;
                 wireSizeButtons();
             } else {
-                // No sizes in Sanity — show all standard UK sizes as available
-                if (sizeBlock) sizeBlock.style.display = '';
-                const defaultSizes = ['36','37','38','39','40','41','42','43','44','45','46'];
-                sizeSelector.innerHTML = defaultSizes.map(s =>
-                    `<button class="pd-size-btn" data-size="UK ${s}">UK ${s}</button>`
-                ).join('');
-                const firstBtn = sizeSelector.querySelector('.pd-size-btn');
-                if (firstBtn) { firstBtn.classList.add('selected'); selectedSize = firstBtn.dataset.size; }
-                wireSizeButtons();
+                // No sizes configured for this product — hide the selector entirely
+                const sizeBlock = sizeSelector.closest('div');
+                if (sizeBlock) sizeBlock.style.display = 'none';
+                selectedSize = null;
+            }
+
+            // ----- Stock Count Display -----
+            updateStockDisplay(totalStock, Array.isArray(p.sizes) && p.sizes.length > 0);
+        }
+
+        function updateStockDisplay(totalStock, hasSizes) {
+            const stockRow = document.getElementById('pdStockRow');
+            const stockIcon = document.getElementById('pdStockIcon');
+            const stockText = document.getElementById('pdStockText');
+            const atcBtn = document.getElementById('pdAddToCart');
+
+            if (!stockRow) return;
+
+            if (!hasSizes) {
+                // No stock info available, hide the row
+                stockRow.style.display = 'none';
+                return;
+            }
+
+            stockRow.style.display = 'block';
+
+            if (totalStock <= 0) {
+                stockIcon.textContent = '🔴';
+                stockText.textContent = 'Out of Stock';
+                stockText.style.color = '#e53935';
+                // Disable ATC button
+                if (atcBtn) {
+                    atcBtn.disabled = true;
+                    atcBtn.innerHTML = '<i class="ph ph-x-circle"></i> Out of Stock';
+                    atcBtn.style.background = '#ccc';
+                    atcBtn.style.cursor = 'not-allowed';
+                    atcBtn.style.color = '#666';
+                }
+            } else if (totalStock <= 3) {
+                stockIcon.textContent = '🟡';
+                stockText.textContent = `Only ${totalStock} left in stock — order soon!`;
+                stockText.style.color = '#f57c00';
+                if (atcBtn) {
+                    atcBtn.disabled = false;
+                    atcBtn.innerHTML = '<i class="ph ph-shopping-bag"></i> Add to Cart';
+                    atcBtn.style.background = '';
+                    atcBtn.style.cursor = '';
+                    atcBtn.style.color = '';
+                }
+            } else {
+                stockIcon.textContent = '🟢';
+                stockText.textContent = `${totalStock} in stock`;
+                stockText.style.color = '#2e7d32';
+                if (atcBtn) {
+                    atcBtn.disabled = false;
+                    atcBtn.innerHTML = '<i class="ph ph-shopping-bag"></i> Add to Cart';
+                    atcBtn.style.background = '';
+                    atcBtn.style.cursor = '';
+                    atcBtn.style.color = '';
+                }
             }
         }
 
@@ -810,12 +822,8 @@
                     document.querySelectorAll('.pd-size-btn').forEach(b => b.classList.remove('selected'));
                     btn.classList.add('selected');
                     selectedSize = btn.dataset.size;
-                    // Save to localStorage so checkout can read it
-                    localStorage.setItem('fc_selected_size', selectedSize);
                 });
             });
-            // Save initial selection too
-            if (selectedSize) localStorage.setItem('fc_selected_size', selectedSize);
         }
 
         // Add to cart
@@ -905,22 +913,11 @@
                 grid.closest('.pd-suggested').style.display = 'none';
             }
         }
-        // ===== NAVIGATION =====
-        document.getElementById('backBtn').addEventListener('click', () => window.location.href = 'shoes (1).html');
-        document.getElementById('menuBtn').addEventListener('click', () => {
-            if (typeof openMenu === 'function') openMenu();
-        });
-        document.getElementById('cartBtn').addEventListener('click', () => window.location.href = 'checkout.html');
 
-        // Initialize
         updateBadge();
-        
-        // Execute main data fetching — always show page when done (success or fail)
-        loadProductFromSanity().finally(() => {
-            document.querySelector('.pd-main').style.opacity = '1';
-        });
+        loadProductFromSanity();
         loadSuggestedProducts();
     </script>
-    <script src="main.js"></script>
+
 </body>
 </html>

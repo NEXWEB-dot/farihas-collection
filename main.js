@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="cart-item-info">
                         <h4>${item.name}</h4>
-                        <p class="cart-item-price">$${item.price.toFixed(2)}</p>
+                        <p class="cart-item-price">Rs${item.price.toLocaleString()}</p>
                         <div class="cart-qty-controls">
                             <button onclick="window.fcChangeQty(${i}, -1)">−</button>
                             <span>${item.qty}</span>
@@ -142,31 +142,29 @@ document.addEventListener('DOMContentLoaded', () => {
         footerContainer.innerHTML = `
             <div class="cart-total">
                 <span>Total</span>
-                <span>$${total.toFixed(2)}</span>
+                <span>Rs${total.toLocaleString('en-PK', {minimumFractionDigits: 0})}</span>
             </div>
-            <button class="cart-checkout-btn" id="whatsappCheckout">
-                <i class="ph ph-whatsapp-logo"></i> Checkout via WhatsApp
+            <button class="cart-checkout-btn" id="proceedToCheckout" onclick="window.location.href='checkout.html'" style="background:#111;color:#fff;border:none;width:100%;padding:14px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:12px;letter-spacing:0.5px;">
+                <i class="ph ph-shopping-bag"></i> Proceed to Checkout
             </button>
         `;
-        
-        document.getElementById('whatsappCheckout').addEventListener('click', checkoutWhatsApp);
     }
 
     // ===== WHATSAPP CHECKOUT =====
     function checkoutWhatsApp() {
         if (cart.length === 0) return;
         
-        const phone = '1800123456'; // Replace with actual WhatsApp number
+        const phone = '923090625199';
         let message = '🛒 *New Order from Fariha\'s Collection*\n\n';
         let total = 0;
         
         cart.forEach((item, i) => {
             const itemTotal = item.price * item.qty;
             total += itemTotal;
-            message += `${i + 1}. *${item.name}*\n   Qty: ${item.qty} × $${item.price.toFixed(2)} = $${itemTotal.toFixed(2)}\n\n`;
+            message += `${i + 1}. *${item.name}*\n   Qty: ${item.qty} × Rs${item.price.toLocaleString()} = Rs${itemTotal.toLocaleString()}\n\n`;
         });
         
-        message += `---\n💰 *Total: $${total.toFixed(2)}*\n\nPlease confirm my order. Thank you!`;
+        message += `---\n💰 *Total: Rs${total.toLocaleString()}*\n\nPlease confirm my order. Thank you!`;
         
         const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
@@ -210,14 +208,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'hidden';
         setTimeout(() => document.getElementById('searchInput').focus(), 200);
     }
-
     function closeSearch() {
         const overlay = document.getElementById('searchOverlay');
         if (overlay) overlay.classList.remove('active');
         document.body.style.overflow = '';
     }
 
-    function performSearch() {
+    async function performSearch() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
         const resultsContainer = document.getElementById('searchResults');
         
@@ -226,39 +223,52 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Search through product cards on the page
-        const allCards = document.querySelectorAll('.product-card');
-        const matches = [];
-        
-        allCards.forEach(card => {
-            const name = card.querySelector('h4')?.textContent || '';
-            const brand = card.querySelector('.brand')?.textContent || '';
-            if (name.toLowerCase().includes(query) || brand.toLowerCase().includes(query)) {
-                const img = card.querySelector('img')?.src || '';
-                const price = card.querySelector('.price')?.textContent || '';
-                matches.push({ name, brand, img, price });
+        resultsContainer.innerHTML = '<p class="search-hint">Searching...</p>';
+
+        try {
+            const SANITY_PROJECT_ID = 'kxnjofhp';
+            const SANITY_DATASET = 'production';
+            const SANITY_API_VERSION = '2024-01-01';
+            
+            // Search Sanity where name or tag matches the query (case insensitive)
+            const sanityQuery = `*[_type == "shoe" && name match "*${query}*"]{
+                _id, name, price, tag, "image": image.asset->url
+            }`;
+            const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(sanityQuery)}`;
+            
+            const res = await fetch(url);
+            const json = await res.json();
+            const matches = json.result || [];
+
+            if (matches.length === 0) {
+                resultsContainer.innerHTML = `<p class="search-hint">No products found for "${query}"</p>`;
+                return;
             }
-        });
 
-        if (matches.length === 0) {
-            resultsContainer.innerHTML = `<p class="search-hint">No products found for "${query}"</p>`;
-            return;
+            let html = '';
+            matches.forEach(m => {
+                const name = m.name || 'Untitled';
+                const price = Number(m.price) || 0;
+                const image = m.image || '';
+                const brand = m.tag || 'Fariha\'s Collection';
+                const params = new URLSearchParams({ id: m._id, name, price, image });
+                
+                html += `
+                    <a href="product-detail.html?${params.toString()}" class="search-result-item" style="text-decoration:none; color:inherit;">
+                        <img src="${image}" alt="${name.replace(/"/g, '&quot;')}">
+                        <div class="sr-info" style="display:flex; flex-direction:column;">
+                            <span class="search-result-brand">${brand}</span>
+                            <span class="search-result-name">${name}</span>
+                            <span class="search-result-price">Rs${price.toLocaleString()}</span>
+                        </div>
+                    </a>
+                `;
+            });
+            resultsContainer.innerHTML = html;
+        } catch (err) {
+            console.error('Search error:', err);
+            resultsContainer.innerHTML = '<p class="search-hint">Error searching products.</p>';
         }
-
-        let html = '';
-        matches.forEach(m => {
-            html += `
-                <div class="search-result-item" onclick="document.getElementById('searchOverlay').classList.remove('active'); document.body.style.overflow='';">
-                    <img src="${m.img}" alt="${m.name}">
-                    <div>
-                        <p class="search-result-brand">${m.brand}</p>
-                        <p class="search-result-name">${m.name}</p>
-                        <p class="search-result-price">${m.price}</p>
-                    </div>
-                </div>
-            `;
-        });
-        resultsContainer.innerHTML = html;
     }
 
     // ===== MOBILE MENU DRAWER =====
@@ -439,7 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== WHATSAPP FLOATING BUTTON =====
     const whatsappFloat = document.createElement('a');
-    whatsappFloat.href = 'https://wa.me/1800123456?text=Hi! I\'m interested in Fariha\'s Collection products.';
+    whatsappFloat.href = 'https://wa.me/923090625199?text=Hi! I\'m interested in Fariha\'s Collection products.';
     whatsappFloat.target = '_blank';
     whatsappFloat.className = 'whatsapp-float';
     whatsappFloat.innerHTML = '<i class="ph-fill ph-whatsapp-logo"></i>';

@@ -8,6 +8,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Cabinet Grotesk Font -->
+    <link href="cabinet/css/cabinet-grotesk.css" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Outfit', sans-serif; background: #f7f7f7; color: #111; min-height: 100vh; }
@@ -24,7 +26,7 @@
             justify-content: space-between;
             position: sticky; top: 0; z-index: 100;
         }
-        .co-logo { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; }
+        .co-logo { font-family: 'Cabinet Grotesk', sans-serif; font-size: 1.25rem; font-weight: 800; letter-spacing: 1px; line-height: 1.1; margin: 0; text-align: center; }
         .co-header-back { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: #555; cursor: pointer; transition: color 0.2s; background: none; border: none; font-family: 'Outfit', sans-serif; }
         .co-header-back:hover { color: #000; }
 
@@ -233,7 +235,7 @@
         <button class="co-header-back" onclick="window.location.href='shoes (1).html'">
             <i class="ph ph-arrow-left"></i> Back to Shop
         </button>
-        <div class="co-logo">FARIHA'S COLLECTION</div>
+        <div class="co-logo">FARIHA'S<br>COLLECTION</div>
         <div style="width:120px;"></div>
     </header>
 
@@ -487,7 +489,7 @@
     </div>
 
     <script>
-    const WHATSAPP_NUMBER = '923002757988';
+    const WHATSAPP_NUMBER = '923090625199';
 
     function getCart() { return JSON.parse(localStorage.getItem('fc_cart') || '[]'); }
     function saveCart(c) { localStorage.setItem('fc_cart', JSON.stringify(c)); renderCart(); }
