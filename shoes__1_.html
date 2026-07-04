@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FARIHA'S COLLECTION - Shoes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Literata Font -->
+    <link href="literata/css/literata.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+
+        /* Product card */
+        .shoe-card { position: relative; cursor: pointer; transition: transform 0.3s ease; }
+        .shoe-card:hover { transform: translateY(-8px); }
+        .shoe-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center center;
+            display: block;
+            transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+        }
+        .shoe-card .atc-btn {
+            position: absolute;
+            bottom: 12px; right: 12px;
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            background: #000; color: #fff;
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 5;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+        }
+        .shoe-card:hover .atc-btn { opacity: 1; transform: translateY(0); }
+        .shoe-card .atc-btn:hover { background: #333; }
+        .add-to-cart-full {
+            width: 100%; margin-top: 10px; padding: 10px;
+            background: #000; color: #fff;
+            border: none; cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem; font-weight: 600;
+            letter-spacing: 1px; text-transform: uppercase;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s;
+        }
+        .shoe-card:hover .add-to-cart-full { opacity: 1; transform: translateY(0); }
+        .add-to-cart-full:hover { background: #333; }
+
+        /* Glassy header */
+        .shoes-header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(0,0,0,0.07);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            flex-direction: column; padding: 0.75rem 2rem 0; gap: 0;
+            display: flex;
+        }
+        .shoes-header-top { display:flex; justify-content:space-between; align-items:center; width:100%; padding-bottom:0.65rem; }
+        .shoes-header-left, .shoes-header-right { display:flex; align-items:center; gap:0.5rem; }
+        .shoes-header-center { flex:1; text-align:center; }
+        .shoes-logo { font-family:'Outfit',sans-serif; font-size:1.3rem; font-weight:700; letter-spacing:3px; color:#111; text-decoration:none; }
+        .sh-icon-btn { background:none; border:none; cursor:pointer; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:50%; font-size:1.2rem; color:#444; transition:background 0.2s, color 0.2s; position:relative; }
+        .sh-icon-btn:hover { background:rgba(0,0,0,0.06); color:#000; }
+        .sh-cart-badge { position:absolute; top:-4px; right:-4px; background:#e53935; color:#fff; font-size:0.6rem; font-weight:700; width:17px; height:17px; border-radius:50%; display:none; align-items:center; justify-content:center; }
+        .shoes-nav { display:flex; gap:2.5rem; border-top:1px solid rgba(0,0,0,0.07); padding:0.5rem 0; width:100%; justify-content:center; font-family:'Literata', serif; }
+        .shoes-nav a { font-size:0.75rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; text-decoration:none; padding:2px 0; border-bottom:2px solid transparent; transition:color 0.2s, border-color 0.2s; color:#888; }
+        .shoes-nav a.active, .shoes-nav a:hover { color:#111; border-bottom-color:#111; }
+
+        /* Filter bar */
+        .filter-bar { background:#f9f9f9 !important; border-bottom:1px solid rgba(0,0,0,0.07); padding:0.6rem 1.5rem; display:flex !important; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; visibility:visible !important; opacity:1 !important; }
+        .filter-pills { display:flex !important; gap:0.5rem; flex-wrap:wrap; visibility:visible !important; }
+        .filter-pill {
+            display:inline-block !important; visibility:visible !important;
+            padding:5px 14px; border-radius:99px; border:1.5px solid #ddd;
+            font-size:0.72rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;
+            cursor:pointer; background:#fff; color:#666; transition:all 0.2s;
+        }
+        .filter-pill:hover { border-color:#111; color:#111; }
+        .filter-pill.active { background:#111; color:#fff; border-color:#111; }
+        .sort-select {
+            padding:6px 12px; border-radius:8px; border:1.5px solid #ddd;
+            font-family:'Outfit',sans-serif; font-size:0.78rem; font-weight:600;
+            background:#fff; color:#444; cursor:pointer; outline:none;
+            transition:border-color 0.2s;
+        }
+        .sort-select:focus { border-color:#111; }
+
+        /* See Our Reviews button */
+        .see-reviews-btn {
+            display:inline-flex; align-items:center; gap:6px;
+            padding:6px 16px; border-radius:99px; border:1.5px solid #111;
+            background:#111; color:#fff;
+            font-family:'Outfit',sans-serif; font-size:0.72rem; font-weight:700;
+            letter-spacing:0.05em; text-transform:uppercase; cursor:pointer;
+            transition:all 0.2s;
+        }
+        .see-reviews-btn i { color:#ffc107; font-size:0.9rem; }
+        .see-reviews-btn:hover { background:#333; border-color:#333; }
+
+        /* Reviews modal */
+        .reviews-modal-overlay {
+            display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
+            z-index:9999; align-items:center; justify-content:center; padding:1rem;
+        }
+        .reviews-modal-overlay.show { display:flex; }
+        .reviews-modal-box {
+            position:relative; background:#fff; border-radius:16px;
+            width:100%; max-width:520px; max-height:85vh; overflow-y:auto;
+            box-shadow:0 25px 80px rgba(0,0,0,0.3);
+            animation:reviewsModalIn 0.3s cubic-bezier(0.16,1,0.3,1);
+        }
+        @keyframes reviewsModalIn { from { opacity:0; transform:translateY(20px) scale(0.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+        .reviews-modal-close {
+            position:absolute; top:14px; right:14px; z-index:10;
+            width:36px; height:36px; border-radius:50%;
+            background:#f1f1f1; border:1px solid #ddd; cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.5rem; color:#333; line-height:1;
+            transition:all 0.2s;
+        }
+        .reviews-modal-close:hover { background:#e53935; color:#fff; border-color:#e53935; }
+        .reviews-modal-header { text-align:center; padding:2rem 2rem 1.2rem; border-bottom:1px solid #f0f0f0; }
+        .reviews-modal-header h3 { font-family:'Literata', serif; font-size:1.4rem; font-weight:700; color:#111; margin-bottom:0.6rem; }
+        .reviews-modal-rating { display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; }
+        .reviews-modal-rating .reviews-modal-stars i { color:#ffc107; font-size:0.9rem; }
+        .reviews-modal-num { font-weight:700; color:#111; font-size:0.95rem; }
+        .reviews-modal-count { font-size:0.78rem; color:#888; }
+        .reviews-modal-body { padding:1.5rem 2rem; display:flex; flex-direction:column; gap:1.2rem; }
+        .reviews-modal-item { padding-bottom:1.2rem; border-bottom:1px solid #f5f5f5; }
+        .reviews-modal-item:last-child { border-bottom:none; padding-bottom:0; }
+        .reviews-modal-item .reviews-modal-stars i { color:#ffc107; font-size:0.85rem; margin-right:2px; }
+        .reviews-modal-item p { margin-top:8px; font-size:0.88rem; color:#444; line-height:1.6; }
+        .reviews-modal-footer { padding:1rem 2rem 1.8rem; text-align:center; }
+        .reviews-modal-viewall {
+            display:inline-block; padding:12px 28px; border-radius:10px;
+            background:#111; color:#fff; text-decoration:none;
+            font-size:0.82rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;
+            transition:background 0.2s;
+        }
+        .reviews-modal-viewall:hover { background:#333; }
+    </style>
+
+    <style>
+        /* ===== NAV SHOP DROPDOWN ===== */
+        .nav-shop-dropdown { position: relative; display: inline-block; }
+        .nav-shop-toggle {
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            color: #888; text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s; cursor: pointer; background: none;
+            display: inline-flex; align-items: center; gap: 4px; font-family: inherit;
+        }
+        .nav-shop-toggle .caret { font-size: 0.6rem; transition: transform 0.2s; }
+        .nav-shop-toggle:hover, .nav-shop-dropdown.open .nav-shop-toggle { color: #111; border-bottom-color: #111; }
+        .nav-shop-toggle.active { color: #111; border-bottom-color: #111; }
+        .nav-shop-dropdown.open .nav-shop-toggle .caret { transform: rotate(180deg); }
+        .nav-shop-menu {
+            display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 8px 0; min-width: 170px;
+            z-index: 500; margin-top: 10px;
+        }
+        .nav-shop-dropdown.open .nav-shop-menu,
+        .nav-shop-dropdown:hover .nav-shop-menu { display: block; }
+        .nav-shop-menu a {
+            display: block; padding: 9px 20px; font-size: 0.72rem; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; color: #666; text-decoration: none;
+            transition: background 0.15s, color 0.15s; font-family: 'Outfit', sans-serif;
+        }
+        .nav-shop-menu a:hover { background: #f7f7f7; color: #111; }
+
+        /* Hamburger / mobile menu: expand inline instead of floating overlay */
+        @media (max-width: 768px) {
+            .nav-shop-dropdown { display: block; width: 100%; }
+            .nav-shop-toggle { width: 100%; justify-content: center; }
+            .nav-shop-dropdown:hover .nav-shop-menu { display: none; }
+            .nav-shop-menu {
+                display: none; position: static; transform: none;
+                box-shadow: none; border: none; background: transparent;
+                margin-top: 6px; padding: 4px 0 0; min-width: 0; text-align: center;
+            }
+            .nav-shop-dropdown.open .nav-shop-menu { display: block; }
+            .nav-shop-menu a { padding: 8px 0; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900">
+
+        <!-- Top Pinned Banner -->
+    <div style="background-color:#111; color:#fff; text-align:center; padding:10px 15px; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300;">
+        <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel. Claims for damage or exchange will only be accepted with an unboxing video.
+    </div>
+    <!-- Header with integrated nav -->
+    <header class="shoes-header" style="flex-direction:column;padding:0.75rem 2rem 0;gap:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;padding-bottom:0.65rem;">
+            <div class="header-left" style="flex:1; display:flex; gap:12px;">
+                <button class="icon-btn" id="menuToggle"><i class="ph ph-list"></i></button>
+                <button class="icon-btn" id="searchToggle"><i class="ph ph-magnifying-glass"></i></button>
+            </div>
+            <div class="header-center" style="flex:2; text-align:center;">
+                <a href="index.html" style="text-decoration:none;color:inherit;">
+                    <h1 class="logo" style="font-family:'Literata', serif; font-weight:800; font-size:1.35rem; line-height:1.1; margin:0; letter-spacing:1px;">FARIHA'S<br>COLLECTION</h1>
+                </a>
+            </div>
+            <div class="header-right" style="flex:1; display:flex; justify-content:flex-end;">
+                <button class="icon-btn" id="cartToggle" style="position:relative;"><i class="ph ph-shopping-bag"></i><span class="cart-badge">0</span></button>
+            </div>
+        </div>
+        <nav class="shoes-nav" style="font-family:'Literata', serif; display:flex;gap:1.75rem;flex-wrap:wrap;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
+            <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Home</a>
+            <div class="nav-shop-dropdown">
+                <a href="shoes (1).html" class="nav-shop-toggle active">All Shoes <i class="ph ph-caret-down caret"></i></a>
+                <div class="nav-shop-menu">
+                    <a href="shoes (1).html">All Shoes</a>
+                    <a href="shoes (1).html?filter=women">Women</a>
+                    <a href="shoes (1).html?filter=men">Men</a>
+                    <a href="shoes (1).html?filter=unisex">Unisex</a>
+                </div>
+            </div>
+            <a href="reviews.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Reviews</a>
+            <a href="shipping-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Shipping Policy</a>
+            <a href="privacy-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Privacy Policy</a>
+            <a href="terms-conditions.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Terms & Conditions</a>
+            <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
+            <a href="about-us.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">About Us</a>
+        </nav>
+    </header>
+
+    <!-- Filter & Sort Bar -->
+    <div class="filter-bar">
+        <div class="filter-pills">
+            <button class="filter-pill active" data-filter="all">All</button>
+            <button class="filter-pill" data-filter="women">Women</button>
+            <button class="filter-pill" data-filter="men">Men</button>
+            <button class="filter-pill" data-filter="unisex">Unisex</button>
+        </div>
+        <select class="sort-select" id="shSortSelect">
+            <option value="default">Sort by: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name: A – Z</option>
+            <option value="name-desc">Name: Z – A</option>
+        </select>
+        <button class="see-reviews-btn" id="seeReviewsBtn">
+            <i class="ph-fill ph-star"></i> See Our Reviews
+        </button>
+    </div>
+
+    <!-- ===== SEE OUR REVIEWS MODAL ===== -->
+    <div class="reviews-modal-overlay" id="reviewsModalOverlay">
+        <div class="reviews-modal-box">
+            <button class="reviews-modal-close" id="reviewsModalClose" aria-label="Close reviews" title="Close">&times;</button>
+            <div class="reviews-modal-header">
+                <h3>What Our Customers Say</h3>
+                <div class="reviews-modal-rating">
+                    <span class="reviews-modal-stars">
+                        <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                    </span>
+                    <span class="reviews-modal-num">4.8</span>
+                    <span class="reviews-modal-count">Based on 1,200+ Verified Reviews</span>
+                </div>
+            </div>
+            <div class="reviews-modal-body">
+                <div class="reviews-modal-item">
+                    <div class="reviews-modal-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p>Honestly did not expect preloved shoes to look this fresh. Fariha's Collection sent exactly what was shown, packaging was solid, and the pair still smells new. Ordering again for sure.</p>
+                </div>
+                <div class="reviews-modal-item">
+                    <div class="reviews-modal-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p>The heels I bought looked exactly like the pictures. Packaging was neat and the WhatsApp support team replied within minutes whenever I had questions.</p>
+                </div>
+                <div class="reviews-modal-item">
+                    <div class="reviews-modal-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p>This is my third order from Fariha's Collection and every single time the shoes have been exactly as described. Super trustworthy seller.</p>
+                </div>
+                <div class="reviews-modal-item">
+                    <div class="reviews-modal-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-half-fill ph-star-half"></i></div>
+                    <p>Good condition shoes for the price, slightly delayed delivery but the team kept me updated the whole time. Would still recommend to friends.</p>
+                </div>
+            </div>
+            <div class="reviews-modal-footer">
+                <a href="reviews.html" class="reviews-modal-viewall">View All Reviews</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Grid -->
+    <main class="max-w-7xl mx-auto px-6 py-10">
+        <div id="productGrid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+            <!-- Products are injected here from Sanity at runtime. See <script> at bottom. -->
+            <p id="productLoading" class="col-span-full text-center text-sm text-gray-400 py-10">Loading products…</p>
+        </div>
+
+        <!-- Load More -->
+        <div class="mt-16 mb-8 flex items-center justify-center w-full relative">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
+            <div class="relative bg-white px-6">
+                <button class="text-xs font-semibold text-gray-400 tracking-[0.2em] uppercase hover:text-black transition">Load More ...</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto px-6 pb-8 border-t border-gray-100 pt-10">
+        <div class="flex flex-col md:flex-row gap-12">
+            <div class="md:w-1/3">
+                <h2 style="font-family:'Outfit',sans-serif;font-size:2.5rem;font-weight:800;letter-spacing:1px;" class="mb-6">FARIHA'S<br>COLLECTION</h2>
+                <div class="text-xs text-gray-500 space-y-2">
+                    <p>Pakistan</p>
+                    <p>Phone: +92 3090625199</p>
+                    <p>Email: fariha6484preloved@gmail.com</p>
+                </div>
+                <div class="mt-5">
+                    <p class="text-sm font-semibold mb-3">Follow Us</p>
+                    <div class="flex gap-4 text-gray-600">
+                        <a href="https://www.facebook.com/share/1GMaKgnphh/?mibextid=wwXIfr" target="_blank" rel="noopener" class="hover:text-black transition"><i class="ph-fill ph-facebook-logo text-lg"></i></a>
+                        <a href="mailto:fariha6484preloved@gmail.com" class="hover:text-black transition"><i class="ph ph-envelope-simple text-lg"></i></a>
+                        <a href="https://www.instagram.com/farihapreloved_?igsh=MW1vMnp5em1qNTduag%3D%3D&utm_source=qr" target="_blank" rel="noopener" class="hover:text-black transition"><i class="ph-fill ph-instagram-logo text-lg"></i></a>
+                        <a href="https://vt.tiktok.com/ZSCbGXCc5/" target="_blank" rel="noopener" class="hover:text-black transition"><i class="ph-fill ph-tiktok-logo text-lg"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-2/3 flex flex-col md:flex-row justify-end md:gap-16">
+                <div class="py-4 md:py-0">
+                    <p class="text-sm font-semibold mb-4">Quick Links</p>
+                    <ul class="text-xs text-gray-500 space-y-3">
+                        <li><a href="index.html" class="hover:text-black transition">Home</a></li>
+                        <li><a href="shoes (1).html" class="hover:text-black transition">All Shoes</a></li>
+                        <li><a href="checkout.html" class="hover:text-black transition">Checkout</a></li>
+                        <li><a href="privacy-policy.html" class="hover:text-black transition">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="py-4 md:py-0">
+                    <p class="text-sm font-semibold mb-4">Customer Care</p>
+                    <ul class="text-xs text-gray-500 space-y-3">
+                        <li><a href="shipping-policy.html" class="hover:text-black transition">Shipping Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="mt-10 text-center text-[10px] text-gray-400 border-t border-gray-100 pt-6">
+            <p>Fariha's Collection &copy; 2025 — All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+    // ===== SANITY CONFIG =====
+    // Project ID from sanity.io/manage. Change SANITY_DATASET below if yours
+    // isn't the default "production" dataset.
+    const SANITY_PROJECT_ID = 'kxnjofhp';
+    const SANITY_DATASET = 'production';
+    const SANITY_API_VERSION = '2024-01-01';
+
+    // GROQ query: all "product" documents, newest first, with a flat image URL.
+    const SANITY_QUERY = `*[_type == "shoe"] | order(order asc){
+        _id,
+        name,
+        price,
+        tag,
+        category,
+        sizes,
+        "image": image.asset->url
+    }`;
+
+    function sanityQueryUrl(query) {
+        const base = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
+        return `${base}?query=${encodeURIComponent(query)}`;
+    }
+
+    async function fetchSanityProducts() {
+        const res = await fetch(sanityQueryUrl(SANITY_QUERY));
+        if (!res.ok) {
+            throw new Error(`Sanity request failed: ${res.status} ${res.statusText}`);
+        }
+        const json = await res.json();
+        return json.result || [];
+    }
+
+    function formatPKR(n) {
+        const num = Number(n) || 0;
+        return 'Rs' + num.toLocaleString('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function productCardHTML(p) {
+        const id = p._id || '';
+        const name = p.name || 'Untitled Product';
+        const price = Number(p.price) || 0;
+        const image = p.image || '';
+        const tag = p.tag || 'DOT PERFECT QUALITY';
+        // Escape quotes so names/paths with " don't break the data attributes.
+        const esc = (s) => String(s).replace(/"/g, '&quot;');
+
+        return `
+            <div class="shoe-card product-card" data-id="${esc(id)}" data-name="${esc(name)}" data-price="${price}" data-image="${esc(image)}">
+                <div class="w-full aspect-square bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden relative mb-3">
+                    <img src="${esc(image)}" alt="${esc(name)}" class="w-full h-full object-cover transition duration-300" loading="lazy">
+                    <button class="atc-btn"><i class="ph ph-shopping-bag"></i></button>
+                </div>
+                <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">${esc(tag)}</p>
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">${esc(name)}</h3>
+                <p class="text-sm font-bold text-gray-900">${formatPKR(price)}</p>
+                <button class="add-to-cart-full"><i class="ph ph-shopping-bag"></i> Add to Cart</button>
+            </div>
+        `;
+    }
+
+    async function loadProducts() {
+        const grid = document.getElementById('productGrid');
+        try {
+            const products = await fetchSanityProducts();
+
+            if (!products.length) {
+                grid.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-10">No products found yet. Add some in Sanity Studio.</p>';
+                return;
+            }
+
+            allProducts = products; // store for filter/sort
+            applyFilterAndSort(); // respect any filter already set from the URL (e.g. ?filter=men) or user selection
+        } catch (err) {
+            console.error('Failed to load products from Sanity:', err);
+            grid.innerHTML = '<p class="col-span-full text-center text-sm text-red-500 py-10">Couldn\'t load products. Check your Sanity project ID / dataset / CORS settings.</p>';
+        }
+    }
+
+    // Shoe page specific cart logic (self-contained, syncs with main cart via localStorage)
+    const WHATSAPP_NUMBER = '923412173887'; // Change to real number
+
+    function getCart() { return JSON.parse(localStorage.getItem('fc_cart') || '[]'); }
+    function saveCart(cart) { localStorage.setItem('fc_cart', JSON.stringify(cart)); updateBadge(); }
+
+    function updateBadge() {
+        const cart = getCart();
+        const count = cart.reduce((s, i) => s + i.qty, 0);
+        document.querySelectorAll('.cart-badge').forEach(b => {
+            b.textContent = count;
+            b.style.display = count > 0 ? 'flex' : 'none';
+        });
+    }
+
+    function addToCart(name, price, image) {
+        const cart = getCart();
+        const ex = cart.find(i => i.name === name);
+        if (ex) ex.qty++;
+        else cart.push({ name, price: Number(price), image, qty: 1 });
+        saveCart(cart);
+        showNotif(`✓ ${name} added to cart!`);
+        updateBadge();
+    }
+
+    function showNotif(msg) {
+        let n = document.getElementById('shoes-notif');
+        if (!n) {
+            n = document.createElement('div');
+            n.id = 'shoes-notif';
+            n.style.cssText = 'position:fixed;top:20px;right:20px;background:#111;color:#fff;padding:14px 22px;border-radius:8px;font-size:0.88rem;z-index:99999;opacity:0;transform:translateY(-15px);transition:all 0.3s ease;font-family:Outfit,sans-serif;box-shadow:0 8px 30px rgba(0,0,0,0.25);';
+            document.body.appendChild(n);
+        }
+        n.textContent = msg;
+        n.style.opacity = '1'; n.style.transform = 'translateY(0)';
+        clearTimeout(n._t);
+        n._t = setTimeout(() => { n.style.opacity = '0'; n.style.transform = 'translateY(-15px)'; }, 2500);
+    }
+
+    // Wire up add-to-cart buttons on each card.
+    function wireProductCards() {
+        document.querySelectorAll('.shoe-card').forEach(card => {
+            const id    = card.dataset.id;
+            const name  = card.dataset.name;
+            const price = card.dataset.price;
+            const image = card.dataset.image;
+            card.querySelectorAll('.atc-btn, .add-to-cart-full').forEach(btn => {
+                btn.addEventListener('click', e => { e.stopPropagation(); addToCart(name, price, image); });
+            });
+            // Clicking the card opens the product detail page
+            card.addEventListener('click', () => {
+                const params = new URLSearchParams({ id, name, price, image });
+                window.location.href = `product-detail.html?${params.toString()}`;
+            });
+        });
+    }
+
+    // ===== NAV BUTTON WIRING =====
+    document.getElementById('cartToggle').addEventListener('click', () => {
+        window.location.href = 'checkout.html';
+    });
+
+    document.getElementById('searchToggle').addEventListener('click', () => {
+        if (window.openSearch) window.openSearch();
+        else {
+            const q = prompt('Search for a shoe:');
+            if (q) window.location.href = `shoes (1).html?q=${encodeURIComponent(q)}`;
+        }
+    });
+
+    document.getElementById('menuToggle').addEventListener('click', () => {
+        if (window.openMenu) window.openMenu();
+    });
+
+    // ===== SEE OUR REVIEWS MODAL =====
+    const reviewsModalOverlay = document.getElementById('reviewsModalOverlay');
+    const reviewsModalClose = document.getElementById('reviewsModalClose');
+    document.getElementById('seeReviewsBtn').addEventListener('click', () => {
+        reviewsModalOverlay.classList.add('show');
+    });
+    reviewsModalClose.addEventListener('click', () => {
+        reviewsModalOverlay.classList.remove('show');
+    });
+    reviewsModalOverlay.addEventListener('click', (e) => {
+        if (e.target === reviewsModalOverlay) reviewsModalOverlay.classList.remove('show');
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') reviewsModalOverlay.classList.remove('show');
+    });
+
+    // ===== FILTER & SORT =====
+    let activeFilter = 'all';
+    
+    // Check URL for initial filter
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialFilter = urlParams.get('filter');
+    if (initialFilter && ['men', 'women', 'unisex'].includes(initialFilter.toLowerCase())) {
+        activeFilter = initialFilter.toLowerCase();
+        document.querySelectorAll('.filter-pill').forEach(p => {
+            p.classList.toggle('active', p.dataset.filter === activeFilter);
+        });
+    }
+
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            activeFilter = pill.dataset.filter;
+            
+            // Update URL quietly
+            const url = new URL(window.location);
+            url.searchParams.set('filter', activeFilter);
+            window.history.replaceState({}, '', url);
+            
+            applyFilterAndSort();
+        });
+    });
+
+    document.getElementById('shSortSelect').addEventListener('change', applyFilterAndSort);
+    let allProducts = []; // populated by fetchProducts()
+
+    function applyFilterAndSort() {
+        const grid = document.getElementById('productGrid');
+        const sortVal = document.getElementById('shSortSelect').value;
+
+        // Filter
+        let visible = activeFilter === 'all'
+            ? [...allProducts]
+            : allProducts.filter(p => (p.category || '').toLowerCase() === activeFilter);
+
+        // Sort
+        if (sortVal === 'price-asc')  visible.sort((a,b) => Number(a.price) - Number(b.price));
+        if (sortVal === 'price-desc') visible.sort((a,b) => Number(b.price) - Number(a.price));
+        if (sortVal === 'name-asc')   visible.sort((a,b) => (a.name||'').localeCompare(b.name||''));
+        if (sortVal === 'name-desc')  visible.sort((a,b) => (b.name||'').localeCompare(a.name||''));
+
+        if (visible.length === 0) {
+            grid.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-10">No products match this filter.</p>';
+        } else {
+            grid.innerHTML = visible.map(p => {
+                let badgeHtml = '';
+                if (p.sizes && Array.isArray(p.sizes)) {
+                    const hasStock = p.sizes.some(s => s.stock > 0);
+                    if (!hasStock) {
+                        badgeHtml = '<div class="absolute top-2 left-2 bg-red-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Out of Stock</div>';
+                    } else {
+                        badgeHtml = '<div class="absolute top-2 left-2 bg-black text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Save 25%</div>';
+                    }
+                } else {
+                    badgeHtml = '<div class="absolute top-2 left-2 bg-black text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Save 25%</div>';
+                }
+
+                const priceNum = p.price || 0;
+                const origPrice = Math.floor(priceNum * 1.33);
+
+                return `
+                <div class="shoe-card group block relative pb-4 cursor-pointer" data-id="${p._id}" data-name="${p.name || ''}" data-price="${p.price}" data-image="${p.image || ''}">
+                    ${badgeHtml}
+                    <div class="relative w-full aspect-[4/5] bg-gray-50 rounded-lg overflow-hidden mb-4">
+                        <img src="${p.image || ''}" alt="${p.name || ''}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out">
+                    </div>
+                    <div>
+                        <p class="text-[0.65rem] text-gray-400 font-bold tracking-[0.15em] uppercase mb-1">${p.tag || 'TOMS'}</p>
+                        <h3 class="text-sm font-semibold text-gray-900 mb-2 leading-tight">${p.name || 'Classic Shoe'}</h3>
+                        <div class="flex items-center gap-2">
+                            <p class="text-sm font-bold text-gray-900">Rs${priceNum.toLocaleString()}</p>
+                            <p class="text-xs text-gray-400 line-through">Rs${origPrice.toLocaleString()}</p>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+            wireProductCards();
+        }
+    }
+
+    updateBadge();
+    loadProducts();
+    </script>
+
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/923090625199?text=Hi! I'm interested in your shoes collection." target="_blank" class="whatsapp-float" title="Chat on WhatsApp" style="width:auto;height:auto;border-radius:50px;padding:12px 20px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;">
+        <i class="ph-fill ph-whatsapp-logo"></i>
+        <span style="font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:600;">Need Help?</span>
+    </a>
+
+    <script src="main.js"></script>
+
+    <script>
+    // ===== NAV SHOP DROPDOWN =====
+    document.querySelectorAll('.nav-shop-dropdown').forEach(function (dd) {
+        var toggle = dd.querySelector('.nav-shop-toggle');
+        if (!toggle) return;
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            var isOpen = dd.classList.contains('open');
+            document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (o) {
+                if (o !== dd) o.classList.remove('open');
+            });
+            dd.classList.toggle('open', !isOpen);
+        });
+    });
+    document.addEventListener('click', function (e) {
+        document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (dd) {
+            if (!dd.contains(e.target)) dd.classList.remove('open');
+        });
+    });
+    </script>
+</body>
+</html>
