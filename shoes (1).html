@@ -102,12 +102,16 @@
 </head>
 <body class="bg-white text-gray-900">
 
-    <!-- Glassy Header -->
-    <header class="shoes-header">
+        <!-- Top Pinned Banner -->
+    <div style="background-color:#111; color:#fff; text-align:center; padding:10px 15px; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300;">
+        <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel. Claims for damage or exchange will only be accepted with an unboxing video.
+    </div>
+    <!-- Header with integrated nav -->
+    <header class="header scrolled" style="flex-direction:column;padding:0.75rem 2rem 0;gap:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;width:100%;padding-bottom:0.65rem;">
             <div class="header-left" style="flex:1; display:flex; gap:12px;">
-                <button class="sh-icon-btn" id="shMenuBtn"><i class="ph ph-list"></i></button>
-                <button class="sh-icon-btn" id="shSearchBtn"><i class="ph ph-magnifying-glass"></i></button>
+                <button class="icon-btn" id="menuToggle"><i class="ph ph-list"></i></button>
+                <button class="icon-btn" id="searchToggle"><i class="ph ph-magnifying-glass"></i></button>
             </div>
             <div class="header-center" style="flex:2; text-align:center;">
                 <a href="index.html" style="text-decoration:none;color:inherit;">
@@ -115,17 +119,18 @@
                 </a>
             </div>
             <div class="header-right" style="flex:1; display:flex; justify-content:flex-end;">
-                <button class="sh-icon-btn" id="shCartBtn" style="position:relative;"><i class="ph ph-shopping-bag"></i><span class="sh-cart-badge cart-badge" id="shCartBadge">0</span></button>
+                <button class="icon-btn" id="cartToggle" style="position:relative;"><i class="ph ph-shopping-bag"></i><span class="cart-badge">0</span></button>
             </div>
         </div>
-        <nav class="shoes-nav">
-            <a href="index.html">Home</a>
-            <a href="shoes (1).html" class="active">All Shoes</a>
-            <a href="reviews.html">Reviews</a>
-            <a href="about-us.html">About Us</a>
-            <a href="privacy-policy.html">Privacy Policy</a>
-            <a href="terms-conditions.html">Terms & Conditions</a>
-            <a href="checkout.html">Cart</a>
+        <nav style="font-family:'Literata', serif; display:flex;gap:1.75rem;flex-wrap:wrap;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
+            <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Home</a>
+            <a href="shoes (1).html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#111;text-decoration:none;padding:2px 0;border-bottom:2px solid #111;">All Shoes</a>
+            <a href="reviews.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Reviews</a>
+            <a href="shipping-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Shipping Policy</a>
+            <a href="about-us.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">About Us</a>
+            <a href="privacy-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Privacy Policy</a>
+            <a href="terms-conditions.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Terms & Conditions</a>
+            <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
         </nav>
     </header>
 
@@ -345,12 +350,11 @@
     }
 
     // ===== NAV BUTTON WIRING =====
-    document.getElementById('shCartBtn').addEventListener('click', () => {
+    document.getElementById('cartToggle').addEventListener('click', () => {
         window.location.href = 'checkout.html';
     });
 
-    document.getElementById('shSearchBtn').addEventListener('click', () => {
-        const evt = new MouseEvent('click', { bubbles: true });
+    document.getElementById('searchToggle').addEventListener('click', () => {
         if (window.openSearch) window.openSearch();
         else {
             const q = prompt('Search for a shoe:');
@@ -358,7 +362,7 @@
         }
     });
 
-    document.getElementById('shMenuBtn').addEventListener('click', () => {
+    document.getElementById('menuToggle').addEventListener('click', () => {
         if (window.openMenu) window.openMenu();
     });
 
