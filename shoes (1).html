@@ -251,12 +251,11 @@
         const price = Number(p.price) || 0;
         const image = p.image || '';
         const tag = p.tag || 'DOT PERFECT QUALITY';
-        const isMen = (p.category || '').toLowerCase() === 'men';
         // Escape quotes so names/paths with " don't break the data attributes.
         const esc = (s) => String(s).replace(/"/g, '&quot;');
 
         return `
-            <div class="shoe-card product-card" data-id="${esc(id)}" data-name="${esc(name)}" data-price="${price}" data-image="${esc(image)}" data-is-men="${isMen}">
+            <div class="shoe-card product-card" data-id="${esc(id)}" data-name="${esc(name)}" data-price="${price}" data-image="${esc(image)}">
                 <div class="w-full aspect-square bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden relative mb-3">
                     <img src="${esc(image)}" alt="${esc(name)}" class="w-full h-full object-cover transition duration-300" loading="lazy">
                     <button class="atc-btn"><i class="ph ph-shopping-bag"></i></button>
@@ -340,9 +339,7 @@
             // Clicking the card opens the product detail page
             card.addEventListener('click', () => {
                 const params = new URLSearchParams({ id, name, price, image });
-                const isMen = card.dataset.isMen === 'true';
-                const detailPage = isMen ? 'men-product-detail.html' : 'product-detail.html';
-                window.location.href = `${detailPage}?${params.toString()}`;
+                window.location.href = `product-detail.html?${params.toString()}`;
             });
         });
     }
@@ -430,11 +427,8 @@
                 const priceNum = p.price || 0;
                 const origPrice = Math.floor(priceNum * 1.33);
 
-                const isMen = (p.category || '').toLowerCase() === 'men';
-                const detailPage = isMen ? 'men-product-detail.html' : 'product-detail.html';
-
                 return `
-                <div class="shoe-card group block relative pb-4 cursor-pointer" data-id="${p._id}" data-name="${p.name || ''}" data-price="${p.price}" data-image="${p.image || ''}" data-is-men="${isMen}">
+                <div class="shoe-card group block relative pb-4 cursor-pointer" data-id="${p._id}" data-name="${p.name || ''}" data-price="${p.price}" data-image="${p.image || ''}">
                     ${badgeHtml}
                     <div class="relative w-full aspect-[4/5] bg-gray-50 rounded-lg overflow-hidden mb-4">
                         <img src="${p.image || ''}" alt="${p.name || ''}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out">

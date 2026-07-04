@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">TOMS Classic Alpargata – Pastel Pink | Fariha's Collection</title>
-    <meta name="description" content="Shop the New-With-Tags TOMS Classic Alpargata in Pastel Pink. Pristine unworn condition with original tags, canvas upper and espadrille woven rope trim.">
+    <title id="pageTitle">Product Details | Fariha's Collection</title>
+    <meta name="description" content="Shop quality preloved shoes at Fariha's Collection — authentic details, real photos.">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -371,9 +371,9 @@
     <nav class="breadcrumb" aria-label="Breadcrumb">
         <a href="index.html">Home</a>
         <i class="ph ph-caret-right" style="font-size:0.7rem;"></i>
-        <a href="shoes (1).html">Shoes</a>
+        <a href="shoes (1).html" id="breadcrumbCategory">Shoes</a>
         <i class="ph ph-caret-right" style="font-size:0.7rem;"></i>
-        <span id="breadcrumbName">TOMS Alpargata – Pastel Pink</span>
+        <span id="breadcrumbName">Loading...</span>
     </nav>
 
     <!-- Product Main -->
@@ -382,27 +382,17 @@
         <!-- Left: Image Gallery -->
         <div class="pd-gallery">
             <div class="pd-main-img-wrap" id="mainImgWrap">
-                <span class="nwt-badge">✦ New With Tags</span>
-                <img id="mainImg" src="images/pink-toms-1.jpg" alt="TOMS Classic Alpargata Pastel Pink – Side View">
+                <span class="nwt-badge" style="display:none;">✦ New With Tags</span>
+                <img id="mainImg" src="" alt="Product Image">
             </div>
-            <div class="pd-thumbs" id="thumbStrip">
-                <div class="pd-thumb active" data-img="images/pink-toms-1.jpg" data-alt="Side view">
-                    <img src="images/pink-toms-1.jpg" alt="Side view">
-                </div>
-                <div class="pd-thumb" data-img="images/pink-toms-2.jpg" data-alt="Front view">
-                    <img src="images/pink-toms-2.jpg" alt="Front view">
-                </div>
-                <div class="pd-thumb" data-img="images/pink-toms-3.jpg" data-alt="Alternate view">
-                    <img src="images/pink-toms-3.jpg" alt="Alternate view">
-                </div>
-            </div>
+            <div class="pd-thumbs" id="thumbStrip" style="display:none;"></div>
         </div>
 
         <!-- Right: Product Info -->
         <div class="pd-info">
 
-            <p class="pd-brand-tag" id="pdBrand">TOMS · Alpargata Collection</p>
-            <h1 class="pd-title" id="pdTitleName">Classic Alpargata<br>Pastel Pink</h1>
+            <p class="pd-brand-tag" id="pdBrand"></p>
+            <h1 class="pd-title" id="pdTitleName">Loading...</h1>
 
             <!-- Stars -->
             <div class="pd-rating">
@@ -412,15 +402,21 @@
 
             <!-- Price -->
             <div class="pd-price-row">
-                <span class="pd-price" id="pdPriceVal">Rs13,500.00</span>
-                <span class="pd-price-original" id="pdPriceOriginal">Rs18,000.00</span>
-                <span class="pd-price-badge" id="pdDiscountBadge">25% OFF</span>
+                <span class="pd-price" id="pdPriceVal"></span>
+                <span class="pd-price-original" id="pdPriceOriginal" style="display:none;">Rs18,000.00</span>
+                <span class="pd-price-badge" id="pdDiscountBadge" style="display:none;">25% OFF</span>
             </div>
 
             <!-- Condition Badge -->
             <div class="pd-condition-bar">
                 <i class="ph-fill ph-seal-check"></i>
                 New With Tags (NWT) — Pristine, Unworn Condition
+            </div>
+
+            <!-- Stock Count -->
+            <div id="pdStockRow" style="margin:-8px 0 18px; font-size:0.85rem; font-weight:600; display:none;">
+                <span id="pdStockIcon" style="margin-right:6px;">🟢</span>
+                <span id="pdStockText">In Stock</span>
             </div>
 
             <hr class="pd-divider">
@@ -431,23 +427,15 @@
                     Select Size (UK)
                     <a href="#">Size Guide</a>
                 </p>
-                <div class="pd-sizes" id="sizeSelector">
-                    <button class="pd-size-btn" data-size="UK 36">36</button>
-                    <button class="pd-size-btn" data-size="UK 37">37</button>
-                    <button class="pd-size-btn selected" data-size="UK 38">38</button>
-                    <button class="pd-size-btn" data-size="UK 39">39</button>
-                    <button class="pd-size-btn" data-size="UK 40">40</button>
-                    <button class="pd-size-btn out-of-stock" data-size="UK 41" disabled>41</button>
-                    <button class="pd-size-btn out-of-stock" data-size="UK 42" disabled>42</button>
-                </div>
+                <div class="pd-sizes" id="sizeSelector"></div>
             </div>
 
             <!-- Action Buttons -->
             <div class="pd-actions">
-                <button class="pd-btn-cart" id="pdAddToCart">
-                    <i class="ph ph-shopping-bag"></i> Add to Cart
+                <button class="pd-btn-cart" id="pdAddToCart" disabled>
+                    <i class="ph ph-shopping-bag"></i> Loading...
                 </button>
-                <a href="https://wa.me/923412173887?text=Hi! I'm interested in the TOMS Classic Alpargata Pastel Pink. Is it available?" target="_blank" class="pd-btn-wa">
+                <a href="#" target="_blank" class="pd-btn-wa" id="pdWhatsappLink">
                     <i class="ph-fill ph-whatsapp-logo"></i> Order via WhatsApp
                 </a>
             </div>
@@ -472,16 +460,14 @@
             <div class="pd-accordion">
 
                 <!-- Description -->
-                <div class="pd-acc-item open">
+                <div class="pd-acc-item open" id="pdDescriptionItem">
                     <button class="pd-acc-header">
                         <span>Product Description</span>
                         <i class="ph ph-plus pd-acc-icon"></i>
                     </button>
                     <div class="pd-acc-body">
-                        <div class="pd-acc-content">
-                            <p>Score a brand-new classic for less! These authentic TOMS Classic Alpargatas are a rare find, coming to you <strong>brand new with tags (NWT)</strong>. Featuring a gorgeous pastel pink canvas upper, these slip-ons offer the ultimate blend of sustainable shopping and pristine, unworn quality.</p>
-                            <br>
-                            <p>They showcase the signature TOMS tucked-toe detailing and the recognizable blue logo patch on the heel, finished with a classic espadrille-style woven rope trim. Completely unworn, perfectly clean, and ready to become your new favourite casual staple.</p>
+                        <div class="pd-acc-content" id="pdDescriptionContent">
+                            <p>Loading description...</p>
                         </div>
                     </div>
                 </div>
@@ -497,7 +483,7 @@
                             <ul>
                                 <li><strong>Condition:</strong> New With Tags (NWT) / Pristine</li>
                                 <li><strong>Details:</strong> Unworn with original retail tags still attached</li>
-                                <li><strong>Upper:</strong> Flawless pink canvas, zero marks or blemishes</li>
+                                <li><strong>Upper:</strong> Flawless condition, zero marks or blemishes</li>
                                 <li><strong>Sole:</strong> Completely clean outsoles with zero street wear</li>
                                 <li><strong>Note:</strong> Images show the exact item you will receive</li>
                             </ul>
@@ -513,17 +499,8 @@
                     </button>
                     <div class="pd-acc-body">
                         <div class="pd-acc-content">
-                            <div class="pd-detail-grid">
-                                <span class="pd-detail-key">Brand</span>
-                                <span class="pd-detail-val">TOMS</span>
-                                <span class="pd-detail-key">Style</span>
-                                <span class="pd-detail-val">Alpargata Slip-On</span>
-                                <span class="pd-detail-key">Color</span>
-                                <span class="pd-detail-val">Pastel Pink</span>
-                                <span class="pd-detail-key">Material</span>
-                                <span class="pd-detail-val">Canvas upper, rubber outsole, woven jute trim</span>
-                                <span class="pd-detail-key">Eco Benefit</span>
-                                <span class="pd-detail-val">Buying NWT secondhand keeps unworn retail items out of landfills</span>
+                            <div class="pd-detail-grid" id="pdDetailGrid">
+                                <!-- Populated dynamically by JS from tag + category -->
                             </div>
                         </div>
                     </div>
@@ -590,9 +567,10 @@
         const productId = urlParams.get('id');
 
         const PRODUCT = {
-            name: urlParams.get('name') || 'TOMS Classic Alpargata – Pastel Pink',
-            price: parseInt(urlParams.get('price')) || 13500,
-            image: urlParams.get('image') || 'images/pink-toms-1.jpg'
+            name: urlParams.get('name') || 'Loading...',
+            price: parseInt(urlParams.get('price')) || 0,
+            image: urlParams.get('image') || '',
+            category: 'women'
         };
         let selectedSize = null;
 
@@ -620,6 +598,13 @@
         if (pdTag) {
             document.getElementById('pdBrand').textContent = pdTag;
         }
+        if (pdName) {
+            const waLink = document.getElementById('pdWhatsappLink');
+            if (waLink) {
+                const msg = encodeURIComponent(`Hi! I'm interested in the ${pdName}. Is it available?`);
+                waLink.href = `https://wa.me/923412173887?text=${msg}`;
+            }
+        }
 
         // ===== FETCH FULL PRODUCT FROM SANITY (description, gallery, sizes) =====
         async function loadProductFromSanity() {
@@ -629,6 +614,7 @@
                 name,
                 price,
                 tag,
+                category,
                 description,
                 "image": image.asset->url,
                 "gallery": gallery[].asset->url,
@@ -655,10 +641,12 @@
             const mainImage = p.image || PRODUCT.image;
             const gallery = Array.isArray(p.gallery) ? p.gallery : [];
             const allImages = [mainImage, ...gallery].filter(Boolean);
+            const category = (p.category || 'women').toLowerCase();
 
             PRODUCT.name = name;
             PRODUCT.price = price;
             PRODUCT.image = mainImage;
+            PRODUCT.category = category;
 
             document.getElementById('pageTitle').textContent = name + " | Fariha's Collection";
             document.getElementById('breadcrumbName').textContent = name;
@@ -669,8 +657,30 @@
 
             if (p.tag) document.getElementById('pdBrand').textContent = p.tag;
 
+            // ----- Breadcrumb: category-aware -----
+            const crumb = document.getElementById('breadcrumbCategory');
+            if (crumb) {
+                if (category === 'men') {
+                    crumb.textContent = "Men's Shoes";
+                    crumb.href = 'shoes (1).html?filter=men';
+                } else if (category === 'unisex') {
+                    crumb.textContent = 'Unisex Shoes';
+                    crumb.href = 'shoes (1).html?filter=unisex';
+                } else {
+                    crumb.textContent = "Women's Shoes";
+                    crumb.href = 'shoes (1).html?filter=women';
+                }
+            }
+
             const badge = document.querySelector('.nwt-badge');
             if (badge) badge.style.display = 'none';
+
+            // ----- WhatsApp order link -----
+            const waLink = document.getElementById('pdWhatsappLink');
+            if (waLink) {
+                const msg = encodeURIComponent(`Hi! I'm interested in the ${name}. Is it available?`);
+                waLink.href = `https://wa.me/923412173887?text=${msg}`;
+            }
 
             // ----- Gallery: main image + thumbnails -----
             const mainImg = document.getElementById('mainImg');
@@ -691,14 +701,30 @@
             }
 
             // ----- Description -----
+            const descItem = document.getElementById('pdDescriptionItem');
+            const descContent = document.getElementById('pdDescriptionContent');
             if (p.description) {
-                const descBody = document.querySelector('.pd-acc-item .pd-acc-content');
-                if (descBody) descBody.innerHTML = `<p>${p.description.replace(/\n/g, '<br>')}</p>`;
+                if (descContent) descContent.innerHTML = `<p>${p.description.replace(/\n/g, '<br>')}</p>`;
+                if (descItem) descItem.style.display = '';
+            } else if (descItem) {
+                descItem.style.display = 'none';
             }
 
-            // ----- Sizes -----
+            // ----- Product Details grid (Brand + Category, dynamic) -----
+            const detailGrid = document.getElementById('pdDetailGrid');
+            if (detailGrid) {
+                const categoryLabel = category.charAt(0).toUpperCase() + category.slice(1);
+                let rows = '';
+                if (p.tag) rows += `<span class="pd-detail-key">Brand</span><span class="pd-detail-val">${p.tag}</span>`;
+                rows += `<span class="pd-detail-key">Category</span><span class="pd-detail-val">${categoryLabel}</span>`;
+                detailGrid.innerHTML = rows;
+            }
+
+            // ----- Sizes + Stock -----
             const sizeSelector = document.getElementById('sizeSelector');
+            let totalStock = 0;
             if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                totalStock = p.sizes.reduce((sum, s) => sum + (Number(s.stock) || 0), 0);
                 sizeSelector.innerHTML = p.sizes.map((s, i) => {
                     const outOfStock = !s.stock || s.stock <= 0;
                     const isFirstAvailable = !outOfStock && !sizeSelector.dataset.firstSet;
@@ -715,6 +741,66 @@
                 const sizeBlock = sizeSelector.closest('div');
                 if (sizeBlock) sizeBlock.style.display = 'none';
                 selectedSize = null;
+            }
+
+            updateStockDisplay(totalStock, Array.isArray(p.sizes) && p.sizes.length > 0);
+        }
+
+        function updateStockDisplay(totalStock, hasSizes) {
+            const stockRow = document.getElementById('pdStockRow');
+            const stockIcon = document.getElementById('pdStockIcon');
+            const stockText = document.getElementById('pdStockText');
+            const atcBtn = document.getElementById('pdAddToCart');
+
+            if (!stockRow) return;
+
+            if (!hasSizes) {
+                stockRow.style.display = 'none';
+                if (atcBtn) {
+                    atcBtn.disabled = false;
+                    atcBtn.innerHTML = '<i class="ph ph-shopping-bag"></i> Add to Cart';
+                    atcBtn.style.background = '';
+                    atcBtn.style.cursor = '';
+                    atcBtn.style.color = '';
+                }
+                return;
+            }
+
+            stockRow.style.display = 'block';
+
+            if (totalStock <= 0) {
+                stockIcon.textContent = '🔴';
+                stockText.textContent = 'Out of Stock';
+                stockText.style.color = '#e53935';
+                if (atcBtn) {
+                    atcBtn.disabled = true;
+                    atcBtn.innerHTML = '<i class="ph ph-x-circle"></i> Out of Stock';
+                    atcBtn.style.background = '#ccc';
+                    atcBtn.style.cursor = 'not-allowed';
+                    atcBtn.style.color = '#666';
+                }
+            } else if (totalStock <= 3) {
+                stockIcon.textContent = '🟡';
+                stockText.textContent = `Only ${totalStock} left in stock — order soon!`;
+                stockText.style.color = '#f57c00';
+                if (atcBtn) {
+                    atcBtn.disabled = false;
+                    atcBtn.innerHTML = '<i class="ph ph-shopping-bag"></i> Add to Cart';
+                    atcBtn.style.background = '';
+                    atcBtn.style.cursor = '';
+                    atcBtn.style.color = '';
+                }
+            } else {
+                stockIcon.textContent = '🟢';
+                stockText.textContent = `${totalStock} in stock`;
+                stockText.style.color = '#2e7d32';
+                if (atcBtn) {
+                    atcBtn.disabled = false;
+                    atcBtn.innerHTML = '<i class="ph ph-shopping-bag"></i> Add to Cart';
+                    atcBtn.style.background = '';
+                    atcBtn.style.cursor = '';
+                    atcBtn.style.color = '';
+                }
             }
         }
 
@@ -804,13 +890,15 @@
             const grid = document.getElementById('suggestedGrid');
             if (!grid) return;
 
-            // Pull up to 8 other shoes, excluding the current product, then show 4 at random
-            const query = `*[_type == "shoe" && category != "men" && _id != $id] | order(order asc) [0...8]{
+            // Pull up to 8 other shoes in the same category (or unisex), excluding the
+            // current product, then show 4 at random.
+            const cat = PRODUCT.category || 'women';
+            const query = `*[_type == "shoe" && (category == $cat || category == "unisex") && _id != $id] | order(order asc) [0...8]{
                 _id, name, price, "image": image.asset->url
             }`;
 
             try {
-                const res = await fetch(sanityQueryUrl(query, { id: productId || '' }));
+                const res = await fetch(sanityQueryUrl(query, { id: productId || '', cat }));
                 if (!res.ok) throw new Error(`Sanity request failed: ${res.status}`);
                 const json = await res.json();
                 let products = json.result || [];
@@ -846,8 +934,7 @@
         }
 
         updateBadge();
-        loadProductFromSanity();
-        loadSuggestedProducts();
+        loadProductFromSanity().finally(loadSuggestedProducts);
     </script>
 
 </body>
