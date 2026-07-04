@@ -17,6 +17,49 @@
         ul { margin-bottom: 1.5rem; padding-left: 1.5rem; }
         li { margin-bottom: 0.5rem; color: #555; }
     </style>
+
+    <style>
+        /* ===== NAV SHOP DROPDOWN ===== */
+        .nav-shop-dropdown { position: relative; display: inline-block; }
+        .nav-shop-toggle {
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            color: #888; text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s; cursor: pointer; background: none;
+            display: inline-flex; align-items: center; gap: 4px; font-family: inherit;
+        }
+        .nav-shop-toggle .caret { font-size: 0.6rem; transition: transform 0.2s; }
+        .nav-shop-toggle:hover, .nav-shop-dropdown.open .nav-shop-toggle { color: #111; border-bottom-color: #111; }
+        .nav-shop-toggle.active { color: #111; border-bottom-color: #111; }
+        .nav-shop-dropdown.open .nav-shop-toggle .caret { transform: rotate(180deg); }
+        .nav-shop-menu {
+            display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 8px 0; min-width: 170px;
+            z-index: 500; margin-top: 10px;
+        }
+        .nav-shop-dropdown.open .nav-shop-menu,
+        .nav-shop-dropdown:hover .nav-shop-menu { display: block; }
+        .nav-shop-menu a {
+            display: block; padding: 9px 20px; font-size: 0.72rem; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; color: #666; text-decoration: none;
+            transition: background 0.15s, color 0.15s; font-family: 'Outfit', sans-serif;
+        }
+        .nav-shop-menu a:hover { background: #f7f7f7; color: #111; }
+
+        /* Hamburger / mobile menu: expand inline instead of floating overlay */
+        @media (max-width: 768px) {
+            .nav-shop-dropdown { display: block; width: 100%; }
+            .nav-shop-toggle { width: 100%; justify-content: center; }
+            .nav-shop-dropdown:hover .nav-shop-menu { display: none; }
+            .nav-shop-menu {
+                display: none; position: static; transform: none;
+                box-shadow: none; border: none; background: transparent;
+                margin-top: 6px; padding: 4px 0 0; min-width: 0; text-align: center;
+            }
+            .nav-shop-dropdown.open .nav-shop-menu { display: block; }
+            .nav-shop-menu a { padding: 8px 0; font-size: 0.7rem; }
+        }
+    </style>
 </head>
 <body>
         <!-- Top Pinned Banner -->
@@ -41,13 +84,21 @@
         </div>
         <nav style="font-family:'Literata', serif; display:flex;gap:1.75rem;flex-wrap:wrap;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
             <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Home</a>
-            <a href="shoes (1).html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">All Shoes</a>
+            <div class="nav-shop-dropdown">
+                <a href="shoes (1).html" class="nav-shop-toggle">All Shoes <i class="ph ph-caret-down caret"></i></a>
+                <div class="nav-shop-menu">
+                    <a href="shoes (1).html">All Shoes</a>
+                    <a href="shoes (1).html?filter=women">Women</a>
+                    <a href="shoes (1).html?filter=men">Men</a>
+                    <a href="shoes (1).html?filter=unisex">Unisex</a>
+                </div>
+            </div>
             <a href="reviews.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Reviews</a>
             <a href="shipping-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Shipping Policy</a>
-            <a href="about-us.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">About Us</a>
             <a href="privacy-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Privacy Policy</a>
             <a href="terms-conditions.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#111;text-decoration:none;padding:2px 0;border-bottom:2px solid #111;">Terms & Conditions</a>
             <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
+            <a href="about-us.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">About Us</a>
         </nav>
     </header>
 
@@ -104,5 +155,26 @@
 
     
     <script src="main.js"></script>
+
+    <script>
+    // ===== NAV SHOP DROPDOWN =====
+    document.querySelectorAll('.nav-shop-dropdown').forEach(function (dd) {
+        var toggle = dd.querySelector('.nav-shop-toggle');
+        if (!toggle) return;
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            var isOpen = dd.classList.contains('open');
+            document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (o) {
+                if (o !== dd) o.classList.remove('open');
+            });
+            dd.classList.toggle('open', !isOpen);
+        });
+    });
+    document.addEventListener('click', function (e) {
+        document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (dd) {
+            if (!dd.contains(e.target)) dd.classList.remove('open');
+        });
+    });
+    </script>
 </body>
 </html>

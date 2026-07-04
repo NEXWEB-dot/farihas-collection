@@ -99,6 +99,103 @@
             transition:border-color 0.2s;
         }
         .sort-select:focus { border-color:#111; }
+
+        /* See Our Reviews button */
+        .see-reviews-btn {
+            display:inline-flex; align-items:center; gap:6px;
+            padding:6px 16px; border-radius:99px; border:1.5px solid #111;
+            background:#111; color:#fff;
+            font-family:'Outfit',sans-serif; font-size:0.72rem; font-weight:700;
+            letter-spacing:0.05em; text-transform:uppercase; cursor:pointer;
+            transition:all 0.2s;
+        }
+        .see-reviews-btn i { color:#ffc107; font-size:0.9rem; }
+        .see-reviews-btn:hover { background:#333; border-color:#333; }
+
+        /* Reviews modal */
+        .reviews-modal-overlay {
+            display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
+            z-index:9999; align-items:center; justify-content:center; padding:1rem;
+        }
+        .reviews-modal-overlay.show { display:flex; }
+        .reviews-modal-box {
+            position:relative; background:#fff; border-radius:16px;
+            width:100%; max-width:520px; max-height:85vh; overflow-y:auto;
+            box-shadow:0 25px 80px rgba(0,0,0,0.3);
+            animation:reviewsModalIn 0.3s cubic-bezier(0.16,1,0.3,1);
+        }
+        @keyframes reviewsModalIn { from { opacity:0; transform:translateY(20px) scale(0.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+        .reviews-modal-close {
+            position:absolute; top:14px; right:14px; z-index:10;
+            width:36px; height:36px; border-radius:50%;
+            background:#f1f1f1; border:1px solid #ddd; cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.5rem; color:#333; line-height:1;
+            transition:all 0.2s;
+        }
+        .reviews-modal-close:hover { background:#e53935; color:#fff; border-color:#e53935; }
+        .reviews-modal-header { text-align:center; padding:2rem 2rem 1.2rem; border-bottom:1px solid #f0f0f0; }
+        .reviews-modal-header h3 { font-family:'Literata', serif; font-size:1.4rem; font-weight:700; color:#111; margin-bottom:0.6rem; }
+        .reviews-modal-rating { display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; }
+        .reviews-modal-rating .reviews-modal-stars i { color:#ffc107; font-size:0.9rem; }
+        .reviews-modal-num { font-weight:700; color:#111; font-size:0.95rem; }
+        .reviews-modal-count { font-size:0.78rem; color:#888; }
+        .reviews-modal-body { padding:1.5rem 2rem; display:flex; flex-direction:column; gap:1.2rem; }
+        .reviews-modal-item { padding-bottom:1.2rem; border-bottom:1px solid #f5f5f5; }
+        .reviews-modal-item:last-child { border-bottom:none; padding-bottom:0; }
+        .reviews-modal-item .reviews-modal-stars i { color:#ffc107; font-size:0.85rem; margin-right:2px; }
+        .reviews-modal-item p { margin-top:8px; font-size:0.88rem; color:#444; line-height:1.6; }
+        .reviews-modal-footer { padding:1rem 2rem 1.8rem; text-align:center; }
+        .reviews-modal-viewall {
+            display:inline-block; padding:12px 28px; border-radius:10px;
+            background:#111; color:#fff; text-decoration:none;
+            font-size:0.82rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase;
+            transition:background 0.2s;
+        }
+        .reviews-modal-viewall:hover { background:#333; }
+    </style>
+
+    <style>
+        /* ===== NAV SHOP DROPDOWN ===== */
+        .nav-shop-dropdown { position: relative; display: inline-block; }
+        .nav-shop-toggle {
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            color: #888; text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s; cursor: pointer; background: none;
+            display: inline-flex; align-items: center; gap: 4px; font-family: inherit;
+        }
+        .nav-shop-toggle .caret { font-size: 0.6rem; transition: transform 0.2s; }
+        .nav-shop-toggle:hover, .nav-shop-dropdown.open .nav-shop-toggle { color: #111; border-bottom-color: #111; }
+        .nav-shop-toggle.active { color: #111; border-bottom-color: #111; }
+        .nav-shop-dropdown.open .nav-shop-toggle .caret { transform: rotate(180deg); }
+        .nav-shop-menu {
+            display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 8px 0; min-width: 170px;
+            z-index: 500; margin-top: 10px;
+        }
+        .nav-shop-dropdown.open .nav-shop-menu,
+        .nav-shop-dropdown:hover .nav-shop-menu { display: block; }
+        .nav-shop-menu a {
+            display: block; padding: 9px 20px; font-size: 0.72rem; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; color: #666; text-decoration: none;
+            transition: background 0.15s, color 0.15s; font-family: 'Outfit', sans-serif;
+        }
+        .nav-shop-menu a:hover { background: #f7f7f7; color: #111; }
+
+        /* Hamburger / mobile menu: expand inline instead of floating overlay */
+        @media (max-width: 768px) {
+            .nav-shop-dropdown { display: block; width: 100%; }
+            .nav-shop-toggle { width: 100%; justify-content: center; }
+            .nav-shop-dropdown:hover .nav-shop-menu { display: none; }
+            .nav-shop-menu {
+                display: none; position: static; transform: none;
+                box-shadow: none; border: none; background: transparent;
+                margin-top: 6px; padding: 4px 0 0; min-width: 0; text-align: center;
+            }
+            .nav-shop-dropdown.open .nav-shop-menu { display: block; }
+            .nav-shop-menu a { padding: 8px 0; font-size: 0.7rem; }
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -125,13 +222,21 @@
         </div>
         <nav class="shoes-nav" style="font-family:'Literata', serif; display:flex;gap:1.75rem;flex-wrap:wrap;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
             <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Home</a>
-            <a href="shoes (1).html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#111;text-decoration:none;padding:2px 0;border-bottom:2px solid #111;">All Shoes</a>
+            <div class="nav-shop-dropdown">
+                <a href="shoes (1).html" class="nav-shop-toggle active">All Shoes <i class="ph ph-caret-down caret"></i></a>
+                <div class="nav-shop-menu">
+                    <a href="shoes (1).html">All Shoes</a>
+                    <a href="shoes (1).html?filter=women">Women</a>
+                    <a href="shoes (1).html?filter=men">Men</a>
+                    <a href="shoes (1).html?filter=unisex">Unisex</a>
+                </div>
+            </div>
             <a href="reviews.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Reviews</a>
             <a href="shipping-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Shipping Policy</a>
-            <a href="about-us.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">About Us</a>
             <a href="privacy-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Privacy Policy</a>
             <a href="terms-conditions.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Terms & Conditions</a>
             <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
+            <a href="about-us.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">About Us</a>
         </nav>
     </header>
 
@@ -139,8 +244,8 @@
     <div class="filter-bar">
         <div class="filter-pills">
             <button class="filter-pill active" data-filter="all">All</button>
-            <button class="filter-pill" data-filter="men">Men</button>
             <button class="filter-pill" data-filter="women">Women</button>
+            <button class="filter-pill" data-filter="men">Men</button>
             <button class="filter-pill" data-filter="unisex">Unisex</button>
         </div>
         <select class="sort-select" id="shSortSelect">
@@ -150,6 +255,47 @@
             <option value="name-asc">Name: A – Z</option>
             <option value="name-desc">Name: Z – A</option>
         </select>
+        <button class="see-reviews-btn" id="seeReviewsBtn">
+            <i class="ph-fill ph-star"></i> See Our Reviews
+        </button>
+    </div>
+
+    <!-- ===== SEE OUR REVIEWS MODAL ===== -->
+    <div class="reviews-modal-overlay" id="reviewsModalOverlay">
+        <div class="reviews-modal-box">
+            <button class="reviews-modal-close" id="reviewsModalClose" aria-label="Close reviews" title="Close">&times;</button>
+            <div class="reviews-modal-header">
+                <h3>What Our Customers Say</h3>
+                <div class="reviews-modal-rating">
+                    <span class="reviews-modal-stars">
+                        <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                    </span>
+                    <span class="reviews-modal-num">4.8</span>
+                    <span class="reviews-modal-count">Based on 1,200+ Verified Reviews</span>
+                </div>
+            </div>
+            <div class="reviews-modal-body">
+                <div class="reviews-modal-item">
+                    <div class="reviews-modal-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p>Honestly did not expect preloved shoes to look this fresh. Fariha's Collection sent exactly what was shown, packaging was solid, and the pair still smells new. Ordering again for sure.</p>
+                </div>
+                <div class="reviews-modal-item">
+                    <div class="reviews-modal-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p>The heels I bought looked exactly like the pictures. Packaging was neat and the WhatsApp support team replied within minutes whenever I had questions.</p>
+                </div>
+                <div class="reviews-modal-item">
+                    <div class="reviews-modal-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p>This is my third order from Fariha's Collection and every single time the shoes have been exactly as described. Super trustworthy seller.</p>
+                </div>
+                <div class="reviews-modal-item">
+                    <div class="reviews-modal-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-half-fill ph-star-half"></i></div>
+                    <p>Good condition shoes for the price, slightly delayed delivery but the team kept me updated the whole time. Would still recommend to friends.</p>
+                </div>
+            </div>
+            <div class="reviews-modal-footer">
+                <a href="reviews.html" class="reviews-modal-viewall">View All Reviews</a>
+            </div>
+        </div>
     </div>
 
     <!-- Product Grid -->
@@ -181,11 +327,11 @@
                 <div class="mt-5">
                     <p class="text-sm font-semibold mb-3">Follow Us</p>
                     <div class="flex gap-4 text-gray-600">
-                        <a href="#" class="hover:text-black transition"><i class="ph-fill ph-facebook-logo text-lg"></i></a>
-                        <a href="#" class="hover:text-black transition"><i class="ph ph-envelope-simple text-lg"></i></a>
-                        <a href="#" class="hover:text-black transition"><i class="ph-fill ph-instagram-logo text-lg"></i></a>
+                        <a href="https://www.facebook.com/share/1GMaKgnphh/?mibextid=wwXIfr" target="_blank" rel="noopener" class="hover:text-black transition"><i class="ph-fill ph-facebook-logo text-lg"></i></a>
+                        <a href="mailto:fariha6484preloved@gmail.com" class="hover:text-black transition"><i class="ph ph-envelope-simple text-lg"></i></a>
+                        <a href="https://www.instagram.com/farihapreloved_?igsh=MW1vMnp5em1qNTduag%3D%3D&utm_source=qr" target="_blank" rel="noopener" class="hover:text-black transition"><i class="ph-fill ph-instagram-logo text-lg"></i></a>
                         <a href="#" class="hover:text-black transition"><i class="ph-fill ph-youtube-logo text-lg"></i></a>
-                        <a href="#" class="hover:text-black transition"><i class="ph-fill ph-tiktok-logo text-lg"></i></a>
+                        <a href="https://vt.tiktok.com/ZSCbGXCc5/" target="_blank" rel="noopener" class="hover:text-black transition"><i class="ph-fill ph-tiktok-logo text-lg"></i></a>
                     </div>
                 </div>
             </div>
@@ -194,7 +340,7 @@
                     <p class="text-sm font-semibold mb-4">Quick Links</p>
                     <ul class="text-xs text-gray-500 space-y-3">
                         <li><a href="index.html" class="hover:text-black transition">Home</a></li>
-                        <li><a href="shoes.html" class="hover:text-black transition">All Shoes</a></li>
+                        <li><a href="shoes (1).html" class="hover:text-black transition">All Shoes</a></li>
                         <li><a href="checkout.html" class="hover:text-black transition">Checkout</a></li>
                     </ul>
                 </div>
@@ -366,6 +512,22 @@
         if (window.openMenu) window.openMenu();
     });
 
+    // ===== SEE OUR REVIEWS MODAL =====
+    const reviewsModalOverlay = document.getElementById('reviewsModalOverlay');
+    const reviewsModalClose = document.getElementById('reviewsModalClose');
+    document.getElementById('seeReviewsBtn').addEventListener('click', () => {
+        reviewsModalOverlay.classList.add('show');
+    });
+    reviewsModalClose.addEventListener('click', () => {
+        reviewsModalOverlay.classList.remove('show');
+    });
+    reviewsModalOverlay.addEventListener('click', (e) => {
+        if (e.target === reviewsModalOverlay) reviewsModalOverlay.classList.remove('show');
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') reviewsModalOverlay.classList.remove('show');
+    });
+
     // ===== FILTER & SORT =====
     let activeFilter = 'all';
     
@@ -457,10 +619,32 @@
     </script>
 
     <!-- WhatsApp Float -->
-    <a href="https://wa.me/923090625199?text=Hi! I'm interested in your shoes collection." target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
+    <a href="https://wa.me/923090625199?text=Hi! I'm interested in your shoes collection." target="_blank" class="whatsapp-float" title="Chat on WhatsApp" style="width:auto;height:auto;border-radius:50px;padding:12px 20px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;">
         <i class="ph-fill ph-whatsapp-logo"></i>
+        <span style="font-family:'Outfit',sans-serif;font-size:0.85rem;font-weight:600;">Need Help? Order on WhatsApp</span>
     </a>
 
     <script src="main.js"></script>
+
+    <script>
+    // ===== NAV SHOP DROPDOWN =====
+    document.querySelectorAll('.nav-shop-dropdown').forEach(function (dd) {
+        var toggle = dd.querySelector('.nav-shop-toggle');
+        if (!toggle) return;
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            var isOpen = dd.classList.contains('open');
+            document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (o) {
+                if (o !== dd) o.classList.remove('open');
+            });
+            dd.classList.toggle('open', !isOpen);
+        });
+    });
+    document.addEventListener('click', function (e) {
+        document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (dd) {
+            if (!dd.contains(e.target)) dd.classList.remove('open');
+        });
+    });
+    </script>
 </body>
 </html>

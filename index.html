@@ -10,6 +10,108 @@
     <link href="literata/css/literata.css" rel="stylesheet">
     <!-- Icons (Phosphor Icons or FontAwesome) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        .customer-photo-stack {
+            position: relative;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .customer-photo-stack .photo-card {
+            position: absolute;
+            height: 300px;
+            width: 200px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+            animation: photoFloat 5s ease-in-out infinite;
+        }
+        .customer-photo-stack .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .customer-photo-stack .photo-card:nth-child(1) {
+            transform: rotate(-7deg) translate(-55px, 10px);
+            z-index: 1;
+            animation-delay: 0s;
+        }
+        .customer-photo-stack .photo-card:nth-child(2) {
+            transform: rotate(4deg) translate(15px, -20px);
+            z-index: 2;
+            animation-delay: 0.6s;
+        }
+        .customer-photo-stack .photo-card:nth-child(3) {
+            transform: rotate(-2deg) translate(55px, 25px);
+            z-index: 3;
+            animation-delay: 1.2s;
+        }
+        .customer-photo-stack:hover .photo-card:nth-child(1) {
+            transform: rotate(-12deg) translate(-90px, 5px) scale(1.05);
+            box-shadow: 0 26px 50px rgba(0,0,0,0.5);
+        }
+        .customer-photo-stack:hover .photo-card:nth-child(2) {
+            transform: rotate(0deg) translate(15px, -35px) scale(1.08);
+            box-shadow: 0 26px 50px rgba(0,0,0,0.5);
+        }
+        .customer-photo-stack:hover .photo-card:nth-child(3) {
+            transform: rotate(6deg) translate(90px, 15px) scale(1.05);
+            box-shadow: 0 26px 50px rgba(0,0,0,0.5);
+        }
+        @keyframes photoFloat {
+            0%, 100% { margin-top: 0; }
+            50% { margin-top: -10px; }
+        }
+        @media (max-width: 640px) {
+            .customer-photo-stack .photo-card { height: 220px; width: 150px; }
+        }
+    </style>
+
+    <style>
+        /* ===== NAV SHOP DROPDOWN ===== */
+        .nav-shop-dropdown { position: relative; display: inline-block; }
+        .nav-shop-toggle {
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            color: #888; text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s; cursor: pointer; background: none;
+            display: inline-flex; align-items: center; gap: 4px; font-family: inherit;
+        }
+        .nav-shop-toggle .caret { font-size: 0.6rem; transition: transform 0.2s; }
+        .nav-shop-toggle:hover, .nav-shop-dropdown.open .nav-shop-toggle { color: #111; border-bottom-color: #111; }
+        .nav-shop-toggle.active { color: #111; border-bottom-color: #111; }
+        .nav-shop-dropdown.open .nav-shop-toggle .caret { transform: rotate(180deg); }
+        .nav-shop-menu {
+            display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 8px 0; min-width: 170px;
+            z-index: 500; margin-top: 10px;
+        }
+        .nav-shop-dropdown.open .nav-shop-menu,
+        .nav-shop-dropdown:hover .nav-shop-menu { display: block; }
+        .nav-shop-menu a {
+            display: block; padding: 9px 20px; font-size: 0.72rem; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; color: #666; text-decoration: none;
+            transition: background 0.15s, color 0.15s; font-family: 'Outfit', sans-serif;
+        }
+        .nav-shop-menu a:hover { background: #f7f7f7; color: #111; }
+
+        /* Hamburger / mobile menu: expand inline instead of floating overlay */
+        @media (max-width: 768px) {
+            .nav-shop-dropdown { display: block; width: 100%; }
+            .nav-shop-toggle { width: 100%; justify-content: center; }
+            .nav-shop-dropdown:hover .nav-shop-menu { display: none; }
+            .nav-shop-menu {
+                display: none; position: static; transform: none;
+                box-shadow: none; border: none; background: transparent;
+                margin-top: 6px; padding: 4px 0 0; min-width: 0; text-align: center;
+            }
+            .nav-shop-dropdown.open .nav-shop-menu { display: block; }
+            .nav-shop-menu a { padding: 8px 0; font-size: 0.7rem; }
+        }
+    </style>
 </head>
 <body>
     <!-- Top Pinned Banner -->
@@ -34,7 +136,15 @@
         </div>
         <nav style="font-family:'Literata', serif; display:flex;gap:2.5rem;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
             <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#111;text-decoration:none;padding:2px 0;border-bottom:2px solid #111;">Home</a>
-            <a href="shoes (1).html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">All Shoes</a>
+            <div class="nav-shop-dropdown">
+                <a href="shoes (1).html" class="nav-shop-toggle">All Shoes <i class="ph ph-caret-down caret"></i></a>
+                <div class="nav-shop-menu">
+                    <a href="shoes (1).html">All Shoes</a>
+                    <a href="shoes (1).html?filter=women">Women</a>
+                    <a href="shoes (1).html?filter=men">Men</a>
+                    <a href="shoes (1).html?filter=unisex">Unisex</a>
+                </div>
+            </div>
             <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
         </nav>
     </header>
@@ -90,11 +200,10 @@
                 <h3>Our Satisfied Customers</h3>
                 <p>At Fariha's Collection, we carefully handpick authentic preloved shoes that combine quality, comfort, and style. Every pair is thoroughly inspected to ensure you receive the best value at an affordable price. We proudly ship across Pakistan and are committed to providing a smooth shopping experience with dedicated customer support. Find your next favorite pair and step out with confidence.</p>
             </div>
-            <div class="testimonial-images reveal-scale delay-2">
-                <!-- Stacking effect -->
-                <div class="test-img-stack" style="background-color: #333; height: 300px; width: 200px; border-radius: 4px; box-shadow: -10px 10px 30px rgba(0,0,0,0.5);"></div>
-                <div class="test-img-stack" style="background-color: #444; height: 300px; width: 200px; border-radius: 4px; box-shadow: -10px 10px 30px rgba(0,0,0,0.5); position: absolute; top: 20px; left: 20px;"></div>
-                <div class="test-img-stack" style="background-image: url('images/IMG_5821.jpg'); background-size: cover; height: 300px; width: 200px; border-radius: 4px; box-shadow: -10px 10px 30px rgba(0,0,0,0.5); position: absolute; top: 40px; left: 40px;"></div>
+            <div class="customer-photo-stack reveal-scale delay-2">
+                <div class="photo-card"><img src="images/6.jpg" alt="Happy customer"></div>
+                <div class="photo-card"><img src="images/7.jpg" alt="Happy customer"></div>
+                <div class="photo-card"><img src="images/8.jpg" alt="Happy customer"></div>
             </div>
         </div>
     </section>
@@ -177,11 +286,11 @@
     <!-- Banners Section -->
     <section class="banner-section reveal">
         <div class="banner-grid">
-            <a href="shoes.html" class="banner-card reveal-fade delay-1" style="display:block;">
-                <img src="images/IMG_5830.jpg" alt="Banner 1">
+            <a href="shoes (1).html" class="banner-card reveal-fade delay-1" style="display:block;">
+                <img src="images/4.jpg" alt="Banner 1">
             </a>
-            <a href="shoes.html" class="banner-card reveal-fade delay-2" style="display:block;">
-                <img src="images/IMG_5831.jpg" alt="Banner 2">
+            <a href="shoes (1).html" class="banner-card reveal-fade delay-2" style="display:block;">
+                <img src="images/5.jpg" alt="Banner 2">
             </a>
         </div>
     </section>
@@ -212,10 +321,9 @@
                     <button type="submit" class="btn-dark">Subscribe</button>
                 </form>
                 <div class="social-links">
-                    <a href="#"><i class="ph ph-facebook-logo"></i></a>
-                    <a href="#"><i class="ph ph-instagram-logo"></i></a>
-                    <a href="#"><i class="ph ph-twitter-logo"></i></a>
-                    <a href="#"><i class="ph ph-tiktok-logo"></i></a>
+                    <a href="https://www.facebook.com/share/1GMaKgnphh/?mibextid=wwXIfr" target="_blank" rel="noopener"><i class="ph ph-facebook-logo"></i></a>
+                    <a href="https://www.instagram.com/farihapreloved_?igsh=MW1vMnp5em1qNTduag%3D%3D&utm_source=qr" target="_blank" rel="noopener"><i class="ph ph-instagram-logo"></i></a>
+                    <a href="https://vt.tiktok.com/ZSCbGXCc5/" target="_blank" rel="noopener"><i class="ph ph-tiktok-logo"></i></a>
                 </div>
             </div>
         </div>
@@ -225,5 +333,26 @@
     </footer>
 
     <script src="main.js"></script>
+
+    <script>
+    // ===== NAV SHOP DROPDOWN =====
+    document.querySelectorAll('.nav-shop-dropdown').forEach(function (dd) {
+        var toggle = dd.querySelector('.nav-shop-toggle');
+        if (!toggle) return;
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            var isOpen = dd.classList.contains('open');
+            document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (o) {
+                if (o !== dd) o.classList.remove('open');
+            });
+            dd.classList.toggle('open', !isOpen);
+        });
+    });
+    document.addEventListener('click', function (e) {
+        document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (dd) {
+            if (!dd.contains(e.target)) dd.classList.remove('open');
+        });
+    });
+    </script>
 </body>
 </html>
