@@ -121,13 +121,22 @@
         <nav class="shoes-nav">
             <a href="index.html">Home</a>
             <a href="shoes (1).html" class="active">All Shoes</a>
-            <a href="shipping-policy.html">Shipping Policy</a>
+            <a href="reviews.html">Reviews</a>
+            <a href="about-us.html">About Us</a>
+            <a href="privacy-policy.html">Privacy Policy</a>
+            <a href="terms-conditions.html">Terms & Conditions</a>
             <a href="checkout.html">Cart</a>
         </nav>
     </header>
 
     <!-- Filter & Sort Bar -->
-    <div class="filter-bar" style="justify-content:flex-end;">
+    <div class="filter-bar">
+        <div class="filter-pills">
+            <button class="filter-pill active" data-filter="all">All</button>
+            <button class="filter-pill" data-filter="men">Men</button>
+            <button class="filter-pill" data-filter="women">Women</button>
+            <button class="filter-pill" data-filter="unisex">Unisex</button>
+        </div>
         <select class="sort-select" id="shSortSelect">
             <option value="default">Sort by: Featured</option>
             <option value="price-asc">Price: Low to High</option>
@@ -212,6 +221,8 @@
         name,
         price,
         tag,
+        category,
+        sizes,
         "image": image.asset->url
     }`;
 
@@ -240,11 +251,12 @@
         const price = Number(p.price) || 0;
         const image = p.image || '';
         const tag = p.tag || 'DOT PERFECT QUALITY';
+        const isMen = (p.category || '').toLowerCase() === 'men';
         // Escape quotes so names/paths with " don't break the data attributes.
         const esc = (s) => String(s).replace(/"/g, '&quot;');
 
         return `
-            <div class="shoe-card product-card" data-id="${esc(id)}" data-name="${esc(name)}" data-price="${price}" data-image="${esc(image)}">
+            <div class="shoe-card product-card" data-id="${esc(id)}" data-name="${esc(name)}" data-price="${price}" data-image="${esc(image)}" data-is-men="${isMen}">
                 <div class="w-full aspect-square bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden relative mb-3">
                     <img src="${esc(image)}" alt="${esc(name)}" class="w-full h-full object-cover transition duration-300" loading="lazy">
                     <button class="atc-btn"><i class="ph ph-shopping-bag"></i></button>
@@ -298,6 +310,7 @@
         else cart.push({ name, price: Number(price), image, qty: 1 });
         saveCart(cart);
         showNotif(`✓ ${name} added to cart!`);
+        updateBadge();
     }
 
     function showNotif(msg) {
@@ -315,8 +328,6 @@
     }
 
     // Wire up add-to-cart buttons on each card.
-    // Called after Sanity products are rendered into #productGrid (not on
-    // page load), since the cards don't exist in the DOM until then.
     function wireProductCards() {
         document.querySelectorAll('.shoe-card').forEach(card => {
             const id    = card.dataset.id;
@@ -326,54 +337,64 @@
             card.querySelectorAll('.atc-btn, .add-to-cart-full').forEach(btn => {
                 btn.addEventListener('click', e => { e.stopPropagation(); addToCart(name, price, image); });
             });
-            // Clicking the card (not a button) opens the product detail page
+            // Clicking the card opens the product detail page
             card.addEventListener('click', () => {
                 const params = new URLSearchParams({ id, name, price, image });
-                window.location.href = `product-detail.html?${params.toString()}`;
+                const isMen = card.dataset.isMen === 'true';
+                const detailPage = isMen ? 'men-product-detail.html' : 'product-detail.html';
+                window.location.href = `${detailPage}?${params.toString()}`;
             });
         });
     }
 
     // ===== NAV BUTTON WIRING =====
-    // Cart → checkout
     document.getElementById('shCartBtn').addEventListener('click', () => {
         window.location.href = 'checkout.html';
     });
 
-    // Search → open search overlay from main.js
     document.getElementById('shSearchBtn').addEventListener('click', () => {
-        // Trigger the search overlay (defined in main.js)
         const evt = new MouseEvent('click', { bubbles: true });
-        const oldSearchBtns = document.querySelectorAll('[data-search]');
         if (window.openSearch) window.openSearch();
         else {
-            // Fallback: simple prompt
             const q = prompt('Search for a shoe:');
             if (q) window.location.href = `shoes (1).html?q=${encodeURIComponent(q)}`;
         }
     });
 
-    // Menu → open drawer from main.js
     document.getElementById('shMenuBtn').addEventListener('click', () => {
         if (window.openMenu) window.openMenu();
     });
 
-    // ===== FILTER PILLS =====
+    // ===== FILTER & SORT =====
     let activeFilter = 'all';
+    
+    // Check URL for initial filter
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialFilter = urlParams.get('filter');
+    if (initialFilter && ['men', 'women', 'unisex'].includes(initialFilter.toLowerCase())) {
+        activeFilter = initialFilter.toLowerCase();
+        document.querySelectorAll('.filter-pill').forEach(p => {
+            p.classList.toggle('active', p.dataset.filter === activeFilter);
+        });
+    }
+
     document.querySelectorAll('.filter-pill').forEach(pill => {
         pill.addEventListener('click', () => {
             document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
             pill.classList.add('active');
             activeFilter = pill.dataset.filter;
+            
+            // Update URL quietly
+            const url = new URL(window.location);
+            url.searchParams.set('filter', activeFilter);
+            window.history.replaceState({}, '', url);
+            
             applyFilterAndSort();
         });
     });
 
-    // ===== SORT DROPDOWN =====
     document.getElementById('shSortSelect').addEventListener('change', applyFilterAndSort);
-
-    // Store original products order after load so we can re-sort
-    let allProducts = [];
+    let allProducts = []; // populated by fetchProducts()
 
     function applyFilterAndSort() {
         const grid = document.getElementById('productGrid');
@@ -382,11 +403,7 @@
         // Filter
         let visible = activeFilter === 'all'
             ? [...allProducts]
-            : allProducts.filter(p => {
-                const tag = (p.tag || '').toLowerCase();
-                const name = (p.name || '').toLowerCase();
-                return tag.includes(activeFilter) || name.includes(activeFilter);
-            });
+            : allProducts.filter(p => (p.category || '').toLowerCase() === activeFilter);
 
         // Sort
         if (sortVal === 'price-asc')  visible.sort((a,b) => Number(a.price) - Number(b.price));
@@ -397,17 +414,52 @@
         if (visible.length === 0) {
             grid.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-10">No products match this filter.</p>';
         } else {
-            grid.innerHTML = visible.map(productCardHTML).join('');
+            grid.innerHTML = visible.map(p => {
+                let badgeHtml = '';
+                if (p.sizes && Array.isArray(p.sizes)) {
+                    const hasStock = p.sizes.some(s => s.stock > 0);
+                    if (!hasStock) {
+                        badgeHtml = '<div class="absolute top-2 left-2 bg-red-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Out of Stock</div>';
+                    } else {
+                        badgeHtml = '<div class="absolute top-2 left-2 bg-black text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Save 25%</div>';
+                    }
+                } else {
+                    badgeHtml = '<div class="absolute top-2 left-2 bg-black text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Save 25%</div>';
+                }
+
+                const priceNum = p.price || 0;
+                const origPrice = Math.floor(priceNum * 1.33);
+
+                const isMen = (p.category || '').toLowerCase() === 'men';
+                const detailPage = isMen ? 'men-product-detail.html' : 'product-detail.html';
+
+                return `
+                <div class="shoe-card group block relative pb-4 cursor-pointer" data-id="${p._id}" data-name="${p.name || ''}" data-price="${p.price}" data-image="${p.image || ''}" data-is-men="${isMen}">
+                    ${badgeHtml}
+                    <div class="relative w-full aspect-[4/5] bg-gray-50 rounded-lg overflow-hidden mb-4">
+                        <img src="${p.image || ''}" alt="${p.name || ''}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out">
+                    </div>
+                    <div>
+                        <p class="text-[0.65rem] text-gray-400 font-bold tracking-[0.15em] uppercase mb-1">${p.tag || 'TOMS'}</p>
+                        <h3 class="text-sm font-semibold text-gray-900 mb-2 leading-tight">${p.name || 'Classic Shoe'}</h3>
+                        <div class="flex items-center gap-2">
+                            <p class="text-sm font-bold text-gray-900">Rs${priceNum.toLocaleString()}</p>
+                            <p class="text-xs text-gray-400 line-through">Rs${origPrice.toLocaleString()}</p>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
             wireProductCards();
         }
     }
 
     updateBadge();
-    loadProducts();
+    fetchProducts();
     </script>
 
     <!-- WhatsApp Float -->
-    <a href="https://wa.me/923412173887?text=Hi! I'm interested in your shoes collection." target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
+    <a href="https://wa.me/923090625199?text=Hi! I'm interested in your shoes collection." target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
         <i class="ph-fill ph-whatsapp-logo"></i>
     </a>
 

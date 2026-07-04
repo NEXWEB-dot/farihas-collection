@@ -290,12 +290,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <nav class="menu-nav">
                 <a href="index.html" class="menu-link"><i class="ph ph-house"></i> Home</a>
-                <a href="shoes (1).html" class="menu-link"><i class="ph ph-sneaker"></i> Shoes Collection</a>
-                <a href="#" class="menu-link" onclick="closeMenu()"><i class="ph ph-user"></i> About Us</a>
-                <a href="#" class="menu-link" onclick="closeMenu()"><i class="ph ph-phone"></i> Contact Us</a>
-                <a href="#" class="menu-link" onclick="closeMenu()"><i class="ph ph-truck"></i> Shipping Policy</a>
-                <a href="#" class="menu-link" onclick="closeMenu()"><i class="ph ph-arrow-counter-clockwise"></i> Returns & Exchanges</a>
-                <a href="#" class="menu-link" onclick="closeMenu()"><i class="ph ph-question"></i> FAQ</a>
+                <a href="shoes (1).html" class="menu-link"><i class="ph ph-sneaker"></i> All Shoes</a>
+                <a href="reviews.html" class="menu-link"><i class="ph ph-star"></i> Reviews</a>
+                <a href="about-us.html" class="menu-link"><i class="ph ph-info"></i> About Us</a>
+                <a href="privacy-policy.html" class="menu-link"><i class="ph ph-shield-check"></i> Privacy Policy</a>
+                <a href="terms-conditions.html" class="menu-link"><i class="ph ph-file-text"></i> Terms & Conditions</a>
             </nav>
             <div class="menu-footer">
                 <div class="menu-social">

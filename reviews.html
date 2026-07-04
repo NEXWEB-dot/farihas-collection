@@ -1,0 +1,839 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Reviews â€” Fariha's Collection</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Literata Font -->
+    <link href="literata/css/literata.css" rel="stylesheet">
+    <!-- Icons (Phosphor Icons or FontAwesome) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* ===== Reviews Page â€” Black & White Theme ===== */
+        .reviews-hero {
+            background:#000;
+            color:#fff;
+            padding:70px 24px 60px;
+            text-align:center;
+        }
+        .reviews-hero .eyebrow {
+            font-family:'Outfit', sans-serif;
+            font-size:0.75rem;
+            letter-spacing:2.5px;
+            text-transform:uppercase;
+            color:#999;
+            margin:0 0 12px;
+        }
+        .reviews-hero h1 {
+            font-family:'Literata', serif;
+            font-weight:700;
+            font-size:2.4rem;
+            line-height:1.15;
+            margin:0 0 18px;
+            letter-spacing:0.5px;
+        }
+        .reviews-hero p.sub {
+            font-family:'Outfit', sans-serif;
+            font-weight:300;
+            font-size:0.95rem;
+            color:#ccc;
+            max-width:520px;
+            margin:0 auto;
+        }
+
+        .rating-summary {
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:14px;
+            margin-top:32px;
+            flex-wrap:wrap;
+        }
+        .rating-summary .stars i {
+            color:#fff;
+            font-size:1.1rem;
+            margin:0 1px;
+        }
+        .rating-summary .rating-num {
+            font-family:'Literata', serif;
+            font-weight:700;
+            font-size:1.15rem;
+        }
+        .rating-summary .rating-count {
+            font-family:'Outfit', sans-serif;
+            font-size:0.8rem;
+            color:#999;
+            letter-spacing:0.5px;
+        }
+
+        /* Video Testimonial */
+        .video-testimonial {
+            padding:60px 24px 20px;
+            text-align:center;
+            border-bottom:1px solid rgba(0,0,0,0.08);
+        }
+        .video-testimonial .section-tag {
+            font-family:'Outfit', sans-serif;
+            font-size:0.72rem;
+            letter-spacing:2px;
+            text-transform:uppercase;
+            color:#888;
+            margin:0 0 8px;
+        }
+        .video-testimonial h2 {
+            font-family:'Literata', serif;
+            font-weight:700;
+            font-size:1.7rem;
+            margin:0 0 6px;
+        }
+        .video-testimonial .reviewer-name {
+            font-family:'Outfit', sans-serif;
+            font-size:0.85rem;
+            color:#666;
+            margin:0 0 32px;
+            letter-spacing:0.5px;
+        }
+        .video-wrap {
+            max-width:720px;
+            margin:0 auto;
+            border:1px solid #111;
+            background:#000;
+            position:relative;
+            aspect-ratio:16/9;
+            overflow:hidden;
+            box-shadow:0 20px 50px rgba(0,0,0,0.15);
+        }
+        .video-wrap video {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+        }
+        .video-wrap .video-badge {
+            position:absolute;
+            top:14px;
+            left:14px;
+            background:rgba(255,255,255,0.95);
+            color:#111;
+            font-family:'Outfit', sans-serif;
+            font-size:0.65rem;
+            font-weight:700;
+            letter-spacing:1px;
+            text-transform:uppercase;
+            padding:6px 12px;
+            display:flex;
+            align-items:center;
+            gap:6px;
+            z-index:2;
+        }
+        .video-wrap .video-badge i { font-size:0.85rem; }
+
+        /* Influencer Section */
+        .influencer-section {
+            padding:70px 24px 40px;
+            border-bottom:1px solid rgba(0,0,0,0.08);
+        }
+        .influencer-section .section-tag,
+        .reviews-grid-section .section-tag {
+            font-family:'Outfit', sans-serif;
+            font-size:0.72rem;
+            letter-spacing:2px;
+            text-transform:uppercase;
+            color:#888;
+            text-align:center;
+            margin:0 0 8px;
+        }
+        .influencer-section h2,
+        .reviews-grid-section h2 {
+            font-family:'Literata', serif;
+            font-weight:700;
+            font-size:1.7rem;
+            text-align:center;
+            margin:0 0 48px;
+        }
+        .influencer-grid {
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:30px;
+            max-width:1100px;
+            margin:0 auto;
+        }
+        .influencer-card {
+            background:#fff;
+            border:1px solid rgba(0,0,0,0.08);
+            transition:transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+        }
+        .influencer-card:hover {
+            transform:translateY(-4px);
+            box-shadow:0 24px 40px rgba(0,0,0,0.1);
+        }
+        .influencer-photo {
+            width:100%;
+            aspect-ratio:4/5;
+            background:#111;
+            overflow:hidden;
+        }
+        .influencer-photo img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+            transition:transform 0.5s ease;
+        }
+        .influencer-card:hover .influencer-photo img {
+            transform:scale(1.05);
+        }
+        .influencer-body {
+            padding:22px 22px 26px;
+        }
+        .influencer-body .stars {
+            margin-bottom:12px;
+        }
+        .influencer-body .stars i {
+            color:#111;
+            font-size:0.95rem;
+            margin-right:2px;
+        }
+        .influencer-body p.review-text {
+            font-family:'Outfit', sans-serif;
+            font-weight:300;
+            font-size:0.9rem;
+            line-height:1.6;
+            color:#333;
+            margin:0 0 18px;
+        }
+        .influencer-footer {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            border-top:1px solid rgba(0,0,0,0.08);
+            padding-top:14px;
+        }
+        .influencer-footer .name-wrap {
+            display:flex;
+            align-items:center;
+            gap:6px;
+        }
+        .influencer-footer .name {
+            font-family:'Literata', serif;
+            font-weight:700;
+            font-size:0.9rem;
+            color:#111;
+        }
+        .influencer-footer .verified {
+            color:#111;
+            font-size:0.95rem;
+        }
+        .influencer-footer .handle {
+            font-family:'Outfit', sans-serif;
+            font-size:0.72rem;
+            color:#999;
+            letter-spacing:0.3px;
+        }
+
+        /* Customer Reviews Grid */
+        .reviews-grid-section {
+            padding:70px 24px 90px;
+        }
+        .reviews-grid {
+            display:grid;
+            grid-template-columns:repeat(5, 1fr);
+            gap:22px;
+            max-width:1300px;
+            margin:0 auto;
+        }
+        .review-card {
+            background:#fff;
+            border:1px solid rgba(0,0,0,0.08);
+            display:flex;
+            flex-direction:column;
+            transition:transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+        }
+        .review-card:hover {
+            transform:translateY(-3px);
+            box-shadow:0 18px 32px rgba(0,0,0,0.08);
+        }
+        .review-photo {
+            width:100%;
+            aspect-ratio:1/1;
+            background:#f2f2f2;
+            overflow:hidden;
+        }
+        .review-photo img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+            transition:transform 0.5s ease;
+        }
+        .review-card:hover .review-photo img {
+            transform:scale(1.06);
+        }
+        .review-body {
+            padding:16px 16px 18px;
+            flex:1;
+            display:flex;
+            flex-direction:column;
+        }
+        .review-body .stars {
+            margin-bottom:10px;
+        }
+        .review-body .stars i {
+            color:#111;
+            font-size:0.8rem;
+            margin-right:1px;
+        }
+        .review-body p.review-text {
+            font-family:'Outfit', sans-serif;
+            font-weight:300;
+            font-size:0.82rem;
+            line-height:1.55;
+            color:#333;
+            margin:0 0 14px;
+            flex:1;
+        }
+        .review-body .name-row {
+            display:flex;
+            align-items:center;
+            gap:5px;
+            border-top:1px solid rgba(0,0,0,0.07);
+            padding-top:10px;
+        }
+        .review-body .name {
+            font-family:'Outfit', sans-serif;
+            font-weight:600;
+            font-size:0.78rem;
+            color:#111;
+        }
+        .review-body .verified {
+            color:#111;
+            font-size:0.8rem;
+        }
+        .review-body .location {
+            font-family:'Outfit', sans-serif;
+            font-size:0.68rem;
+            color:#999;
+            margin-top:2px;
+        }
+
+        /* CTA Strip */
+        .reviews-cta {
+            background:#111;
+            color:#fff;
+            text-align:center;
+            padding:56px 24px;
+        }
+        .reviews-cta h3 {
+            font-family:'Literata', serif;
+            font-weight:700;
+            font-size:1.4rem;
+            margin:0 0 10px;
+        }
+        .reviews-cta p {
+            font-family:'Outfit', sans-serif;
+            font-weight:300;
+            font-size:0.85rem;
+            color:#bbb;
+            margin:0 0 26px;
+        }
+        .reviews-cta a.btn-light {
+            display:inline-block;
+            background:#fff;
+            color:#111;
+            font-family:'Outfit', sans-serif;
+            font-size:0.75rem;
+            font-weight:700;
+            letter-spacing:1.5px;
+            text-transform:uppercase;
+            text-decoration:none;
+            padding:14px 34px;
+            transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+        }
+        .reviews-cta a.btn-light:hover {
+            background:#e5e5e5;
+            transform:translateY(-2px);
+        }
+
+        /* ===== Header & Nav ===== */
+        .header {
+            position:sticky;
+            top:0;
+            z-index:999;
+            background:#fff;
+            border-bottom:1px solid rgba(0,0,0,0.06);
+        }
+        .header.scrolled {
+            box-shadow:0 2px 14px rgba(0,0,0,0.05);
+        }
+        .icon-btn {
+            background:none;
+            border:none;
+            cursor:pointer;
+            font-size:1.25rem;
+            color:#111;
+            padding:6px;
+            line-height:1;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            transition:opacity 0.2s ease;
+        }
+        .icon-btn:hover { opacity:0.55; }
+        .cart-badge {
+            position:absolute;
+            top:-5px;
+            right:-7px;
+            background:#111;
+            color:#fff;
+            font-family:'Outfit', sans-serif;
+            font-size:0.6rem;
+            font-weight:700;
+            width:16px;
+            height:16px;
+            border-radius:50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            background:#111;
+            color:#eee;
+            font-family:'Outfit', sans-serif;
+            padding:80px 40px 0;
+        }
+        .footer-top {
+            display:grid;
+            grid-template-columns:1.3fr 1fr 1.2fr;
+            gap:50px;
+            max-width:1200px;
+            margin:0 auto;
+            padding-bottom:50px;
+            border-bottom:1px solid rgba(255,255,255,0.08);
+        }
+        .footer-logo {
+            font-family:'Literata', serif;
+            font-weight:700;
+            font-size:1.3rem;
+            letter-spacing:1px;
+            color:#fff;
+            margin:0 0 18px;
+        }
+        .footer-col p {
+            font-size:0.85rem;
+            color:#999;
+            line-height:1.8;
+            margin:0 0 4px;
+            font-weight:300;
+        }
+        .footer-col h4 {
+            font-family:'Outfit', sans-serif;
+            font-size:0.72rem;
+            font-weight:600;
+            letter-spacing:2px;
+            text-transform:uppercase;
+            color:#fff;
+            margin:0 0 22px;
+        }
+        .footer-col ul {
+            list-style:none;
+            margin:0;
+            padding:0;
+            display:flex;
+            flex-direction:column;
+            gap:13px;
+        }
+        .footer-col ul li a {
+            color:#999;
+            text-decoration:none;
+            font-size:0.85rem;
+            font-weight:300;
+            transition:color 0.2s ease, padding-left 0.2s ease;
+        }
+        .footer-col ul li a:hover {
+            color:#fff;
+            padding-left:4px;
+        }
+        .newsletter-form {
+            display:flex;
+            margin-top:20px;
+            border:1px solid rgba(255,255,255,0.15);
+        }
+        .newsletter-form input {
+            flex:1;
+            min-width:0;
+            background:transparent;
+            border:none;
+            outline:none;
+            padding:13px 14px;
+            color:#fff;
+            font-family:'Outfit', sans-serif;
+            font-size:0.82rem;
+        }
+        .newsletter-form input::placeholder { color:#666; }
+        .newsletter-form .btn-dark {
+            background:#fff;
+            color:#111;
+            border:none;
+            padding:0 20px;
+            font-family:'Outfit', sans-serif;
+            font-size:0.7rem;
+            font-weight:700;
+            letter-spacing:1px;
+            text-transform:uppercase;
+            cursor:pointer;
+            white-space:nowrap;
+            transition:background 0.2s ease;
+        }
+        .newsletter-form .btn-dark:hover { background:#e0e0e0; }
+        .social-links {
+            display:flex;
+            gap:12px;
+            margin-top:24px;
+        }
+        .social-links a {
+            width:36px;
+            height:36px;
+            border-radius:50%;
+            border:1px solid rgba(255,255,255,0.15);
+            color:#ccc;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            text-decoration:none;
+            transition:all 0.25s ease;
+        }
+        .social-links a:hover {
+            background:#fff;
+            color:#111;
+            border-color:#fff;
+            transform:translateY(-2px);
+        }
+        .footer-bottom {
+            max-width:1200px;
+            margin:0 auto;
+            padding:26px 0 32px;
+            text-align:center;
+        }
+        .footer-bottom p {
+            font-size:0.75rem;
+            color:#777;
+            letter-spacing:0.3px;
+            margin:0;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .influencer-grid { grid-template-columns:repeat(2, 1fr); }
+            .reviews-grid { grid-template-columns:repeat(3, 1fr); }
+            .footer-top { grid-template-columns:1fr 1fr; gap:40px 30px; }
+        }
+        @media (max-width: 600px) {
+            .reviews-hero h1 { font-size:1.7rem; }
+            .influencer-grid { grid-template-columns:1fr; max-width:340px; }
+            .reviews-grid { grid-template-columns:repeat(2, 1fr); }
+            .video-wrap { max-width:100%; }
+            header nav { gap:1.4rem !important; overflow-x:auto; justify-content:flex-start !important; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+            header nav::-webkit-scrollbar { display:none; }
+            .footer { padding:60px 24px 0; }
+            .footer-top { grid-template-columns:1fr; gap:38px; padding-bottom:38px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Pinned Banner -->
+    <div style="background-color:#111; color:#fff; text-align:center; padding:10px 15px; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300;">
+        <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel. Claims for damage or exchange will only be accepted with an unboxing video.
+    </div>
+    <!-- Header with integrated nav -->
+    <header class="header scrolled" style="flex-direction:column;padding:0.75rem 2rem 0;gap:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;padding-bottom:0.65rem;">
+            <div class="header-left" style="flex:1; display:flex; gap:12px;">
+                <button class="icon-btn" id="menuToggle"><i class="ph ph-list"></i></button>
+                <button class="icon-btn" id="searchToggle"><i class="ph ph-magnifying-glass"></i></button>
+            </div>
+            <div class="header-center" style="flex:2; text-align:center;">
+                <a href="index.html" style="text-decoration:none;color:inherit;">
+                    <h1 class="logo" style="font-family:'Literata', serif; font-weight:800; font-size:1.35rem; line-height:1.1; margin:0; letter-spacing:1px;">FARIHA'S<br>COLLECTION</h1>
+                </a>
+            </div>
+            <div class="header-right" style="flex:1; display:flex; justify-content:flex-end;">
+                <button class="icon-btn" id="cartToggle" style="position:relative;"><i class="ph ph-shopping-bag"></i><span class="cart-badge">0</span></button>
+            </div>
+        </div>
+        <nav style="font-family:'Literata', serif; display:flex;gap:2.5rem;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
+            <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Home</a>
+            <a href="shoes (1).html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">All Shoes</a>
+            <a href="reviews.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#111;text-decoration:none;padding:2px 0;border-bottom:2px solid #111;">Reviews</a>
+            <a href="shipping-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Shipping Policy</a>
+            <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
+        </nav>
+    </header>
+
+    <!-- Reviews Hero -->
+    <section class="reviews-hero reveal">
+        <p class="eyebrow">What People Are Saying</p>
+        <h1>Real Reviews From<br>Real Customers</h1>
+        <p class="sub">From verified buyers to well-known creators â€” see why thousands trust Fariha's Collection for authentic, quality preloved footwear.</p>
+        <div class="rating-summary">
+            <div class="stars">
+                <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star-half"></i>
+            </div>
+            <span class="rating-num">4.8</span>
+            <span class="rating-count">Based on 1,200+ Verified Reviews</span>
+        </div>
+    </section>
+
+    <!-- Video Testimonial (Ducky Bhai) -->
+    <section class="video-testimonial reveal">
+        <p class="section-tag">Featured Creator</p>
+        <h2>Ducky Bhai ðŸ¦† Reviews Fariha's Collection</h2>
+        <p class="reviewer-name">Watch what he had to say after unboxing his order</p>
+        <div class="video-wrap reveal-scale">
+            <div class="video-badge"><i class="ph-fill ph-play"></i> Ducky Bhai ðŸ¦†</div>
+            <video src="imagess/1.mp4" controls autoplay muted loop playsinline preload="auto" poster="imagess/1.jpg"></video>
+        </div>
+    </section>
+
+    <!-- Influencer Reviews -->
+    <section class="influencer-section reveal">
+        <p class="section-tag">Trusted By Influencers</p>
+        <h2>Influencer Reviews</h2>
+        <div class="influencer-grid">
+
+            <div class="influencer-card reveal-up delay-1">
+                <div class="influencer-photo"><img src="imagess/1.jpeg" alt="Annuixm review"></div>
+                <div class="influencer-body">
+                    <div class="stars">
+                        <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                    </div>
+                    <p class="review-text">Honestly did not expect preloved shoes to look this fresh. Fariha's Collection sent exactly what was shown, packaging was solid, and the pair still smells new. Ordering again for sure.</p>
+                    <div class="influencer-footer">
+                        <div class="name-wrap">
+                            <span class="name">Annuixm ðŸŽ€</span>
+                            <i class="ph-fill ph-seal-check verified"></i>
+                        </div>
+                        <span class="handle">@annuixm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="influencer-card reveal-up delay-2">
+                <div class="influencer-photo"><img src="imagess/2.jpeg" alt="Tasbeel Gillani review"></div>
+                <div class="influencer-body">
+                    <div class="stars">
+                        <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                    </div>
+                    <p class="review-text">I get asked about my shoes in literally every reel now. Fariha's Collection has some of the cleanest preloved pairs I've come across, and the delivery to Lahore was faster than I expected.</p>
+                    <div class="influencer-footer">
+                        <div class="name-wrap">
+                            <span class="name">Tasbeel Gillani âœ¨</span>
+                            <i class="ph-fill ph-seal-check verified"></i>
+                        </div>
+                        <span class="handle">@tasbeelgillani</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="influencer-card reveal-up delay-3">
+                <div class="influencer-photo"><img src="imagess/3.jpeg" alt="Minahil Hameed review"></div>
+                <div class="influencer-body">
+                    <div class="stars">
+                        <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+                    </div>
+                    <p class="review-text">As someone who's picky about shoes, I was genuinely impressed. Every pair I've ordered from Fariha's Collection has matched the listing perfectly, no scuffs, no surprises. My go to store now.</p>
+                    <div class="influencer-footer">
+                        <div class="name-wrap">
+                            <span class="name">Minahil Hameed ðŸ§šðŸ»â€â™€ï¸</span>
+                            <i class="ph-fill ph-seal-check verified"></i>
+                        </div>
+                        <span class="handle">@minahilhameed</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Customer Reviews Grid -->
+    <section class="reviews-grid-section reveal">
+        <p class="section-tag">From Our Customers</p>
+        <h2>Customer Reviews</h2>
+        <div class="reviews-grid">
+
+            <div class="review-card reveal-up delay-1">
+                <div class="review-photo"><img src="imagess/4.jpeg" alt="Customer review"></div>
+                <div class="review-body">
+                    <div class="stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p class="review-text">Ordered a pair of loafers and honestly the quality is way better than what I expected for a preloved item. Zero complaints, will shop again.</p>
+                    <div class="name-row">
+                        <span class="name">Hassan Raza</span>
+                    </div>
+                    <p class="location">Karachi, Pakistan</p>
+                </div>
+            </div>
+
+            <div class="review-card reveal-up delay-2">
+                <div class="review-photo"><img src="imagess/5.jpeg" alt="Customer review"></div>
+                <div class="review-body">
+                    <div class="stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p class="review-text">The heels I bought looked exactly like the pictures. Packaging was neat and the WhatsApp support team replied within minutes whenever I had questions.</p>
+                    <div class="name-row">
+                        <span class="name">Ayesha Khan</span>
+                    </div>
+                    <p class="location">Lahore, Pakistan</p>
+                </div>
+            </div>
+
+            <div class="review-card reveal-up delay-3">
+                <div class="review-photo"><img src="imagess/6.jpeg" alt="Customer review"></div>
+                <div class="review-body">
+                    <div class="stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-half-fill ph-star-half"></i></div>
+                    <p class="review-text">Good condition shoes for the price, slightly delayed delivery but the team kept me updated the whole time. Would still recommend to friends.</p>
+                    <div class="name-row">
+                        <span class="name">Bilal Ahmed</span>
+                    </div>
+                    <p class="location">Islamabad, Pakistan</p>
+                </div>
+            </div>
+
+            <div class="review-card reveal-up delay-4">
+                <div class="review-photo"><img src="imagess/7.jpeg" alt="Customer review"></div>
+                <div class="review-body">
+                    <div class="stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p class="review-text">This is my third order from Fariha's Collection and every single time the shoes have been exactly as described. Super trustworthy seller.</p>
+                    <div class="name-row">
+                        <span class="name">Zainab Malik</span>
+                    </div>
+                    <p class="location">Faisalabad, Pakistan</p>
+                </div>
+            </div>
+
+            <div class="review-card reveal-up delay-1">
+                <div class="review-photo"><img src="imagess/8.jpeg" alt="Customer review"></div>
+                <div class="review-body">
+                    <div class="stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p class="review-text">Bought sneakers for my brother and he loves them. Great grip, barely any wear, and the price was way lower than buying new ones from the mall.</p>
+                    <div class="name-row">
+                        <span class="name">Usman Tariq</span>
+                    </div>
+                    <p class="location">Multan, Pakistan</p>
+                </div>
+            </div>
+
+            <div class="review-card reveal-up delay-2">
+                <div class="review-photo"><img src="imagess/9.jpeg" alt="Customer review"></div>
+                <div class="review-body">
+                    <div class="stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p class="review-text">The unboxing video requirement made me trust them even more, shows they actually stand behind their product. My sandals arrived spotless.</p>
+                    <div class="name-row">
+                        <span class="name">Mahnoor Siddiqui</span>
+                    </div>
+                    <p class="location">Rawalpindi, Pakistan</p>
+                </div>
+            </div>
+
+            <div class="review-card reveal-up delay-3">
+                <div class="review-photo"><img src="imagess/10.jpeg" alt="Customer review"></div>
+                <div class="review-body">
+                    <div class="stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-half-fill ph-star-half"></i></div>
+                    <p class="review-text">Really happy with my purchase, the shoes fit true to size and came with the original box. Customer service was patient with all my sizing questions.</p>
+                    <div class="name-row">
+                        <span class="name">Fahad Iqbal</span>
+                    </div>
+                    <p class="location">Peshawar, Pakistan</p>
+                </div>
+            </div>
+
+            <div class="review-card reveal-up delay-4">
+                <div class="review-photo"><img src="imagess/11.jpeg" alt="Customer review"></div>
+                <div class="review-body">
+                    <div class="stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p class="review-text">Been buying preloved shoes for years and this is one of the most reliable stores I've dealt with. Everything as promised, no hidden surprises.</p>
+                    <div class="name-row">
+                        <span class="name">Sana Yousaf</span>
+                    </div>
+                    <p class="location">Sialkot, Pakistan</p>
+                </div>
+            </div>
+
+            <div class="review-card reveal-up delay-1">
+                <div class="review-photo"><img src="imagess/12.jpeg" alt="Customer review"></div>
+                <div class="review-body">
+                    <div class="stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p class="review-text">Ordered formal shoes for a wedding and got so many compliments. Looked brand new honestly, could not tell they were preloved at all.</p>
+                    <div class="name-row">
+                        <span class="name">Ahmed Sheikh</span>
+                    </div>
+                    <p class="location">Gujranwala, Pakistan</p>
+                </div>
+            </div>
+
+            <div class="review-card reveal-up delay-2">
+                <div class="review-photo"><img src="imagess/13.jpg" alt="Customer review"></div>
+                <div class="review-body">
+                    <div class="stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
+                    <p class="review-text">Smooth ordering process from start to finish. Paid through EasyPaisa, got tracking updates regularly, and the shoes exceeded my expectations.</p>
+                    <div class="name-row">
+                        <span class="name">Iqra Naveed</span>
+                    </div>
+                    <p class="location">Bahawalpur, Pakistan</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA Strip -->
+    <section class="reviews-cta reveal">
+        <h3>Ready To Find Your Next Favorite Pair?</h3>
+        <p>Join thousands of happy customers shopping authentic preloved footwear across Pakistan.</p>
+        <a href="shoes (1).html" class="btn-light">Shop All Shoes</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer reveal">
+        <div class="footer-top">
+            <div class="footer-col">
+                <h2 class="footer-logo">FARIHA'S COLLECTION</h2>
+                <p>Pakistan</p>
+                <p>Phone: +92 3090625199</p>
+                <p>Email: fariha6484preloved@gmail.com</p>
+            </div>
+            <div class="footer-col reveal-fade delay-3">
+                <h4>Information</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="shipping-policy.html">Shipping Policy &amp; Delivery Info</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p>Subscribe to receive updates, access to exclusive deals, and more.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email address">
+                    <button type="submit" class="btn-dark">Subscribe</button>
+                </form>
+                <div class="social-links">
+                    <a href="#"><i class="ph ph-facebook-logo"></i></a>
+                    <a href="#"><i class="ph ph-instagram-logo"></i></a>
+                    <a href="#"><i class="ph ph-twitter-logo"></i></a>
+                    <a href="#"><i class="ph ph-tiktok-logo"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Fariha's Collection. All rights reserved. | <a href="checkout.html" style="color:#888;text-decoration:none;">Checkout</a></p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
+

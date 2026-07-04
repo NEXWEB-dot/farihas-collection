@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">TOMS Classic Alpargata – Pastel Pink | Fariha's Collection</title>
-    <meta name="description" content="Shop the New-With-Tags TOMS Classic Alpargata in Pastel Pink. Pristine unworn condition with original tags, canvas upper and espadrille woven rope trim.">
+    <title>Men's Shoe Detail - Fariha's Collection</title>
+    <meta name="description" content="Shop men's shoes at Fariha's Collection — quality footwear with authentic tags and details.">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="literata/css/literata.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
     <style>
@@ -30,10 +31,13 @@
             border-bottom: 1px solid #f0f0f0;
             box-shadow: 0 2px 16px rgba(0,0,0,0.04);
         }
-        .pd-header-left, .pd-header-right { display: flex; align-items: center; gap: 1rem; }
+        .pd-header-left, .pd-header-right { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .pd-header-right { justify-content: flex-end; }
+        .pd-header-center { flex: 2; text-align: center; }
         .pd-header-center a {
-            font-size: 1.3rem; font-weight: 800; letter-spacing: 3px;
-            text-decoration: none; color: #000;
+            font-family: 'Literata', serif;
+            font-size: 1.35rem; font-weight: 800; letter-spacing: 1px; line-height: 1.1;
+            text-decoration: none; color: #000; display: inline-block; margin: 0;
         }
         .pd-icon-btn { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: #333; transition: color 0.2s; }
         .pd-icon-btn:hover { color: #000; }
@@ -263,7 +267,7 @@
             display: flex; align-items: flex-start; gap: 8px;
         }
         .pd-acc-content ul li::before {
-            content: '✓'; color: #e8699a; font-weight: 700;
+            content: 'âœ“'; color: #e8699a; font-weight: 700;
             font-size: 0.85rem; flex-shrink: 0; margin-top: 1px;
         }
         .pd-detail-grid {
@@ -371,9 +375,9 @@
     <nav class="breadcrumb" aria-label="Breadcrumb">
         <a href="index.html">Home</a>
         <i class="ph ph-caret-right" style="font-size:0.7rem;"></i>
-        <a href="shoes (1).html">Shoes</a>
+        <a href="shoes (1).html?filter=men">Men's Shoes</a>
         <i class="ph ph-caret-right" style="font-size:0.7rem;"></i>
-        <span id="breadcrumbName">TOMS Alpargata – Pastel Pink</span>
+        <span id="breadcrumbName">Loading...</span>
     </nav>
 
     <!-- Product Main -->
@@ -382,173 +386,56 @@
         <!-- Left: Image Gallery -->
         <div class="pd-gallery">
             <div class="pd-main-img-wrap" id="mainImgWrap">
-                <span class="nwt-badge">✦ New With Tags</span>
-                <img id="mainImg" src="images/pink-toms-1.jpg" alt="TOMS Classic Alpargata Pastel Pink – Side View">
+                <span class="nwt-badge" style="display:none;">âœ¦ New With Tags</span>
+                <img src="" alt="Product Image" class="pd-main-img" id="mainImg">
             </div>
             <div class="pd-thumbs" id="thumbStrip">
-                <div class="pd-thumb active" data-img="images/pink-toms-1.jpg" data-alt="Side view">
-                    <img src="images/pink-toms-1.jpg" alt="Side view">
-                </div>
-                <div class="pd-thumb" data-img="images/pink-toms-2.jpg" data-alt="Front view">
-                    <img src="images/pink-toms-2.jpg" alt="Front view">
-                </div>
-                <div class="pd-thumb" data-img="images/pink-toms-3.jpg" data-alt="Alternate view">
-                    <img src="images/pink-toms-3.jpg" alt="Alternate view">
-                </div>
             </div>
         </div>
 
         <!-- Right: Product Info -->
         <div class="pd-info">
 
-            <p class="pd-brand-tag" id="pdBrand">TOMS · Alpargata Collection</p>
-            <h1 class="pd-title" id="pdTitleName">Classic Alpargata<br>Pastel Pink</h1>
+            <p class="pd-brand-tag" id="pdBrand"></p>
+            <h1 class="pd-title" id="pdTitleName">Loading...</h1>
 
             <!-- Stars -->
             <div class="pd-rating">
-                <span class="pd-stars">★★★★★</span>
-                <span class="pd-rating-count">4.9 · 128 reviews</span>
+                <span class="pd-stars">â˜…â˜…â˜…â˜…â˜…</span>
+                <span class="pd-rating-count">4.9 Â· 128 reviews</span>
             </div>
 
             <!-- Price -->
             <div class="pd-price-row">
-                <span class="pd-price" id="pdPriceVal">Rs13,500.00</span>
-                <span class="pd-price-original" id="pdPriceOriginal">Rs18,000.00</span>
-                <span class="pd-price-badge" id="pdDiscountBadge">25% OFF</span>
+                <span class="pd-price" id="pdPriceVal"></span>
             </div>
 
-            <!-- Condition Badge -->
-            <div class="pd-condition-bar">
-                <i class="ph-fill ph-seal-check"></i>
-                New With Tags (NWT) — Pristine, Unworn Condition
+            <!-- Stock Count -->
+            <div id="pdStockRow" style="margin:8px 0 4px; font-size:0.85rem; font-weight:600; display:none;">
+                <span id="pdStockIcon" style="margin-right:6px;">ðŸŸ¢</span>
+                <span id="pdStockText">In Stock</span>
             </div>
-
-            <hr class="pd-divider">
 
             <!-- Size Selector -->
             <div>
                 <p class="pd-label">
                     Select Size (UK)
-                    <a href="#">Size Guide</a>
+                    <a href="size-guide.html">Size Guide</a>
                 </p>
                 <div class="pd-sizes" id="sizeSelector">
-                    <button class="pd-size-btn" data-size="UK 36">36</button>
-                    <button class="pd-size-btn" data-size="UK 37">37</button>
-                    <button class="pd-size-btn selected" data-size="UK 38">38</button>
-                    <button class="pd-size-btn" data-size="UK 39">39</button>
-                    <button class="pd-size-btn" data-size="UK 40">40</button>
-                    <button class="pd-size-btn out-of-stock" data-size="UK 41" disabled>41</button>
-                    <button class="pd-size-btn out-of-stock" data-size="UK 42" disabled>42</button>
                 </div>
             </div>
 
             <!-- Action Buttons -->
             <div class="pd-actions">
-                <button class="pd-btn-cart" id="pdAddToCart">
-                    <i class="ph ph-shopping-bag"></i> Add to Cart
+                <button class="pd-btn-cart" id="pdAddToCart" disabled>
+                    <i class="ph ph-shopping-bag"></i> Loading...
                 </button>
-                <a href="https://wa.me/923412173887?text=Hi! I'm interested in the TOMS Classic Alpargata Pastel Pink. Is it available?" target="_blank" class="pd-btn-wa">
-                    <i class="ph-fill ph-whatsapp-logo"></i> Order via WhatsApp
-                </a>
             </div>
 
-            <!-- Trust badges -->
-            <div class="pd-trust">
-                <div class="pd-trust-item">
-                    <i class="ph ph-package"></i>
-                    <span>Free Shipping</span>
-                </div>
-                <div class="pd-trust-item">
-                    <i class="ph ph-arrows-counter-clockwise"></i>
-                    <span>30-Day Returns</span>
-                </div>
-                <div class="pd-trust-item">
-                    <i class="ph ph-shield-check"></i>
-                    <span>100% Authentic</span>
-                </div>
+            <div id="pdDescription" style="margin-top: 2rem; font-size: 0.95rem; color: #444; line-height: 1.6; border-top: 1px solid #eee; padding-top: 1.5rem;">
+                <!-- Populated by JS -->
             </div>
-
-            <!-- Accordion Sections -->
-            <div class="pd-accordion">
-
-                <!-- Description -->
-                <div class="pd-acc-item open">
-                    <button class="pd-acc-header">
-                        <span>Product Description</span>
-                        <i class="ph ph-plus pd-acc-icon"></i>
-                    </button>
-                    <div class="pd-acc-body">
-                        <div class="pd-acc-content">
-                            <p>Score a brand-new classic for less! These authentic TOMS Classic Alpargatas are a rare find, coming to you <strong>brand new with tags (NWT)</strong>. Featuring a gorgeous pastel pink canvas upper, these slip-ons offer the ultimate blend of sustainable shopping and pristine, unworn quality.</p>
-                            <br>
-                            <p>They showcase the signature TOMS tucked-toe detailing and the recognizable blue logo patch on the heel, finished with a classic espadrille-style woven rope trim. Completely unworn, perfectly clean, and ready to become your new favourite casual staple.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Condition -->
-                <div class="pd-acc-item">
-                    <button class="pd-acc-header">
-                        <span>Condition Report</span>
-                        <i class="ph ph-plus pd-acc-icon"></i>
-                    </button>
-                    <div class="pd-acc-body">
-                        <div class="pd-acc-content">
-                            <ul>
-                                <li><strong>Condition:</strong> New With Tags (NWT) / Pristine</li>
-                                <li><strong>Details:</strong> Unworn with original retail tags still attached</li>
-                                <li><strong>Upper:</strong> Flawless pink canvas, zero marks or blemishes</li>
-                                <li><strong>Sole:</strong> Completely clean outsoles with zero street wear</li>
-                                <li><strong>Note:</strong> Images show the exact item you will receive</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product Details -->
-                <div class="pd-acc-item">
-                    <button class="pd-acc-header">
-                        <span>Product Details</span>
-                        <i class="ph ph-plus pd-acc-icon"></i>
-                    </button>
-                    <div class="pd-acc-body">
-                        <div class="pd-acc-content">
-                            <div class="pd-detail-grid">
-                                <span class="pd-detail-key">Brand</span>
-                                <span class="pd-detail-val">TOMS</span>
-                                <span class="pd-detail-key">Style</span>
-                                <span class="pd-detail-val">Alpargata Slip-On</span>
-                                <span class="pd-detail-key">Color</span>
-                                <span class="pd-detail-val">Pastel Pink</span>
-                                <span class="pd-detail-key">Material</span>
-                                <span class="pd-detail-val">Canvas upper, rubber outsole, woven jute trim</span>
-                                <span class="pd-detail-key">Eco Benefit</span>
-                                <span class="pd-detail-val">Buying NWT secondhand keeps unworn retail items out of landfills</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Shipping -->
-                <div class="pd-acc-item">
-                    <button class="pd-acc-header">
-                        <span>Shipping & Returns</span>
-                        <i class="ph ph-plus pd-acc-icon"></i>
-                    </button>
-                    <div class="pd-acc-body">
-                        <div class="pd-acc-content">
-                            <ul>
-                                <li>Free nationwide shipping on all orders</li>
-                                <li>Dispatched within 1–2 business days</li>
-                                <li>Cash on delivery available</li>
-                                <li>30-day hassle-free return policy</li>
-                                <li>Contact us via WhatsApp for fastest support</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-            </div><!-- end accordion -->
 
         </div>
     </main>
@@ -590,9 +477,9 @@
         const productId = urlParams.get('id');
 
         const PRODUCT = {
-            name: urlParams.get('name') || 'TOMS Classic Alpargata – Pastel Pink',
-            price: parseInt(urlParams.get('price')) || 13500,
-            image: urlParams.get('image') || 'images/pink-toms-1.jpg'
+            name: urlParams.get('name') || 'Loading...',
+            price: parseInt(urlParams.get('price')) || 0,
+            image: urlParams.get('image') || ''
         };
         let selectedSize = null;
 
@@ -692,13 +579,16 @@
 
             // ----- Description -----
             if (p.description) {
-                const descBody = document.querySelector('.pd-acc-item .pd-acc-content');
+                const descBody = document.getElementById('pdDescription');
                 if (descBody) descBody.innerHTML = `<p>${p.description.replace(/\n/g, '<br>')}</p>`;
             }
 
             // ----- Sizes -----
+            // ----- Sizes + Stock -----
             const sizeSelector = document.getElementById('sizeSelector');
+            let totalStock = 0;
             if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                totalStock = p.sizes.reduce((sum, s) => sum + (Number(s.stock) || 0), 0);
                 sizeSelector.innerHTML = p.sizes.map((s, i) => {
                     const outOfStock = !s.stock || s.stock <= 0;
                     const isFirstAvailable = !outOfStock && !sizeSelector.dataset.firstSet;
@@ -711,10 +601,66 @@
                 selectedSize = firstSelected ? firstSelected.dataset.size : null;
                 wireSizeButtons();
             } else {
-                // No sizes configured for this product — hide the selector entirely
+                // No sizes configured for this product â€” hide the selector entirely
                 const sizeBlock = sizeSelector.closest('div');
                 if (sizeBlock) sizeBlock.style.display = 'none';
                 selectedSize = null;
+            }
+
+            // ----- Stock Count Display -----
+            updateStockDisplay(totalStock, Array.isArray(p.sizes) && p.sizes.length > 0);
+        }
+
+        function updateStockDisplay(totalStock, hasSizes) {
+            const stockRow = document.getElementById('pdStockRow');
+            const stockIcon = document.getElementById('pdStockIcon');
+            const stockText = document.getElementById('pdStockText');
+            const atcBtn = document.getElementById('pdAddToCart');
+
+            if (!stockRow) return;
+
+            if (!hasSizes) {
+                // No stock info available, hide the row
+                stockRow.style.display = 'none';
+                return;
+            }
+
+            stockRow.style.display = 'block';
+
+            if (totalStock <= 0) {
+                stockIcon.textContent = 'ðŸ”´';
+                stockText.textContent = 'Out of Stock';
+                stockText.style.color = '#e53935';
+                // Disable ATC button
+                if (atcBtn) {
+                    atcBtn.disabled = true;
+                    atcBtn.innerHTML = '<i class="ph ph-x-circle"></i> Out of Stock';
+                    atcBtn.style.background = '#ccc';
+                    atcBtn.style.cursor = 'not-allowed';
+                    atcBtn.style.color = '#666';
+                }
+            } else if (totalStock <= 3) {
+                stockIcon.textContent = 'ðŸŸ¡';
+                stockText.textContent = `Only ${totalStock} left in stock â€” order soon!`;
+                stockText.style.color = '#f57c00';
+                if (atcBtn) {
+                    atcBtn.disabled = false;
+                    atcBtn.innerHTML = '<i class="ph ph-shopping-bag"></i> Add to Cart';
+                    atcBtn.style.background = '';
+                    atcBtn.style.cursor = '';
+                    atcBtn.style.color = '';
+                }
+            } else {
+                stockIcon.textContent = 'ðŸŸ¢';
+                stockText.textContent = `${totalStock} in stock`;
+                stockText.style.color = '#2e7d32';
+                if (atcBtn) {
+                    atcBtn.disabled = false;
+                    atcBtn.innerHTML = '<i class="ph ph-shopping-bag"></i> Add to Cart';
+                    atcBtn.style.background = '';
+                    atcBtn.style.cursor = '';
+                    atcBtn.style.color = '';
+                }
             }
         }
 
@@ -730,12 +676,12 @@
 
         function addToCart() {
             const cart = getCart();
-            const key = PRODUCT.name + (selectedSize ? ' · ' + selectedSize : '');
+            const key = PRODUCT.name + (selectedSize ? ' Â· ' + selectedSize : '');
             const ex = cart.find(i => i.name === key);
             if (ex) ex.qty++;
             else cart.push({ name: key, price: PRODUCT.price, image: PRODUCT.image, qty: 1 });
             saveCart(cart);
-            showNotif('✓ Added to cart' + (selectedSize ? ' — ' + selectedSize : ''));
+            showNotif('âœ“ Added to cart' + (selectedSize ? ' â€” ' + selectedSize : ''));
         }
 
         function showNotif(msg) {
@@ -760,7 +706,7 @@
         // Add to cart
         document.getElementById('pdAddToCart').addEventListener('click', addToCart);
 
-        // Cart icon → checkout
+        // Cart icon â†’ checkout
         document.getElementById('cartBtn').addEventListener('click', () => window.location.href = 'checkout.html');
 
         // Back button
@@ -804,8 +750,8 @@
             const grid = document.getElementById('suggestedGrid');
             if (!grid) return;
 
-            // Pull up to 8 other shoes, excluding the current product, then show 4 at random
-            const query = `*[_type == "shoe" && category != "men" && _id != $id] | order(order asc) [0...8]{
+            // Pull up to 8 other men's shoes, excluding the current product, then show 4 at random
+            const query = `*[_type == "shoe" && category == "men" && _id != $id] | order(order asc) [0...8]{
                 _id, name, price, "image": image.asset->url
             }`;
 
@@ -829,7 +775,7 @@
                     const image = p.image || '';
                     const params = new URLSearchParams({ id: p._id, name, price, image });
                     return `
-                        <div class="sug-card" onclick="window.location='product-detail.html?${params.toString()}'">
+                        <div class="sug-card" onclick="window.location='men-product-detail.html?${params.toString()}'">
                             <div class="sug-img-wrap"><img src="${image}" alt="${name}" loading="lazy"></div>
                             <div class="sug-info">
                                 <p class="sug-brand">Fariha's Collection</p>
@@ -852,3 +798,4 @@
 
 </body>
 </html>
+

@@ -322,14 +322,7 @@
                             <option>AJK</option>
                         </select>
                     </div>
-                    <div class="form-group full" id="sizeDisplayRow">
-                        <label>Size Selected</label>
-                        <div id="sizeDisplay" style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid #111;border-radius:8px;background:#f9f9f9;">
-                            <i class="ph ph-sneaker" style="font-size:1.2rem;color:#555;"></i>
-                            <span id="sizeDisplayVal" style="font-size:1rem;font-weight:700;color:#111;">—</span>
-                            <span style="font-size:0.75rem;color:#aaa;margin-left:auto;">Selected on product page</span>
-                        </div>
-                    </div>
+
                     <div class="form-group full">
                         <label>Order Notes (Optional)</label>
                         <textarea id="notes" placeholder="Any special instructions for your order..."></textarea>
@@ -428,7 +421,6 @@
                     <div class="receipt-row"><span>Address</span><span id="rAddress"></span></div>
                     <div class="receipt-row"><span>City</span><span id="rCity"></span></div>
                     <div class="receipt-row" id="rProvinceRow"><span>Province</span><span id="rProvince"></span></div>
-                    <div class="receipt-row"><span>Size</span><span id="rSize"></span></div>
                 </div>
 
                 <div class="receipt-items">
@@ -539,18 +531,6 @@
     function changeQty(i, d) { const c = getCart(); c[i].qty += d; if (c[i].qty <= 0) c.splice(i,1); saveCart(c); }
     function removeItem(i) { const c = getCart(); c.splice(i,1); saveCart(c); }
 
-    // ===== SIZE DISPLAY =====
-    let checkoutSize = localStorage.getItem('fc_selected_size');
-    const sizeDisplayVal = document.getElementById('sizeDisplayVal');
-
-    if (checkoutSize) {
-        sizeDisplayVal.textContent = checkoutSize;
-    } else {
-        sizeDisplayVal.textContent = 'Not selected — go back and pick a size';
-        sizeDisplayVal.style.color = '#e53935';
-        sizeDisplayVal.style.fontSize = '0.82rem';
-    }
-
     // ===== PAYMENT METHOD HIGHLIGHT =====
     document.querySelectorAll('.payment-opt').forEach(opt => {
         opt.addEventListener('click', () => {
@@ -609,17 +589,13 @@
         const phone = document.getElementById('phone').value.trim();
         const addr  = document.getElementById('address').value.trim();
         const city  = document.getElementById('city').value;
-        let size = checkoutSize;
-        const cart  = getCart();
-
-        if (!cart.length) { alert('Your cart is empty!'); return null; }
+        if (!getCart().length) { alert('Your cart is empty!'); return null; }
         if (!first || !last) { alert('Please enter your full name.'); return null; }
         if (!phone) { alert('Please enter your phone/WhatsApp number.'); return null; }
         if (!addr || !city) { alert('Please fill in your complete shipping address.'); return null; }
-        if (!size) { alert('Please select a shoe size.'); return null; }
 
         return {
-            first, last, phone, addr, city, size,
+            first, last, phone, addr, city,
             email:    document.getElementById('email').value.trim(),
             province: document.getElementById('province').value,
             notes:    document.getElementById('notes').value.trim()
@@ -636,7 +612,6 @@
         document.getElementById('rPhone').textContent   = info.phone;
         document.getElementById('rAddress').textContent = info.addr;
         document.getElementById('rCity').textContent    = info.city;
-        document.getElementById('rSize').textContent    = info.size;
 
         if (info.email) {
             document.getElementById('rEmail').textContent = info.email;
@@ -769,7 +744,6 @@
         const name = document.getElementById('rName').textContent;
         const phone = document.getElementById('rPhone').textContent;
         const city = document.getElementById('rCity').textContent;
-        const size = document.getElementById('rSize').textContent;
         const total = document.getElementById('rTotal').textContent;
         const payment = document.getElementById('rPaymentLabel').textContent;
 
@@ -777,7 +751,6 @@
             + `👤 *Name:* ${name}\n`
             + `📞 *Phone:* ${phone}\n`
             + `📍 *City:* ${city}\n`
-            + `👟 *Size:* ${size}\n`
             + `💰 *Total:* ${total}\n`
             + `💳 *Payment:* ${payment}\n\n`
             + `📎 _Receipt screenshot has been downloaded — please attach it to this chat._\n\n`
@@ -806,12 +779,10 @@
             // WhatsApp / COD — build message and open WhatsApp directly
             const cart = getCart();
             let total = 0;
-            let msg = `🛍️ *New Order — Fariha's Collection*\n\n`;
-            msg += `👤 *Customer:* ${info.first} ${info.last}\n`;
-            msg += `📞 *Phone:* ${info.phone}\n`;
+            let msg = `*NEW ORDER - Fariha's Collection*\n\n`;
+            msg += `*CUSTOMER DETAILS*\nName: ${info.first} ${info.last}\nPhone: ${info.phone}\n`;
             if (info.email) msg += `📧 *Email:* ${info.email}\n`;
-            msg += `📍 *Address:* ${info.addr}, ${info.city}${info.province ? ', ' + info.province : ''}\n`;
-            msg += `👟 *Size:* ${info.size}\n\n`;
+            msg += `📍 *Address:* ${info.addr}, ${info.city}${info.province ? ', ' + info.province : ''}\n\n`;
             msg += `🛒 *Order Items:*\n`;
             cart.forEach((item, i) => {
                 const lt = item.price * item.qty;
