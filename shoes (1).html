@@ -82,9 +82,10 @@
         .shoes-nav a.active, .shoes-nav a:hover { color:#111; border-bottom-color:#111; }
 
         /* Filter bar */
-        .filter-bar { background:#f9f9f9; border-bottom:1px solid rgba(0,0,0,0.07); padding:0.6rem 1.5rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
-        .filter-pills { display:flex; gap:0.5rem; flex-wrap:wrap; }
+        .filter-bar { background:#f9f9f9 !important; border-bottom:1px solid rgba(0,0,0,0.07); padding:0.6rem 1.5rem; display:flex !important; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; visibility:visible !important; opacity:1 !important; }
+        .filter-pills { display:flex !important; gap:0.5rem; flex-wrap:wrap; visibility:visible !important; }
         .filter-pill {
+            display:inline-block !important; visibility:visible !important;
             padding:5px 14px; border-radius:99px; border:1.5px solid #ddd;
             font-size:0.72rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase;
             cursor:pointer; background:#fff; color:#666; transition:all 0.2s;

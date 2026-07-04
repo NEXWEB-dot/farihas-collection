@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Size Guide - Fariha's Collection</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="literata/css/literata.css" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        body { font-family: 'Outfit', sans-serif; background: #fafafa; color: #333; line-height: 1.6; }
+        .sg-container { max-width: 800px; margin: 3rem auto 5rem; padding: 0 1.5rem; }
+        .sg-container h1 { font-family: 'Literata', serif; font-size: 2.2rem; color: #111; margin-bottom: 0.5rem; text-align: center; }
+        .sg-subtitle { text-align: center; color: #777; font-size: 0.95rem; margin-bottom: 2.5rem; }
+
+        .sg-tabs { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap; }
+        .sg-tab {
+            border: 1px solid #ddd; background: #fff; color: #555;
+            padding: 0.6rem 1.4rem; border-radius: 999px; font-size: 0.8rem;
+            font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .sg-tab:hover { border-color: #111; color: #111; }
+        .sg-tab.active { background: #111; color: #fff; border-color: #111; }
+
+        .sg-panel { display: none; background: #fff; border-radius: 14px; padding: 1.75rem; box-shadow: 0 2px 16px rgba(0,0,0,0.05); }
+        .sg-panel.active { display: block; }
+
+        .sg-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        .sg-table th, .sg-table td {
+            padding: 0.7rem 0.5rem; text-align: center; font-size: 0.88rem;
+            border-bottom: 1px solid #eee;
+        }
+        .sg-table th { color: #111; font-weight: 700; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+        .sg-table td { color: #444; }
+        .sg-table tr:last-child td { border-bottom: none; }
+
+        .sg-note { font-size: 0.85rem; color: #777; background: #f7f7f7; border-radius: 10px; padding: 1rem 1.2rem; margin-top: 1rem; }
+        .sg-note strong { color: #333; }
+
+        .sg-howto { margin-top: 2.5rem; }
+        .sg-howto h2 { font-family: 'Literata', serif; font-size: 1.3rem; color: #111; margin-bottom: 0.75rem; }
+        .sg-howto ol { padding-left: 1.3rem; color: #555; font-size: 0.92rem; }
+        .sg-howto li { margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <!-- Top Pinned Banner -->
+    <div style="background-color:#111; color:#fff; text-align:center; padding:10px 15px; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300;">
+        <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel. Claims for damage or exchange will only be accepted with an unboxing video.
+    </div>
+    <!-- Header with integrated nav -->
+    <header class="header scrolled" style="flex-direction:column;padding:0.75rem 2rem 0;gap:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;padding-bottom:0.65rem;">
+            <div class="header-left" style="flex:1; display:flex; gap:12px;">
+                <button class="icon-btn" id="menuToggle"><i class="ph ph-list"></i></button>
+                <button class="icon-btn" id="searchToggle"><i class="ph ph-magnifying-glass"></i></button>
+            </div>
+            <div class="header-center" style="flex:2; text-align:center;">
+                <a href="index.html" style="text-decoration:none;color:inherit;">
+                    <h1 class="logo" style="font-family:'Literata', serif; font-weight:800; font-size:1.35rem; line-height:1.1; margin:0; letter-spacing:1px;">FARIHA'S<br>COLLECTION</h1>
+                </a>
+            </div>
+            <div class="header-right" style="flex:1; display:flex; justify-content:flex-end;">
+                <button class="icon-btn" id="cartToggle" style="position:relative;"><i class="ph ph-shopping-bag"></i><span class="cart-badge">0</span></button>
+            </div>
+        </div>
+        <nav style="font-family:'Literata', serif; display:flex;gap:1.75rem;flex-wrap:wrap;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
+            <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Home</a>
+            <a href="shoes (1).html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">All Shoes</a>
+            <a href="reviews.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Reviews</a>
+            <a href="shipping-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Shipping Policy</a>
+            <a href="about-us.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">About Us</a>
+            <a href="privacy-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Privacy Policy</a>
+            <a href="terms-conditions.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Terms & Conditions</a>
+            <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
+        </nav>
+    </header>
+
+    <div class="sg-container">
+        <h1>Size Guide</h1>
+        <p class="sg-subtitle">Find your perfect fit with our UK / EU / US size conversion chart.</p>
+
+        <div class="sg-tabs">
+            <button class="sg-tab" data-tab="women">Women's</button>
+            <button class="sg-tab" data-tab="men">Men's</button>
+            <button class="sg-tab" data-tab="unisex">Unisex</button>
+        </div>
+
+        <!-- Women's Sizes -->
+        <div class="sg-panel" id="panel-women">
+            <table class="sg-table">
+                <thead>
+                    <tr><th>UK</th><th>EU</th><th>US</th><th>Inches</th><th>CM</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>2</td><td>34</td><td>4</td><td>8 1/4</td><td>21.0</td></tr>
+                    <tr><td>2.5</td><td>34.5</td><td>4.5</td><td>8 1/2</td><td>21.6</td></tr>
+                    <tr><td>3</td><td>35</td><td>5</td><td>8 5/8</td><td>21.9</td></tr>
+                    <tr><td>3.5</td><td>35.5</td><td>5.5</td><td>8 3/4</td><td>22.2</td></tr>
+                    <tr><td>4</td><td>36</td><td>6</td><td>9</td><td>22.9</td></tr>
+                    <tr><td>4.5</td><td>36.5</td><td>6.5</td><td>9 1/8</td><td>23.2</td></tr>
+                    <tr><td>5</td><td>37</td><td>7</td><td>9 1/4</td><td>23.5</td></tr>
+                    <tr><td>5.5</td><td>37.5</td><td>7.5</td><td>9 1/2</td><td>24.1</td></tr>
+                    <tr><td>6</td><td>38</td><td>8</td><td>9 5/8</td><td>24.4</td></tr>
+                    <tr><td>6.5</td><td>38.5</td><td>8.5</td><td>9 3/4</td><td>24.8</td></tr>
+                    <tr><td>7</td><td>39</td><td>9</td><td>10</td><td>25.4</td></tr>
+                    <tr><td>7.5</td><td>39.5</td><td>9.5</td><td>10 1/8</td><td>25.7</td></tr>
+                    <tr><td>8</td><td>40</td><td>10</td><td>10 1/4</td><td>26.0</td></tr>
+                    <tr><td>8.5</td><td>40.5</td><td>10.5</td><td>10 1/2</td><td>26.7</td></tr>
+                    <tr><td>9</td><td>41</td><td>11</td><td>10 5/8</td><td>27.0</td></tr>
+                    <tr><td>9.5</td><td>41.5</td><td>11.5</td><td>10 3/4</td><td>27.3</td></tr>
+                    <tr><td>10</td><td>42</td><td>12</td><td>11</td><td>27.9</td></tr>
+                    <tr><td>11</td><td>43</td><td>13</td><td>11 1/4</td><td>28.6</td></tr>
+                    <tr><td>12</td><td>44</td><td>14</td><td>11 5/8</td><td>29.8</td></tr>
+                </tbody>
+            </table>
+            <div class="sg-note"><strong>Note:</strong> Sizing can vary slightly by style — if you're between sizes, we recommend sizing up.</div>
+        </div>
+
+        <!-- Men's Sizes -->
+        <div class="sg-panel" id="panel-men">
+            <table class="sg-table">
+                <thead>
+                    <tr><th>UK</th><th>EU</th><th>US</th><th>Inches</th><th>CM</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>5.5</td><td>39</td><td>6</td><td>9.25</td><td>23.5</td></tr>
+                    <tr><td>6</td><td>39</td><td>6.5</td><td>9.5</td><td>24.1</td></tr>
+                    <tr><td>6.5</td><td>40</td><td>7</td><td>9.625</td><td>24.4</td></tr>
+                    <tr><td>7</td><td>40–41</td><td>7.5</td><td>9.75</td><td>24.8</td></tr>
+                    <tr><td>7.5</td><td>41</td><td>8</td><td>9.9375</td><td>25.4</td></tr>
+                    <tr><td>8</td><td>41–42</td><td>8.5</td><td>10.125</td><td>25.7</td></tr>
+                    <tr><td>8.5</td><td>42</td><td>9</td><td>10.25</td><td>26.0</td></tr>
+                    <tr><td>9</td><td>42–43</td><td>9.5</td><td>10.4375</td><td>26.7</td></tr>
+                    <tr><td>9.5</td><td>43</td><td>10</td><td>10.5625</td><td>27.0</td></tr>
+                    <tr><td>10</td><td>43–44</td><td>10.5</td><td>10.75</td><td>27.3</td></tr>
+                    <tr><td>10.5</td><td>44</td><td>11</td><td>10.9375</td><td>27.9</td></tr>
+                    <tr><td>11</td><td>44–45</td><td>11.5</td><td>11.125</td><td>28.3</td></tr>
+                    <tr><td>11.5</td><td>45</td><td>12</td><td>11.25</td><td>28.6</td></tr>
+                    <tr><td>12.5</td><td>46</td><td>13</td><td>11.5625</td><td>29.4</td></tr>
+                    <tr><td>13.5</td><td>47</td><td>14</td><td>11.875</td><td>30.2</td></tr>
+                    <tr><td>14.5</td><td>48</td><td>15</td><td>12.1875</td><td>31.0</td></tr>
+                    <tr><td>15.5</td><td>49</td><td>16</td><td>12.5</td><td>31.8</td></tr>
+                </tbody>
+            </table>
+            <div class="sg-note"><strong>Note:</strong> Sizing can vary slightly by style — if you're between sizes, we recommend sizing up.</div>
+        </div>
+
+        <!-- Unisex Sizes -->
+        <div class="sg-panel" id="panel-unisex">
+            <table class="sg-table">
+                <thead>
+                    <tr><th>UK</th><th>EU</th><th>US (Men's)</th><th>US (Women's)</th><th>CM</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>5.5</td><td>39</td><td>6</td><td>7.5</td><td>23.5</td></tr>
+                    <tr><td>6</td><td>39</td><td>6.5</td><td>8</td><td>24.1</td></tr>
+                    <tr><td>6.5</td><td>40</td><td>7</td><td>8.5</td><td>24.4</td></tr>
+                    <tr><td>7</td><td>40–41</td><td>7.5</td><td>9</td><td>24.8</td></tr>
+                    <tr><td>7.5</td><td>41</td><td>8</td><td>9.5</td><td>25.4</td></tr>
+                    <tr><td>8</td><td>41–42</td><td>8.5</td><td>10</td><td>25.7</td></tr>
+                    <tr><td>8.5</td><td>42</td><td>9</td><td>10.5</td><td>26.0</td></tr>
+                    <tr><td>9</td><td>42–43</td><td>9.5</td><td>11</td><td>26.7</td></tr>
+                    <tr><td>9.5</td><td>43</td><td>10</td><td>11.5</td><td>27.0</td></tr>
+                    <tr><td>10</td><td>43–44</td><td>10.5</td><td>12</td><td>27.3</td></tr>
+                </tbody>
+            </table>
+            <div class="sg-note"><strong>Note:</strong> Unisex styles are cut to a single standard (men's) sizing — the Women's US column shows the commonly used equivalent if you normally shop women's sizes.</div>
+        </div>
+
+        <div class="sg-howto">
+            <h2>How to Measure Your Foot</h2>
+            <ol>
+                <li>Place a sheet of paper on a hard floor, against a wall.</li>
+                <li>Stand on the paper with your heel touching the wall.</li>
+                <li>Mark the tip of your longest toe on the paper.</li>
+                <li>Measure the distance from the wall edge to the mark in centimeters.</li>
+                <li>Match your measurement to the "Foot Length (cm)" column above for your best size.</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script>
+        const tabs = document.querySelectorAll('.sg-tab');
+        const panels = document.querySelectorAll('.sg-panel');
+
+        function activateTab(key) {
+            tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === key));
+            panels.forEach(p => p.classList.toggle('active', p.id === `panel-${key}`));
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => activateTab(tab.dataset.tab));
+        });
+
+        // Pre-select tab based on ?category= param (set automatically when arriving
+        // from a product page), defaulting to Women's if none/unknown is provided.
+        const params = new URLSearchParams(window.location.search);
+        const initialCategory = (params.get('category') || 'women').toLowerCase();
+        const validCategories = ['men', 'women', 'unisex'];
+        activateTab(validCategories.includes(initialCategory) ? initialCategory : 'women');
+    </script>
+</body>
+</html>

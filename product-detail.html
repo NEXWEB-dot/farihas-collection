@@ -143,16 +143,6 @@
             padding: 3px 10px; border-radius: 20px; letter-spacing: 0.5px;
         }
 
-        /* Condition bar */
-        .pd-condition-bar {
-            display: flex; align-items: center; gap: 8px;
-            background: #f0fdf4; border: 1px solid #bbf7d0;
-            border-radius: 10px; padding: 10px 14px;
-            font-size: 0.8rem; color: #166534;
-            font-weight: 600; margin-bottom: 22px;
-        }
-        .pd-condition-bar i { font-size: 1.1rem; color: #22c55e; }
-
         /* Divider */
         .pd-divider { border: none; border-top: 1px solid #f0f0f0; margin: 20px 0; }
 
@@ -407,25 +397,13 @@
                 <span class="pd-price-badge" id="pdDiscountBadge" style="display:none;">25% OFF</span>
             </div>
 
-            <!-- Condition Badge -->
-            <div class="pd-condition-bar">
-                <i class="ph-fill ph-seal-check"></i>
-                New With Tags (NWT) — Pristine, Unworn Condition
-            </div>
-
-            <!-- Stock Count -->
-            <div id="pdStockRow" style="margin:-8px 0 18px; font-size:0.85rem; font-weight:600; display:none;">
-                <span id="pdStockIcon" style="margin-right:6px;">🟢</span>
-                <span id="pdStockText">In Stock</span>
-            </div>
-
             <hr class="pd-divider">
 
             <!-- Size Selector -->
             <div>
                 <p class="pd-label">
                     Select Size (UK)
-                    <a href="#">Size Guide</a>
+                    <a href="size-guide.html" id="pdSizeGuideLink" target="_blank">Size Guide</a>
                 </p>
                 <div class="pd-sizes" id="sizeSelector"></div>
             </div>
@@ -675,6 +653,10 @@
             const badge = document.querySelector('.nwt-badge');
             if (badge) badge.style.display = 'none';
 
+            // ----- Size Guide link: pre-filter to this product's category -----
+            const sizeGuideLink = document.getElementById('pdSizeGuideLink');
+            if (sizeGuideLink) sizeGuideLink.href = `size-guide.html?category=${category}`;
+
             // ----- WhatsApp order link -----
             const waLink = document.getElementById('pdWhatsappLink');
             if (waLink) {
@@ -746,61 +728,24 @@
             updateStockDisplay(totalStock, Array.isArray(p.sizes) && p.sizes.length > 0);
         }
 
+        // Keeps Add to Cart disabled when a product is genuinely out of stock —
+        // no visible stock-count text is shown, this only guards the button.
         function updateStockDisplay(totalStock, hasSizes) {
-            const stockRow = document.getElementById('pdStockRow');
-            const stockIcon = document.getElementById('pdStockIcon');
-            const stockText = document.getElementById('pdStockText');
             const atcBtn = document.getElementById('pdAddToCart');
+            if (!atcBtn) return;
 
-            if (!stockRow) return;
-
-            if (!hasSizes) {
-                stockRow.style.display = 'none';
-                if (atcBtn) {
-                    atcBtn.disabled = false;
-                    atcBtn.innerHTML = '<i class="ph ph-shopping-bag"></i> Add to Cart';
-                    atcBtn.style.background = '';
-                    atcBtn.style.cursor = '';
-                    atcBtn.style.color = '';
-                }
-                return;
-            }
-
-            stockRow.style.display = 'block';
-
-            if (totalStock <= 0) {
-                stockIcon.textContent = '🔴';
-                stockText.textContent = 'Out of Stock';
-                stockText.style.color = '#e53935';
-                if (atcBtn) {
-                    atcBtn.disabled = true;
-                    atcBtn.innerHTML = '<i class="ph ph-x-circle"></i> Out of Stock';
-                    atcBtn.style.background = '#ccc';
-                    atcBtn.style.cursor = 'not-allowed';
-                    atcBtn.style.color = '#666';
-                }
-            } else if (totalStock <= 3) {
-                stockIcon.textContent = '🟡';
-                stockText.textContent = `Only ${totalStock} left in stock — order soon!`;
-                stockText.style.color = '#f57c00';
-                if (atcBtn) {
-                    atcBtn.disabled = false;
-                    atcBtn.innerHTML = '<i class="ph ph-shopping-bag"></i> Add to Cart';
-                    atcBtn.style.background = '';
-                    atcBtn.style.cursor = '';
-                    atcBtn.style.color = '';
-                }
+            if (!hasSizes || totalStock > 0) {
+                atcBtn.disabled = false;
+                atcBtn.innerHTML = '<i class="ph ph-shopping-bag"></i> Add to Cart';
+                atcBtn.style.background = '';
+                atcBtn.style.cursor = '';
+                atcBtn.style.color = '';
             } else {
-                stockIcon.textContent = '🟢';
-                stockText.textContent = `${totalStock} in stock`;
-                stockText.style.color = '#2e7d32';
-                if (atcBtn) {
-                    atcBtn.disabled = false;
-                    atcBtn.innerHTML = '<i class="ph ph-shopping-bag"></i> Add to Cart';
-                    atcBtn.style.background = '';
-                    atcBtn.style.cursor = '';
-                    atcBtn.style.color = '';
-                }
+                atcBtn.disabled = true;
+                atcBtn.innerHTML = '<i class="ph ph-x-circle"></i> Out of Stock';
+                atcBtn.style.background = '#ccc';
+                atcBtn.style.cursor = 'not-allowed';
+                atcBtn.style.color = '#666';
             }
         }
 
