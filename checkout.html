@@ -366,6 +366,14 @@
                             <div class="payment-opt-sub">Send payment via EasyPaisa — receipt generated</div>
                         </div>
                     </label>
+                    <label class="payment-opt" id="pay-jazzcash">
+                        <input type="radio" name="payment" value="jazzcash">
+                        <span class="payment-icon" style="color:#d3202a;"><i class="ph ph-device-mobile"></i></span>
+                        <div>
+                            <div class="payment-opt-label">JazzCash</div>
+                            <div class="payment-opt-sub">Send payment via JazzCash — receipt generated</div>
+                        </div>
+                    </label>
                 </div>
                 <div class="cod-note" id="codNote">
                     <i class="ph ph-info"></i> <strong>Cash on Delivery</strong> is only available in <strong>Karachi</strong>. Please select a different payment method for other cities.
@@ -642,7 +650,7 @@
         document.getElementById('rTotal').textContent    = formatPrice(subtotal);
 
         // Payment label
-        const labels = { whatsapp: '✅ WhatsApp Order — Pay on Delivery', cod: '✅ Cash on Delivery', bank: '🏦 Bank Transfer — Pending Payment', easypaisa: '📱 EasyPaisa — Pending Payment' };
+        const labels = { whatsapp: '✅ WhatsApp Order — Pay on Delivery', cod: '✅ Cash on Delivery', bank: '🏦 Bank Transfer — Pending Payment', easypaisa: '📱 EasyPaisa — Pending Payment', jazzcash: '📱 JazzCash — Pending Payment' };
         document.getElementById('rPaymentLabel').textContent = labels[payMethod] || payMethod;
 
         // Bank/EasyPaisa instructions
@@ -654,19 +662,19 @@
                 <div class="bank-title"><i class="ph ph-bank"></i> Bank Transfer Instructions</div>
                 <div class="bank-row">
                     <span class="bank-row-label">Bank</span>
-                    <span class="bank-row-value">HBL / Meezan Bank</span>
+                    <span class="bank-row-value">Meezan Bank — Barkat-e-Hyderi Branch</span>
                 </div>
                 <div class="bank-row">
                     <span class="bank-row-label">Account Name</span>
-                    <span class="bank-row-value">Fariha's Collection</span>
+                    <span class="bank-row-value">Sheeza Razzaq</span>
                 </div>
                 <div class="bank-row">
                     <span class="bank-row-label">Account No.</span>
-                    <span class="bank-row-value">0123-4567890-001</span>
+                    <span class="bank-row-value">01160105996205</span>
                 </div>
                 <div class="bank-row">
                     <span class="bank-row-label">IBAN</span>
-                    <span class="bank-row-value">PK00HBL000000000001</span>
+                    <span class="bank-row-value">PK07MEZN0001160105996205</span>
                 </div>
                 <div class="bank-footer">
                     📲 After transfer, send screenshot to WhatsApp: <strong>0300-2757988</strong>
@@ -678,11 +686,11 @@
                 <div class="bank-title"><i class="ph ph-device-mobile"></i> EasyPaisa Payment Instructions</div>
                 <div class="bank-row">
                     <span class="bank-row-label">EasyPaisa Number</span>
-                    <span class="bank-row-value">0300-2757988</span>
+                    <span class="bank-row-value">0331-1381530</span>
                 </div>
                 <div class="bank-row">
                     <span class="bank-row-label">Account Name</span>
-                    <span class="bank-row-value">Fariha Collection</span>
+                    <span class="bank-row-value">Sheeza Razzak</span>
                 </div>
                 <div class="bank-row">
                     <span class="bank-row-label">Amount to Send</span>
@@ -695,6 +703,29 @@
             // Fill in amount after rendering
             const epEl = document.getElementById('epAmount');
             if (epEl) epEl.textContent = document.getElementById('rTotal').textContent;
+        } else if (payMethod === 'jazzcash') {
+            bankInfo.style.display = 'block';
+            bankInfo.innerHTML = `
+                <div class="bank-title"><i class="ph ph-device-mobile"></i> JazzCash Payment Instructions</div>
+                <div class="bank-row">
+                    <span class="bank-row-label">JazzCash Number</span>
+                    <span class="bank-row-value">0331-1381530</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-row-label">Account Name</span>
+                    <span class="bank-row-value">Sheeza Razzak</span>
+                </div>
+                <div class="bank-row">
+                    <span class="bank-row-label">Amount to Send</span>
+                    <span class="bank-row-value" id="jcAmount"></span>
+                </div>
+                <div class="bank-footer">
+                    📲 After payment, send screenshot to WhatsApp: <strong>0300-2757988</strong>
+                </div>
+            `;
+            // Fill in amount after rendering
+            const jcEl = document.getElementById('jcAmount');
+            if (jcEl) jcEl.textContent = document.getElementById('rTotal').textContent;
         } else {
             bankInfo.style.display = 'none';
         }
@@ -771,7 +802,7 @@
         const payMethod = document.querySelector('input[name="payment"]:checked').value;
         setStep(2);
 
-        if (payMethod === 'bank' || payMethod === 'easypaisa') {
+        if (payMethod === 'bank' || payMethod === 'easypaisa' || payMethod === 'jazzcash') {
             // Show receipt first so customer sees payment instructions,
             // then they use the 'Send via WhatsApp' button inside the receipt.
             setTimeout(() => showReceipt(info, payMethod), 400);

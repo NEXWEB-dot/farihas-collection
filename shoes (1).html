@@ -285,8 +285,7 @@
             }
 
             allProducts = products; // store for filter/sort
-            grid.innerHTML = products.map(productCardHTML).join('');
-            wireProductCards();
+            applyFilterAndSort(); // respect any filter already set from the URL (e.g. ?filter=men) or user selection
         } catch (err) {
             console.error('Failed to load products from Sanity:', err);
             grid.innerHTML = '<p class="col-span-full text-center text-sm text-red-500 py-10">Couldn\'t load products. Check your Sanity project ID / dataset / CORS settings.</p>';
