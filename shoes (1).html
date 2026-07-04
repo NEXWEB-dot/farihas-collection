@@ -114,14 +114,17 @@
 
         /* Reviews modal */
         .reviews-modal-overlay {
-            display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
+            display:none; position:fixed; inset:0; background:rgba(255,255,255,0.35);
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
             z-index:9999; align-items:center; justify-content:center; padding:1rem;
         }
         .reviews-modal-overlay.show { display:flex; }
         .reviews-modal-box {
-            position:relative; background:#fff; border-radius:16px;
+            position:relative; background:rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-radius:20px; border:1px solid rgba(255,255,255,0.6);
             width:100%; max-width:520px; max-height:85vh; overflow-y:auto;
-            box-shadow:0 25px 80px rgba(0,0,0,0.3);
+            box-shadow:0 25px 80px rgba(0,0,0,0.25);
             animation:reviewsModalIn 0.3s cubic-bezier(0.16,1,0.3,1);
         }
         @keyframes reviewsModalIn { from { opacity:0; transform:translateY(20px) scale(0.98); } to { opacity:1; transform:translateY(0) scale(1); } }
@@ -223,9 +226,9 @@
         <nav class="shoes-nav" style="font-family:'Literata', serif; display:flex;gap:1.75rem;flex-wrap:wrap;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
             <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Home</a>
             <div class="nav-shop-dropdown">
-                <a href="shoes (1).html" class="nav-shop-toggle active">All Shoes <i class="ph ph-caret-down caret"></i></a>
+                <a href="shoes (1).html" class="nav-shop-toggle active">Shop <i class="ph ph-caret-down caret"></i></a>
                 <div class="nav-shop-menu">
-                    <a href="shoes (1).html">All Shoes</a>
+                    <a href="shoes (1).html">Shop</a>
                     <a href="shoes (1).html?filter=women">Women</a>
                     <a href="shoes (1).html?filter=men">Men</a>
                     <a href="shoes (1).html?filter=unisex">Unisex</a>
@@ -255,9 +258,6 @@
             <option value="name-asc">Name: A – Z</option>
             <option value="name-desc">Name: Z – A</option>
         </select>
-        <button class="see-reviews-btn" id="seeReviewsBtn">
-            <i class="ph-fill ph-star"></i> See Our Reviews
-        </button>
     </div>
 
     <!-- ===== SEE OUR REVIEWS MODAL ===== -->
@@ -283,17 +283,9 @@
                     <div class="reviews-modal-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
                     <p>The heels I bought looked exactly like the pictures. Packaging was neat and the WhatsApp support team replied within minutes whenever I had questions.</p>
                 </div>
-                <div class="reviews-modal-item">
-                    <div class="reviews-modal-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div>
-                    <p>This is my third order from Fariha's Collection and every single time the shoes have been exactly as described. Super trustworthy seller.</p>
-                </div>
-                <div class="reviews-modal-item">
-                    <div class="reviews-modal-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-half-fill ph-star-half"></i></div>
-                    <p>Good condition shoes for the price, slightly delayed delivery but the team kept me updated the whole time. Would still recommend to friends.</p>
-                </div>
             </div>
             <div class="reviews-modal-footer">
-                <a href="reviews.html" class="reviews-modal-viewall">View All Reviews</a>
+                <a href="reviews.html" class="reviews-modal-viewall">See All Reviews</a>
             </div>
         </div>
     </div>
@@ -510,12 +502,15 @@
         if (window.openMenu) window.openMenu();
     });
 
-    // ===== SEE OUR REVIEWS MODAL =====
+    // ===== REVIEWS MODAL (auto pop-up) =====
     const reviewsModalOverlay = document.getElementById('reviewsModalOverlay');
     const reviewsModalClose = document.getElementById('reviewsModalClose');
-    document.getElementById('seeReviewsBtn').addEventListener('click', () => {
-        reviewsModalOverlay.classList.add('show');
+
+    // Auto-show shortly after the page loads
+    window.addEventListener('load', () => {
+        setTimeout(() => reviewsModalOverlay.classList.add('show'), 600);
     });
+
     reviewsModalClose.addEventListener('click', () => {
         reviewsModalOverlay.classList.remove('show');
     });

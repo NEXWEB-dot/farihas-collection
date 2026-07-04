@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="index.html" class="menu-link"><i class="ph ph-house"></i> Home</a>
                 <div class="menu-link-group" id="menuShopGroup">
                     <button type="button" id="menuShopToggle" class="menu-link menu-shop-toggle">
-                        <span class="menu-shop-toggle-label"><i class="ph ph-sneaker"></i> All Shoes</span>
+                        <span class="menu-shop-toggle-label"><i class="ph ph-sneaker"></i> Shop</span>
                         <i class="ph ph-caret-down menu-shop-caret"></i>
                     </button>
                     <div class="menu-shop-submenu" id="menuShopSubmenu">
