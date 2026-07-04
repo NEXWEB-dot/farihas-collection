@@ -290,27 +290,70 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <nav class="menu-nav">
                 <a href="index.html" class="menu-link"><i class="ph ph-house"></i> Home</a>
-                <a href="shoes (1).html" class="menu-link"><i class="ph ph-sneaker"></i> All Shoes</a>
+                <div class="menu-link-group" id="menuShopGroup">
+                    <button type="button" id="menuShopToggle" class="menu-link menu-shop-toggle">
+                        <span class="menu-shop-toggle-label"><i class="ph ph-sneaker"></i> All Shoes</span>
+                        <i class="ph ph-caret-down menu-shop-caret"></i>
+                    </button>
+                    <div class="menu-shop-submenu" id="menuShopSubmenu">
+                        <a href="shoes (1).html" class="menu-link menu-sublink"><i class="ph ph-square"></i> All</a>
+                        <a href="shoes (1).html?filter=women" class="menu-link menu-sublink"><i class="ph ph-square"></i> Women</a>
+                        <a href="shoes (1).html?filter=men" class="menu-link menu-sublink"><i class="ph ph-square"></i> Men</a>
+                        <a href="shoes (1).html?filter=unisex" class="menu-link menu-sublink"><i class="ph ph-square"></i> Unisex</a>
+                    </div>
+                </div>
                 <a href="reviews.html" class="menu-link"><i class="ph ph-star"></i> Reviews</a>
                 <a href="shipping-policy.html" class="menu-link"><i class="ph ph-truck"></i> Shipping Policy</a>
-                <a href="about-us.html" class="menu-link"><i class="ph ph-info"></i> About Us</a>
                 <a href="privacy-policy.html" class="menu-link"><i class="ph ph-shield-check"></i> Privacy Policy</a>
                 <a href="terms-conditions.html" class="menu-link"><i class="ph ph-file-text"></i> Terms & Conditions</a>
+                <a href="about-us.html" class="menu-link"><i class="ph ph-info"></i> About Us</a>
             </nav>
             <div class="menu-footer">
                 <div class="menu-social">
-                    <a href="#"><i class="ph ph-facebook-logo"></i></a>
-                    <a href="#"><i class="ph ph-instagram-logo"></i></a>
-                    <a href="#"><i class="ph ph-twitter-logo"></i></a>
-                    <a href="#"><i class="ph ph-tiktok-logo"></i></a>
-                    <a href="#"><i class="ph ph-whatsapp-logo"></i></a>
+                    <a href="https://www.facebook.com/share/1GMaKgnphh/?mibextid=wwXIfr" target="_blank" rel="noopener"><i class="ph ph-facebook-logo"></i></a>
+                    <a href="https://www.instagram.com/farihapreloved_?igsh=MW1vMnp5em1qNTduag%3D%3D&utm_source=qr" target="_blank" rel="noopener"><i class="ph ph-instagram-logo"></i></a>
+                    <a href="https://vt.tiktok.com/ZSCbGXCc5/" target="_blank" rel="noopener"><i class="ph ph-tiktok-logo"></i></a>
+                    <a href="https://wa.me/923090625199" target="_blank" rel="noopener"><i class="ph ph-whatsapp-logo"></i></a>
                 </div>
             </div>
         `;
         document.body.appendChild(overlay);
         document.body.appendChild(drawer);
 
+        // Inject dropdown-specific styles once (kept self-contained so it works
+        // regardless of what style.css defines for .menu-link)
+        if (!document.getElementById('menuShopDropdownStyles')) {
+            const style = document.createElement('style');
+            style.id = 'menuShopDropdownStyles';
+            style.textContent = `
+                .menu-shop-toggle {
+                    background: none; border: none; width: 100%; text-align: left;
+                    cursor: pointer; font: inherit; display: flex; align-items: center;
+                    justify-content: space-between;
+                }
+                .menu-shop-toggle-label { display: flex; align-items: center; gap: 10px; }
+                .menu-shop-caret { transition: transform 0.2s ease; }
+                .menu-link-group.open .menu-shop-caret { transform: rotate(180deg); }
+                .menu-shop-submenu {
+                    display: none; flex-direction: column; overflow: hidden;
+                }
+                .menu-link-group.open .menu-shop-submenu { display: flex; }
+                .menu-sublink { padding-left: 34px !important; font-size: 0.85rem !important; opacity: 0.85; }
+                .menu-sublink:hover { opacity: 1; }
+            `;
+            document.head.appendChild(style);
+        }
+
         document.getElementById('closeMenu').addEventListener('click', closeMenu);
+
+        const shopToggle = document.getElementById('menuShopToggle');
+        const shopGroup = document.getElementById('menuShopGroup');
+        if (shopToggle && shopGroup) {
+            shopToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                shopGroup.classList.toggle('open');
+            });
+        }
     }
 
     function openMenu() {
@@ -448,13 +491,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===== WHATSAPP FLOATING BUTTON =====
-    const whatsappFloat = document.createElement('a');
-    whatsappFloat.href = 'https://wa.me/923090625199?text=Hi! I\'m interested in Fariha\'s Collection products.';
-    whatsappFloat.target = '_blank';
-    whatsappFloat.className = 'whatsapp-float';
-    whatsappFloat.innerHTML = '<i class="ph-fill ph-whatsapp-logo"></i>';
-    whatsappFloat.title = 'Chat with us on WhatsApp';
-    document.body.appendChild(whatsappFloat);
+    // Skip if the page already has its own (e.g. product-detail.html, shoes (1).html)
+    if (!document.querySelector('.whatsapp-float')) {
+        const whatsappFloat = document.createElement('a');
+        whatsappFloat.href = 'https://wa.me/923090625199?text=Hi! I\'m interested in Fariha\'s Collection products.';
+        whatsappFloat.target = '_blank';
+        whatsappFloat.className = 'whatsapp-float';
+        whatsappFloat.innerHTML = '<i class="ph-fill ph-whatsapp-logo"></i>';
+        whatsappFloat.title = 'Chat with us on WhatsApp';
+        document.body.appendChild(whatsappFloat);
+    }
 
     // ===== SCROLL ANIMATIONS (Intersection Observer) =====
     const observerOptions = {
