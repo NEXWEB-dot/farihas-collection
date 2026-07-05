@@ -5,7 +5,8 @@
     --color-primary-light: #333333;
     --color-gray-light: #f5f5f5;
     --color-gray-dark: #222222;
-    --font-main: 'Outfit', sans-serif;
+    --font-main: 'Poppins', sans-serif;
+    --font-display: 'Playfair Display', serif;
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
     --spacing-md: 2rem;
@@ -23,6 +24,8 @@
 
 html {
     scroll-behavior: smooth;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -31,6 +34,7 @@ body {
     color: var(--color-text);
     line-height: 1.6;
     overflow-x: hidden;
+    max-width: 100%;
 }
 
 a {
@@ -109,7 +113,8 @@ button {
 .hero {
     position: relative;
     width: 100%;
-    height: 90vh;
+    height: 92vh;
+    min-height: 560px;
     overflow: hidden;
 }
 
@@ -123,7 +128,7 @@ button {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 35%;
+    object-position: center 40%;
     /* Subtle zoom effect for 'fresh and alive' */
     animation: slowZoom 20s infinite alternate;
 }
@@ -139,22 +144,75 @@ button {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 40%);
+    background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 38%, rgba(0,0,0,0.6) 100%);
 }
 
-.hero-title {
+.hero-content {
     position: absolute;
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #fff;
-    font-size: 4rem;
-    font-weight: 700;
-    letter-spacing: 4px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 2.75rem 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    text-transform: uppercase;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    gap: 1.4rem;
+    background: rgba(20, 20, 20, 0.28);
+    backdrop-filter: blur(10px) saturate(130%);
+    -webkit-backdrop-filter: blur(10px) saturate(130%);
 }
+
+.hero-heading {
+    font-family: var(--font-display);
+    color: #fff;
+    font-size: 3.4rem;
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: 0.5px;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.55);
+}
+
+.hero-heading em {
+    font-style: italic;
+}
+
+.hero-subtext {
+    font-family: var(--font-main);
+    color: rgba(255,255,255,0.96);
+    font-size: 1.05rem;
+    font-weight: 400;
+    line-height: 1.6;
+    max-width: 520px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+}
+
+.hero-cta {
+    font-family: var(--font-main);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    color: #111;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 0.95rem 2.1rem;
+    border-radius: 50px;
+    text-decoration: none;
+    margin-top: 0.4rem;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.hero-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+
+/* Mobile hero spacing is consolidated in the single MOBILE RESPONSIVENESS block below */
 
 /* ================= FEATURES BAR ================= */
 .features-bar {
@@ -184,6 +242,7 @@ button {
 }
 
 .section-title {
+    font-family: var(--font-display);
     font-size: 2rem;
     font-weight: 600;
     margin-bottom: var(--spacing-md);
@@ -318,6 +377,7 @@ button {
 }
 
 .testimonial-text h3 {
+    font-family: var(--font-display);
     font-size: 2.5rem;
     margin-bottom: 1rem;
 }
@@ -447,7 +507,9 @@ button {
     width: 100%;
     border-radius: 8px;
     object-fit: cover;
-    height: 400px;
+    aspect-ratio: 4 / 3;
+    height: auto;
+    max-height: 400px;
     transition: transform var(--transition-fast);
 }
 
@@ -600,9 +662,6 @@ button {
 @media (max-width: 768px) {
     .testimonial-content {
         grid-template-columns: 1fr;
-    }
-    .hero-title {
-        font-size: 2.5rem;
     }
     .banner-grid {
         grid-template-columns: 1fr;
@@ -1059,14 +1118,14 @@ button {
     right: 24px;
     width: 56px;
     height: 56px;
-    background: #25D366;
+    background: #111;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
     font-size: 1.8rem;
-    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
     z-index: 9000;
     text-decoration: none;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -1074,12 +1133,12 @@ button {
 }
 .whatsapp-float:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
+    box-shadow: 0 6px 30px rgba(0,0,0,0.45);
 }
 
 @keyframes whatsappPulse {
-    0%, 100% { box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4); }
-    50% { box-shadow: 0 4px 30px rgba(37, 211, 102, 0.6); }
+    0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.35); }
+    50% { box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
 }
 
 /* ================= MOBILE RESPONSIVENESS ================= */
@@ -1091,12 +1150,27 @@ button {
     
     /* Hero section adjustments */
     .hero { 
-        height: 60vh !important; 
+        height: 78vh !important;
+        min-height: 520px !important;
     }
-    .hero-title { 
-        font-size: 2.2rem !important; 
-        bottom: 15% !important; 
-        letter-spacing: 2px !important;
+    .hero-content {
+        gap: 0.9rem !important;
+        padding: 1.75rem 1.5rem !important;
+        width: 100% !important;
+    }
+    .hero-heading { 
+        font-size: 2rem !important; 
+        line-height: 1.25 !important;
+        letter-spacing: 0.2px !important;
+    }
+    .hero-subtext {
+        font-size: 0.9rem !important;
+        line-height: 1.55 !important;
+    }
+    .hero-cta {
+        padding: 0.8rem 1.7rem !important;
+        font-size: 0.82rem !important;
+        margin-top: 0.2rem !important;
     }
     
     /* Features bar stack */
@@ -1123,6 +1197,12 @@ button {
         flex-direction: column;
         align-items: stretch !important;
     }
+    .filter-pills {
+        justify-content: center !important;
+    }
+    .sort-select {
+        width: 100%;
+    }
     
     /* Checkout layout adjustments */
     .co-layout { 
@@ -1140,5 +1220,56 @@ button {
     /* Category section */
     .category-grid {
         grid-template-columns: 1fr !important;
+    }
+
+    /* Banner images: shorter on mobile so they don't feel oversized */
+    .banner-card img {
+        aspect-ratio: 16 / 10 !important;
+        max-height: 260px !important;
+    }
+
+    /* Product thumbnail strips: scroll horizontally instead of overflowing/wrapping oddly */
+    .pd-thumbs {
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+    }
+
+    /* Size guide table: allow horizontal scroll instead of squeezing columns unreadably */
+    .sg-table-wrap {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Generic long-form text pages */
+    .page-container, .policy-container {
+        margin: 2rem auto !important;
+        padding: 1.5rem 1.25rem !important;
+        border-radius: 8px !important;
+    }
+    .page-container h1, .policy-container h1 {
+        font-size: 1.7rem !important;
+    }
+}
+
+/* Extra-small phones: tighten hero further so nothing feels cramped */
+@media (max-width: 380px) {
+    .hero {
+        height: 82vh !important;
+        min-height: 480px !important;
+    }
+    .hero-heading {
+        font-size: 1.6rem !important;
+    }
+    .hero-subtext {
+        font-size: 0.82rem !important;
+    }
+    .hero-cta {
+        padding: 0.7rem 1.5rem !important;
+        font-size: 0.78rem !important;
+    }
+    .banner-card img {
+        max-height: 200px !important;
     }
 }

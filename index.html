@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fariha's Collection</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Literata Font -->
-    <link href="literata/css/literata.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&display=swap" rel="stylesheet">
     <!-- Icons (Phosphor Icons or FontAwesome) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
@@ -66,7 +64,15 @@
             50% { margin-top: -10px; }
         }
         @media (max-width: 640px) {
+            .customer-photo-stack { height: 320px; }
             .customer-photo-stack .photo-card { height: 220px; width: 150px; }
+        }
+        @media (max-width: 400px) {
+            .customer-photo-stack { height: 260px; }
+            .customer-photo-stack .photo-card { height: 170px; width: 120px; }
+            .customer-photo-stack .photo-card:nth-child(1) { transform: rotate(-7deg) translate(-38px, 8px); }
+            .customer-photo-stack .photo-card:nth-child(2) { transform: rotate(4deg) translate(10px, -14px); }
+            .customer-photo-stack .photo-card:nth-child(3) { transform: rotate(-2deg) translate(38px, 18px); }
         }
     </style>
 
@@ -94,7 +100,7 @@
         .nav-shop-menu a {
             display: block; padding: 9px 20px; font-size: 0.72rem; font-weight: 600; letter-spacing: 1px;
             text-transform: uppercase; color: #666; text-decoration: none;
-            transition: background 0.15s, color 0.15s; font-family: 'Outfit', sans-serif;
+            transition: background 0.15s, color 0.15s; font-family: 'Poppins', sans-serif;
         }
         .nav-shop-menu a:hover { background: #f7f7f7; color: #111; }
 
@@ -127,14 +133,14 @@
             </div>
             <div class="header-center" style="flex:2; text-align:center;">
                 <a href="index.html" style="text-decoration:none;color:inherit;">
-                    <h1 class="logo" style="font-family:'Literata', serif; font-weight:800; font-size:1.35rem; line-height:1.1; margin:0; letter-spacing:1px;">FARIHA'S<br>COLLECTION</h1>
+                    <h1 class="logo" style="font-family:'Poppins', serif; font-weight:800; font-size:1.35rem; line-height:1.1; margin:0; letter-spacing:1px;">FARIHA'S<br>COLLECTION</h1>
                 </a>
             </div>
             <div class="header-right" style="flex:1; display:flex; justify-content:flex-end;">
                 <button class="icon-btn" id="cartToggle" style="position:relative;"><i class="ph ph-shopping-bag"></i><span class="cart-badge">0</span></button>
             </div>
         </div>
-        <nav style="font-family:'Literata', serif; display:flex;gap:2.5rem;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
+        <nav style="font-family:'Poppins', serif; display:flex;gap:2.5rem;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
             <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#111;text-decoration:none;padding:2px 0;border-bottom:2px solid #111;">Home</a>
             <div class="nav-shop-dropdown">
                 <a href="shoes (1).html" class="nav-shop-toggle">Shop <i class="ph ph-caret-down caret"></i></a>
@@ -152,9 +158,13 @@
     <!-- Hero Section -->
     <section class="hero reveal">
         <div class="hero-image">
-            <img src="images/hero_closet.jpg" alt="Fariha's Collection Premium Footwear">
+            <img src="images/9.jpg" alt="Fariha's Collection Timeless Pre-Loved Footwear">
             <div class="hero-overlay"></div>
-            <h2 class="hero-title reveal-up delay-1">LATEST ARRIVALS</h2>
+            <div class="hero-content reveal-up delay-1">
+                <h2 class="hero-heading">Discover Timeless<br><em>Pre-Loved Footwear</em></h2>
+                <p class="hero-subtext">Curated original shoes that blend style, comfort, and quality—at prices you'll love.</p>
+                <a href="shoes (1).html" class="hero-cta">Shop Collection <i class="ph ph-arrow-right"></i></a>
+            </div>
         </div>
     </section>
 

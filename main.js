@@ -297,7 +297,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     </button>
                     <div class="menu-shop-submenu" id="menuShopSubmenu">
                         <a href="shoes (1).html" class="menu-link menu-sublink"><i class="ph ph-square"></i> All</a>
-                        <a href="shoes (1).html?filter=women" class="menu-link menu-sublink"><i class="ph ph-square"></i> Women</a>
+                        <div class="menu-link-group menu-subgroup" id="menuWomenGroup">
+                            <button type="button" id="menuWomenToggle" class="menu-link menu-sublink menu-shop-toggle">
+                                <span class="menu-shop-toggle-label"><i class="ph ph-square"></i> Women</span>
+                                <i class="ph ph-caret-down menu-shop-caret"></i>
+                            </button>
+                            <div class="menu-shop-submenu menu-subsubmenu" id="menuWomenSubmenu">
+                                <a href="shoes (1).html?filter=women&category=heels" class="menu-link menu-sublink menu-subsublink">👠 Heels</a>
+                                <a href="shoes (1).html?filter=women&category=sneakers" class="menu-link menu-sublink menu-subsublink">👟 Sneakers</a>
+                                <a href="shoes (1).html?filter=women&category=loafers" class="menu-link menu-sublink menu-subsublink">🥿 Loafers</a>
+                                <a href="shoes (1).html?filter=women&category=boots" class="menu-link menu-sublink menu-subsublink">👢 Boots</a>
+                                <a href="shoes (1).html?filter=women&category=sandals" class="menu-link menu-sublink menu-subsublink">🩴 Sandals</a>
+                            </div>
+                        </div>
                         <a href="shoes (1).html?filter=men" class="menu-link menu-sublink"><i class="ph ph-square"></i> Men</a>
                         <a href="shoes (1).html?filter=unisex" class="menu-link menu-sublink"><i class="ph ph-square"></i> Unisex</a>
                     </div>
@@ -340,6 +352,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 .menu-link-group.open .menu-shop-submenu { display: flex; }
                 .menu-sublink { padding-left: 34px !important; font-size: 0.85rem !important; opacity: 0.85; }
                 .menu-sublink:hover { opacity: 1; }
+                .menu-subgroup .menu-shop-toggle { padding-left: 34px !important; }
+                .menu-subsublink { padding-left: 58px !important; font-size: 0.8rem !important; }
             `;
             document.head.appendChild(style);
         }
@@ -352,6 +366,16 @@ document.addEventListener('DOMContentLoaded', () => {
             shopToggle.addEventListener('click', (e) => {
                 e.preventDefault();
                 shopGroup.classList.toggle('open');
+            });
+        }
+
+        const womenToggle = document.getElementById('menuWomenToggle');
+        const womenGroup = document.getElementById('menuWomenGroup');
+        if (womenToggle && womenGroup) {
+            womenToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                womenGroup.classList.toggle('open');
             });
         }
     }
