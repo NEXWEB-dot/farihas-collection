@@ -186,6 +186,43 @@
             transform: translate(-50%, -50%) rotate(-45deg);
         }
 
+        /* Condition line */
+        .pd-condition {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem; font-weight: 600; color: #333;
+            margin-bottom: 16px;
+        }
+        .pd-condition strong { color: #111; font-weight: 700; }
+
+        /* Trust badges bar */
+        .pd-trustbar {
+            background: #111;
+            border-radius: 18px;
+            padding: 18px 22px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px 16px;
+            margin-bottom: 24px;
+        }
+        .pd-trustbar-item {
+            display: flex; align-items: center; gap: 9px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem; font-weight: 600;
+            color: #f2f2f2; letter-spacing: 0.2px;
+            line-height: 1.3;
+        }
+        .pd-trustbar-icon {
+            font-size: 1.1rem; line-height: 1; flex-shrink: 0;
+        }
+        @media (max-width: 420px) {
+            .pd-trustbar {
+                grid-template-columns: 1fr;
+                gap: 10px;
+                padding: 16px 18px;
+            }
+            .pd-trustbar-item { font-size: 0.78rem; }
+        }
+
         /* Action buttons */
         .pd-actions { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
 
@@ -427,6 +464,17 @@
                     <a href="size-guide.html" id="pdSizeGuideLink" target="_blank">Size Guide</a>
                 </p>
                 <div class="pd-sizes" id="sizeSelector"></div>
+            </div>
+
+            <!-- Condition -->
+            <p class="pd-condition">🟢 Condition: <strong>Excellent (10/10)</strong></p>
+
+            <!-- Trust Badges -->
+            <div class="pd-trustbar">
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">✅</span> Original Pre-Loved</div>
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">🚚</span> Fast Ship</div>
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">💬</span> WhatsApp Support</div>
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">🔄</span> Easy Exch</div>
             </div>
 
             <!-- Action Buttons -->
