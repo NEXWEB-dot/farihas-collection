@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -214,7 +214,7 @@
             </div>
             <div class="header-center" style="flex:2; text-align:center;">
                 <a href="index.html" style="text-decoration:none;color:inherit;">
-                    <h1 class="logo" style="font-family:'Poppins', serif; font-weight:800; font-size:1.35rem; line-height:1.1; margin:0; letter-spacing:1px;">FARIHA'S<br>COLLECTION</h1>
+                    <h1 class="logo" style="font-family:'Poppins', sans-serif; font-weight:300; font-size:1.15rem; line-height:1.2; margin:0; letter-spacing:4px;">FARIHA'S<br>COLLECTION</h1>
                 </a>
             </div>
             <div class="header-right" style="flex:1; display:flex; justify-content:flex-end;">
@@ -253,8 +253,8 @@
             <option value="default">Sort by: Featured</option>
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
-            <option value="name-asc">Name: A – Z</option>
-            <option value="name-desc">Name: Z – A</option>
+            <option value="name-asc">Name: A â€“ Z</option>
+            <option value="name-desc">Name: Z â€“ A</option>
         </select>
     </div>
 
@@ -292,7 +292,7 @@
     <main class="max-w-7xl mx-auto px-6 py-10">
         <div id="productGrid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
             <!-- Products are injected here from Sanity at runtime. See <script> at bottom. -->
-            <p id="productLoading" class="col-span-full text-center text-sm text-gray-400 py-10">Loading products…</p>
+            <p id="productLoading" class="col-span-full text-center text-sm text-gray-400 py-10">Loading productsâ€¦</p>
         </div>
 
         <!-- Load More -->
@@ -343,7 +343,7 @@
             </div>
         </div>
         <div class="mt-10 text-center text-[10px] text-gray-400 border-t border-gray-100 pt-6">
-            <p>Fariha's Collection &copy; 2025 — All Rights Reserved</p>
+            <p>Fariha's Collection &copy; 2025 â€” All Rights Reserved</p>
         </div>
     </footer>
 
@@ -448,7 +448,7 @@
         if (ex) ex.qty++;
         else cart.push({ name, price: Number(price), image, qty: 1 });
         saveCart(cart);
-        showNotif(`✓ ${name} added to cart!`);
+        showNotif(`âœ“ ${name} added to cart!`);
         updateBadge();
     }
 
@@ -640,3 +640,5 @@
     </script>
 </body>
 </html>
+
+

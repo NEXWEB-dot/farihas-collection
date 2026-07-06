@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout – FARIHA'S COLLECTION</title>
+    <title>Checkout â€“ FARIHA'S COLLECTION</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -366,7 +366,7 @@
                         <span class="payment-icon" style="color:#25D366;"><i class="ph-fill ph-whatsapp-logo"></i></span>
                         <div>
                             <div class="payment-opt-label">Need Help? Order on WhatsApp</div>
-                            <div class="payment-opt-sub">Place order via WhatsApp — pay on delivery</div>
+                            <div class="payment-opt-sub">Place order via WhatsApp â€” pay on delivery</div>
                         </div>
                     </label>
                     <label class="payment-opt" id="pay-cod" style="display:none;">
@@ -382,7 +382,7 @@
                         <span class="payment-icon" style="color:#1a56db;"><i class="ph ph-bank"></i></span>
                         <div>
                             <div class="payment-opt-label">Bank Transfer</div>
-                            <div class="payment-opt-sub">Transfer before dispatch — receipt generated</div>
+                            <div class="payment-opt-sub">Transfer before dispatch â€” receipt generated</div>
                         </div>
                     </label>
                     <label class="payment-opt" id="pay-easypaisa">
@@ -390,7 +390,7 @@
                         <span class="payment-icon" style="color:#6cc04a;"><i class="ph ph-device-mobile"></i></span>
                         <div>
                             <div class="payment-opt-label">EasyPaisa</div>
-                            <div class="payment-opt-sub">Send payment via EasyPaisa — receipt generated</div>
+                            <div class="payment-opt-sub">Send payment via EasyPaisa â€” receipt generated</div>
                         </div>
                     </label>
                     <label class="payment-opt" id="pay-jazzcash">
@@ -398,7 +398,7 @@
                         <span class="payment-icon" style="color:#d3202a;"><i class="ph ph-device-mobile"></i></span>
                         <div>
                             <div class="payment-opt-label">JazzCash</div>
-                            <div class="payment-opt-sub">Send payment via JazzCash — receipt generated</div>
+                            <div class="payment-opt-sub">Send payment via JazzCash â€” receipt generated</div>
                         </div>
                     </label>
                 </div>
@@ -443,7 +443,7 @@
             <div id="receiptCard">
                 <div class="receipt-header">
                     <div class="receipt-logo">FARIHA'S COLLECTION</div>
-                    <div class="receipt-tagline">PREMIUM FOOTWEAR · PAKISTAN</div>
+                    <div class="receipt-tagline">PREMIUM FOOTWEAR Â· PAKISTAN</div>
                     <div class="receipt-title">Order Receipt</div>
                     <div class="receipt-date" id="receiptDate"></div>
                 </div>
@@ -485,7 +485,7 @@
                 </div>
 
                 <div class="receipt-footer">
-                    <p>Thank you for shopping with us! 🙏</p>
+                    <p>Thank you for shopping with us! ðŸ™</p>
                     <p>Questions? WhatsApp: <strong>0300-2757988</strong></p>
                     <p style="margin-top:4px;">farihascollection.pk</p>
                 </div>
@@ -506,7 +506,7 @@
     <div class="co-success" id="successOverlay">
         <div class="co-success-box">
             <div class="co-success-icon"><i class="ph-fill ph-check-circle"></i></div>
-            <h2>Order Placed! 🎉</h2>
+            <h2>Order Placed! ðŸŽ‰</h2>
             <p id="successMsg">Your order has been received. We'll confirm via WhatsApp shortly.</p>
             <div class="co-success-actions">
                 <button class="co-success-btn secondary" onclick="window.location.href='shoes (1).html'">Continue Shopping</button>
@@ -545,7 +545,7 @@
                     <div class="co-item-name">${item.name}</div>
                     <div class="co-item-price">${formatPrice(item.price)} each</div>
                     <div class="co-item-qty">
-                        <button class="co-qty-btn" onclick="changeQty(${i},-1)">−</button>
+                        <button class="co-qty-btn" onclick="changeQty(${i},-1)">âˆ’</button>
                         <span style="font-weight:600;min-width:20px;text-align:center;">${item.qty}</span>
                         <button class="co-qty-btn" onclick="changeQty(${i},1)">+</button>
                     </div>
@@ -574,7 +574,7 @@
         });
     });
 
-    // ===== CITY → PAYMENT OPTIONS TOGGLE =====
+    // ===== CITY â†’ PAYMENT OPTIONS TOGGLE =====
     const citySelect = document.getElementById('city');
     const payCodOpt  = document.getElementById('pay-cod');
     const payWaOpt   = document.getElementById('pay-whatsapp');
@@ -668,7 +668,7 @@
             const lt = item.price * item.qty;
             subtotal += lt;
             itemsHtml += `<div class="receipt-item">
-                <span class="receipt-item-name">${item.name} × ${item.qty}</span>
+                <span class="receipt-item-name">${item.name} Ã— ${item.qty}</span>
                 <span class="receipt-item-price">${formatPrice(lt)}</span>
             </div>`;
         });
@@ -677,7 +677,7 @@
         document.getElementById('rTotal').textContent    = formatPrice(subtotal);
 
         // Payment label
-        const labels = { whatsapp: '✅ WhatsApp Order — Pay on Delivery', cod: '✅ Cash on Delivery', bank: '🏦 Bank Transfer — Pending Payment', easypaisa: '📱 EasyPaisa — Pending Payment', jazzcash: '📱 JazzCash — Pending Payment' };
+        const labels = { whatsapp: 'âœ… WhatsApp Order â€” Pay on Delivery', cod: 'âœ… Cash on Delivery', bank: 'ðŸ¦ Bank Transfer â€” Pending Payment', easypaisa: 'ðŸ“± EasyPaisa â€” Pending Payment', jazzcash: 'ðŸ“± JazzCash â€” Pending Payment' };
         document.getElementById('rPaymentLabel').textContent = labels[payMethod] || payMethod;
 
         // Bank/EasyPaisa instructions
@@ -689,7 +689,7 @@
                 <div class="bank-title"><i class="ph ph-bank"></i> Bank Transfer Instructions</div>
                 <div class="bank-row">
                     <span class="bank-row-label">Bank</span>
-                    <span class="bank-row-value">Meezan Bank — Barkat-e-Hyderi Branch</span>
+                    <span class="bank-row-value">Meezan Bank â€” Barkat-e-Hyderi Branch</span>
                 </div>
                 <div class="bank-row">
                     <span class="bank-row-label">Account Name</span>
@@ -704,7 +704,7 @@
                     <span class="bank-row-value">PK07MEZN0001160105996205</span>
                 </div>
                 <div class="bank-footer">
-                    📲 After transfer, send screenshot to WhatsApp: <strong>0300-2757988</strong>
+                    ðŸ“² After transfer, send screenshot to WhatsApp: <strong>0300-2757988</strong>
                 </div>
             `;
         } else if (payMethod === 'easypaisa') {
@@ -724,7 +724,7 @@
                     <span class="bank-row-value" id="epAmount"></span>
                 </div>
                 <div class="bank-footer">
-                    📲 After payment, send screenshot to WhatsApp: <strong>0300-2757988</strong>
+                    ðŸ“² After payment, send screenshot to WhatsApp: <strong>0300-2757988</strong>
                 </div>
             `;
             // Fill in amount after rendering
@@ -747,7 +747,7 @@
                     <span class="bank-row-value" id="jcAmount"></span>
                 </div>
                 <div class="bank-footer">
-                    📲 After payment, send screenshot to WhatsApp: <strong>0300-2757988</strong>
+                    ðŸ“² After payment, send screenshot to WhatsApp: <strong>0300-2757988</strong>
                 </div>
             `;
             // Fill in amount after rendering
@@ -805,14 +805,14 @@
         const total = document.getElementById('rTotal').textContent;
         const payment = document.getElementById('rPaymentLabel').textContent;
 
-        const msg = `🧾 *Order Receipt — Fariha's Collection*\n\n`
-            + `👤 *Name:* ${name}\n`
-            + `📞 *Phone:* ${phone}\n`
-            + `📍 *City:* ${city}\n`
-            + `💰 *Total:* ${total}\n`
-            + `💳 *Payment:* ${payment}\n\n`
-            + `📎 _Receipt screenshot has been downloaded — please attach it to this chat._\n\n`
-            + `Please confirm my order. Thank you! 🙏`;
+        const msg = `ðŸ§¾ *Order Receipt â€” Fariha's Collection*\n\n`
+            + `ðŸ‘¤ *Name:* ${name}\n`
+            + `ðŸ“ž *Phone:* ${phone}\n`
+            + `ðŸ“ *City:* ${city}\n`
+            + `ðŸ’° *Total:* ${total}\n`
+            + `ðŸ’³ *Payment:* ${payment}\n\n`
+            + `ðŸ“Ž _Receipt screenshot has been downloaded â€” please attach it to this chat._\n\n`
+            + `Please confirm my order. Thank you! ðŸ™`;
 
         setTimeout(() => {
             window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
@@ -834,23 +834,23 @@
             // then they use the 'Send via WhatsApp' button inside the receipt.
             setTimeout(() => showReceipt(info, payMethod), 400);
         } else {
-            // WhatsApp / COD — build message and open WhatsApp directly
+            // WhatsApp / COD â€” build message and open WhatsApp directly
             const cart = getCart();
             let total = 0;
             let msg = `*NEW ORDER - Fariha's Collection*\n\n`;
             msg += `*CUSTOMER DETAILS*\nName: ${info.first} ${info.last}\nPhone: ${info.phone}\n`;
-            if (info.email) msg += `📧 *Email:* ${info.email}\n`;
-            msg += `📍 *Address:* ${info.addr}, ${info.city}${info.province ? ', ' + info.province : ''}\n\n`;
-            msg += `🛒 *Order Items:*\n`;
+            if (info.email) msg += `ðŸ“§ *Email:* ${info.email}\n`;
+            msg += `ðŸ“ *Address:* ${info.addr}, ${info.city}${info.province ? ', ' + info.province : ''}\n\n`;
+            msg += `ðŸ›’ *Order Items:*\n`;
             cart.forEach((item, i) => {
                 const lt = item.price * item.qty;
                 total += lt;
-                msg += `${i + 1}. ${item.name} × ${item.qty} = Rs${lt.toLocaleString()}\n`;
+                msg += `${i + 1}. ${item.name} Ã— ${item.qty} = Rs${lt.toLocaleString()}\n`;
             });
-            msg += `\n💰 *Total: Rs${total.toLocaleString()}.00*\n🚚 *Shipping: FREE*\n`;
-            msg += `💳 *Payment:* ${payMethod === 'cod' ? 'Cash on Delivery' : 'WhatsApp Order'}\n`;
-            if (info.notes) msg += `📝 *Notes:* ${info.notes}\n`;
-            msg += `\nPlease confirm my order. Thank you! 🙏`;
+            msg += `\nðŸ’° *Total: Rs${total.toLocaleString()}.00*\nðŸšš *Shipping: FREE*\n`;
+            msg += `ðŸ’³ *Payment:* ${payMethod === 'cod' ? 'Cash on Delivery' : 'WhatsApp Order'}\n`;
+            if (info.notes) msg += `ðŸ“ *Notes:* ${info.notes}\n`;
+            msg += `\nPlease confirm my order. Thank you! ðŸ™`;
 
             window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
 
@@ -870,3 +870,5 @@
     </script>
 </body>
 </html>
+
+

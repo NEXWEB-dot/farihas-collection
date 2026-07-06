@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Product Details | Fariha's Collection</title>
-    <meta name="description" content="Shop quality preloved shoes at Fariha's Collection — authentic details, real photos.">
+    <meta name="description" content="Shop quality preloved shoes at Fariha's Collection â€” authentic details, real photos.">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -300,7 +300,7 @@
             display: flex; align-items: flex-start; gap: 8px;
         }
         .pd-acc-content ul li::before {
-            content: '✓'; color: #e8699a; font-weight: 700;
+            content: 'âœ“'; color: #e8699a; font-weight: 700;
             font-size: 0.85rem; flex-shrink: 0; margin-top: 1px;
         }
         .pd-detail-grid {
@@ -432,7 +432,7 @@
         <!-- Left: Image Gallery -->
         <div class="pd-gallery">
             <div class="pd-main-img-wrap" id="mainImgWrap">
-                <span class="nwt-badge" style="display:none;">✦ New With Tags</span>
+                <span class="nwt-badge" style="display:none;">âœ¦ New With Tags</span>
                 <img id="mainImg" src="" alt="Product Image">
             </div>
             <div class="pd-thumbs" id="thumbStrip" style="display:none;"></div>
@@ -442,12 +442,13 @@
         <div class="pd-info">
 
             <p class="pd-brand-tag" id="pdBrand"></p>
+            <p id="pdBrandName" style="font-family:'Poppins',sans-serif; font-weight:700; font-size:1rem; color:#111; letter-spacing:0.5px; margin:0 0 6px; display:none;"></p>
             <h1 class="pd-title" id="pdTitleName">Loading...</h1>
 
             <!-- Stars -->
             <div class="pd-rating">
-                <span class="pd-stars">★★★★★</span>
-                <span class="pd-rating-count">4.9 · 128 reviews</span>
+                <span class="pd-stars">â˜…â˜…â˜…â˜…â˜…</span>
+                <span class="pd-rating-count">4.9 Â· 128 reviews</span>
             </div>
 
             <!-- Price -->
@@ -469,14 +470,23 @@
             </div>
 
             <!-- Condition -->
-            <p class="pd-condition">🟢 Condition: <strong>Excellent (10/10)</strong></p>
+            <p class="pd-condition">ðŸŸ¢ Condition: <strong>Excellent (10/10)</strong></p>
 
             <!-- Trust Badges -->
             <div class="pd-trustbar">
-                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">✅</span> Original Pre-Loved</div>
-                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">🚚</span> Fast Ship</div>
-                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">💬</span> WhatsApp Support</div>
-                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">🔄</span> Easy Exch</div>
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">âœ…</span> Original Pre-Loved</div>
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">ðŸšš</span> Fast Ship</div>
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">ðŸ’¬</span> WhatsApp Support</div>
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">ðŸ”„</span> Easy Exch</div>
+            </div>
+
+            <!-- Rare Pick Banner -->
+            <div id="rarePickBanner" style="display:none; margin-bottom:1rem; background:linear-gradient(135deg,#fff8f0 0%,#fff3e6 100%); border:2px solid #ff6b00; border-radius:10px; padding:12px 16px; display:none; align-items:center; gap:10px;">
+                <span style="font-size:1.4rem;">🔥</span>
+                <div>
+                    <div style="font-family:'Poppins',sans-serif; font-weight:700; font-size:0.88rem; color:#c94400; letter-spacing:0.2px;">Only 1 Pair Available – Grab it before it's gone.</div>
+                    <div style="font-family:'Poppins',sans-serif; font-size:0.75rem; color:#e07000; font-weight:500; margin-top:2px;">✨ One-of-a-Kind Find</div>
+                </div>
             </div>
 
             <!-- Action Buttons -->
@@ -530,16 +540,16 @@
                         <div class="pd-acc-content">
                             <ul>
                                 <li>We ship orders across Pakistan</li>
-                                <li>Orders are processed within 1–2 business days after confirmation</li>
-                                <li>Delivery usually takes 2–5 business days, depending on your location</li>
+                                <li>Orders are processed within 1â€“2 business days after confirmation</li>
+                                <li>Delivery usually takes 2â€“5 business days, depending on your location</li>
                                 <li><strong>Karachi:</strong> Cash on Delivery (COD) available</li>
                                 <li><strong>Outside Karachi:</strong> Full advance payment required before dispatch</li>
                                 <li>Tracking details are shared via WhatsApp or SMS once dispatched</li>
-                                <li><strong>Please record a continuous unboxing video</strong> before opening your parcel — claims for damaged, missing, incorrect items, or exchanges are only considered with a clear unboxing video</li>
+                                <li><strong>Please record a continuous unboxing video</strong> before opening your parcel â€” claims for damaged, missing, incorrect items, or exchanges are only considered with a clear unboxing video</li>
                                 <li>Contact us via WhatsApp for fastest support</li>
                             </ul>
                             <p style="margin-top:10px;font-size:0.82rem;">
-                                <a href="shipping-policy.html" style="color:#111;text-decoration:underline;font-weight:600;">Read our full Shipping Policy →</a>
+                                <a href="shipping-policy.html" style="color:#111;text-decoration:underline;font-weight:600;">Read our full Shipping Policy â†’</a>
                             </p>
                         </div>
                     </div>
@@ -637,6 +647,8 @@
                 category,
                 description,
                 soldOut,
+                isRarePick,
+                brand,
                 "image": image.asset->url,
                 "gallery": gallery[].asset->url,
                 sizes
@@ -677,6 +689,17 @@
             document.getElementById('pdDiscountBadge').style.display = 'none';
 
             if (p.tag) document.getElementById('pdBrand').textContent = p.tag;
+
+            // ----- Brand Name -----
+            const brandEl = document.getElementById('pdBrandName');
+            if (brandEl) {
+                if (p.brand) {
+                    brandEl.textContent = p.brand;
+                    brandEl.style.display = 'block';
+                } else {
+                    brandEl.style.display = 'none';
+                }
+            }
 
             // ----- Breadcrumb: category-aware -----
             const crumb = document.getElementById('breadcrumbCategory');
@@ -764,16 +787,26 @@
                 selectedSize = firstSelected ? firstSelected.dataset.size : null;
                 wireSizeButtons();
             } else {
-                // No sizes configured for this product — hide the selector entirely
+                // No sizes configured for this product â€” hide the selector entirely
                 const sizeBlock = sizeSelector.closest('div');
                 if (sizeBlock) sizeBlock.style.display = 'none';
                 selectedSize = null;
             }
 
+            // ----- Rare Pick Banner -----
+            const rarePickBanner = document.getElementById('rarePickBanner');
+            if (rarePickBanner) {
+                if (p.isRarePick === true) {
+                    rarePickBanner.style.display = 'flex';
+                } else {
+                    rarePickBanner.style.display = 'none';
+                }
+            }
+
             updateStockDisplay(totalStock, Array.isArray(p.sizes) && p.sizes.length > 0, isSoldOut);
         }
 
-        // Keeps Add to Cart disabled when a product is genuinely out of stock —
+        // Keeps Add to Cart disabled when a product is genuinely out of stock â€”
         // no visible stock-count text is shown, this only guards the button.
         // `soldOut` is a manual override in Sanity that beats everything else,
         // for quick one-click sales or products with no size variants at all.
@@ -810,12 +843,12 @@
 
         function addToCart() {
             const cart = getCart();
-            const key = PRODUCT.name + (selectedSize ? ' · ' + selectedSize : '');
+            const key = PRODUCT.name + (selectedSize ? ' Â· ' + selectedSize : '');
             const ex = cart.find(i => i.name === key);
             if (ex) ex.qty++;
             else cart.push({ name: key, price: PRODUCT.price, image: PRODUCT.image, qty: 1 });
             saveCart(cart);
-            showNotif('✓ Added to cart' + (selectedSize ? ' — ' + selectedSize : ''));
+            showNotif('âœ“ Added to cart' + (selectedSize ? ' â€” ' + selectedSize : ''));
         }
 
         function showNotif(msg) {
@@ -840,7 +873,7 @@
         // Add to cart
         document.getElementById('pdAddToCart').addEventListener('click', addToCart);
 
-        // Cart icon → checkout
+        // Cart icon â†’ checkout
         document.getElementById('cartBtn').addEventListener('click', () => window.location.href = 'checkout.html');
 
         // Back button
@@ -933,3 +966,5 @@
 
 </body>
 </html>
+
+

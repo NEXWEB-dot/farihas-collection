@@ -535,8 +535,9 @@ button {
 }
 
 .footer-logo {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.35rem;
+    font-weight: 300;
+    letter-spacing: 4px;
     margin-bottom: 1rem;
 }
 
@@ -1057,9 +1058,9 @@ button {
     border-bottom: 1px solid #eee;
 }
 .menu-drawer-header h3 {
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 2px;
+    font-size: 1.15rem;
+    font-weight: 300;
+    letter-spacing: 4px;
 }
 .menu-drawer-header button {
     background: none;
@@ -1118,14 +1119,14 @@ button {
     right: 24px;
     width: 56px;
     height: 56px;
-    background: #111;
+    background: #25D366;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #fff;
     font-size: 1.8rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
     z-index: 9000;
     text-decoration: none;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -1133,12 +1134,12 @@ button {
 }
 .whatsapp-float:hover {
     transform: scale(1.1);
-    box-shadow: 0 6px 30px rgba(0,0,0,0.45);
+    box-shadow: 0 6px 30px rgba(37,211,102,0.6);
 }
 
 @keyframes whatsappPulse {
-    0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.35); }
-    50% { box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+    0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.4); }
+    50% { box-shadow: 0 4px 32px rgba(37,211,102,0.65); }
 }
 
 /* ================= MOBILE RESPONSIVENESS ================= */
