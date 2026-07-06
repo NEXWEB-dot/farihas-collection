@@ -574,12 +574,11 @@
     <!-- Newsletter Section -->
     <section style="max-width: 800px; margin: 60px auto 40px; padding: 0 20px; text-align: center; border-top: 1px solid #eee; padding-top: 50px;">
         <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;">Newsletter</h2>
-        <p style="font-size: 0.85rem; color: #777; margin-bottom: 25px;">Subscribe to receive updates, access to exclusive deals, and more.</p>
+        <p style="font-size: 0.85rem; color: #777; margin-bottom: 25px;">Join thousands of happy customers.</p>
         <form style="display: flex; max-width: 450px; margin: 0 auto; gap: 8px;">
             <input type="email" placeholder="Enter your email address" style="flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 4px; outline: none; font-size: 0.85rem;">
             <button type="submit" style="background: #111; color: white; padding: 12px 24px; border: none; border-radius: 4px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.3s;" onmouseover="this.style.background='#333'" onmouseout="this.style.background='#111'">Subscribe</button>
         </form>
-        <p style="font-size: 0.7rem; color: #aaa; margin-top: 12px;">Join thousands of happy customers.</p>
         
         <div style="display: flex; justify-content: center; gap: 25px; margin-top: 30px;">
             <a href="https://www.facebook.com/share/1GMaKgnphh/?mibextid=wwXIfr" target="_blank" rel="noopener" style="color: #333; font-size: 1.5rem; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#333'"><i class="ph-fill ph-facebook-logo"></i></a>
@@ -1043,6 +1042,27 @@
         loadProductFromSanity().finally(loadSuggestedProducts);
     </script>
 
+    <script src="main.js"></script>
+    <script>
+    // ===== NAV SHOP DROPDOWN =====
+    document.querySelectorAll('.nav-shop-dropdown').forEach(function (dd) {
+        var toggle = dd.querySelector('.nav-shop-toggle');
+        if (!toggle) return;
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            var isOpen = dd.classList.contains('open');
+            document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (o) {
+                if (o !== dd) o.classList.remove('open');
+            });
+            dd.classList.toggle('open', !isOpen);
+        });
+    });
+    document.addEventListener('click', function (e) {
+        document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (dd) {
+            if (!dd.contains(e.target)) dd.classList.remove('open');
+        });
+    });
+    </script>
 </body>
 </html>
 
