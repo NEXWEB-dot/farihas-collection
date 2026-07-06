@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -356,15 +356,21 @@
     const SANITY_API_VERSION = '2024-01-01';
 
     // GROQ query: all "product" documents, newest first, with a flat image URL.
-    const SANITY_QUERY = `*[_type == "shoe"] | order(order asc){
-        _id,
-        name,
-        price,
-        brand,
-        tag,
-        category,
-        sizes,
-        "image": image.asset->url
+    const SANITY_QUERY = `{
+        "settings": *[_type == "siteSettings"][0],
+        "shoes": *[_type == "shoe"] | order(order asc){
+            _id,
+            name,
+            price,
+            brand,
+            tag,
+            category,
+            isSale,
+            salePercentage,
+            isRarePick,
+            sizes,
+            "image": image.asset->url
+        }
     }`;
 
     function sanityQueryUrl(query) {
@@ -378,8 +384,10 @@
             throw new Error(`Sanity request failed: ${res.status} ${res.statusText}`);
         }
         const json = await res.json();
-        return json.result || [];
+        return json.result || { settings: {}, shoes: [] };
     }
+
+    let siteSettings = {}; // to store global settings
 
     function formatPKR(n) {
         const num = Number(n) || 0;
@@ -412,7 +420,9 @@
     async function loadProducts() {
         const grid = document.getElementById('productGrid');
         try {
-            const products = await fetchSanityProducts();
+            const data = await fetchSanityProducts();
+            const products = data.shoes || [];
+            siteSettings = data.settings || {};
 
             if (!products.length) {
                 grid.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-10">No products found yet. Add some in Sanity Studio.</p>';
@@ -570,23 +580,35 @@
             grid.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-10">No products match this filter.</p>';
         } else {
             grid.innerHTML = visible.map(p => {
-                let badgeHtml = '';
-                if (p.sizes && Array.isArray(p.sizes)) {
-                    const hasStock = p.sizes.some(s => s.stock > 0);
-                    if (!hasStock) {
-                        badgeHtml = '<div class="absolute top-2 left-2 bg-red-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Out of Stock</div>';
-                    } else {
-                        badgeHtml = '<div class="absolute top-2 left-2 bg-black text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Save 25%</div>';
-                    }
-                } else {
-                    badgeHtml = '<div class="absolute top-2 left-2 bg-black text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Save 25%</div>';
+                // Calculate Price
+                const basePrice = p.price || 0;
+                let finalPrice = basePrice;
+                let origPrice = null;
+                let discountPercent = 0;
+
+                if (siteSettings.globalSaleActive && siteSettings.globalSalePercentage > 0) {
+                    discountPercent = siteSettings.globalSalePercentage;
+                } else if (p.isSale && p.salePercentage > 0) {
+                    discountPercent = p.salePercentage;
                 }
 
-                const priceNum = p.price || 0;
-                const origPrice = Math.floor(priceNum * 1.33);
+                if (discountPercent > 0) {
+                    origPrice = basePrice;
+                    finalPrice = Math.floor(basePrice * (1 - discountPercent / 100));
+                }
+
+                // Badges
+                let badgeHtml = '';
+                if (p.sizes && Array.isArray(p.sizes) && !p.sizes.some(s => s.stock > 0)) {
+                    badgeHtml = '<div class="absolute top-2 left-2 bg-red-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Out of Stock</div>';
+                } else if (discountPercent > 0) {
+                    badgeHtml = `<div class="absolute top-2 left-2 bg-black text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Save ${discountPercent}%</div>`;
+                } else if (p.isRarePick) {
+                    badgeHtml = '<div class="absolute top-2 left-2 bg-orange-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10 flex items-center gap-1"><i class="ph-fill ph-fire"></i> 1 Pair Left</div>';
+                }
 
                 return `
-                <div class="shoe-card group block relative pb-4 cursor-pointer" data-id="${p._id}" data-name="${p.name || ''}" data-price="${p.price}" data-image="${p.image || ''}">
+                <div class="shoe-card group block relative pb-4 cursor-pointer" data-id="${p._id}" data-name="${p.name || ''}" data-price="${finalPrice}" data-image="${p.image || ''}">
                     ${badgeHtml}
                     <div class="relative w-full aspect-[4/5] bg-gray-50 rounded-lg overflow-hidden mb-4">
                         <img src="${p.image || ''}" alt="${p.name || ''}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out">
@@ -595,8 +617,8 @@
                         <p class="text-[0.65rem] text-gray-400 font-bold tracking-[0.15em] uppercase mb-1">${p.brand || p.tag || 'FARIHA\'S COLLECTION'}</p>
                         <h3 class="text-sm font-semibold text-gray-900 mb-2 leading-tight">${p.name || 'Classic Shoe'}</h3>
                         <div class="flex items-center gap-2">
-                            <p class="text-sm font-bold text-gray-900">Rs${priceNum.toLocaleString()}</p>
-                            <p class="text-xs text-gray-400 line-through">Rs${origPrice.toLocaleString()}</p>
+                            <p class="text-sm font-bold text-gray-900">Rs${finalPrice.toLocaleString()}</p>
+                            ${origPrice ? `<p class="text-xs text-gray-400 line-through">Rs${origPrice.toLocaleString()}</p>` : ''}
                         </div>
                     </div>
                 </div>

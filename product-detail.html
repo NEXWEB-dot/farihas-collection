@@ -447,8 +447,8 @@
 
             <!-- Stars -->
             <div class="pd-rating">
-                <span class="pd-stars">â˜…â˜…â˜…â˜…â˜…</span>
-                <span class="pd-rating-count">4.9 Â· 128 reviews</span>
+                <span class="pd-stars"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></span>
+                <span class="pd-rating-count">4.9 · 128 reviews</span>
             </div>
 
             <!-- Price -->
@@ -470,14 +470,14 @@
             </div>
 
             <!-- Condition -->
-            <p class="pd-condition">ðŸŸ¢ Condition: <strong>Excellent (10/10)</strong></p>
+            <p class="pd-condition"><i class="ph-fill ph-check-circle" style="color: #4CAF50; vertical-align: middle; margin-right: 4px; font-size: 1.2rem;"></i> Condition: <strong>Excellent (10/10)</strong></p>
 
             <!-- Trust Badges -->
             <div class="pd-trustbar">
-                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">âœ…</span> Original Pre-Loved</div>
-                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">ðŸšš</span> Fast Ship</div>
-                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">ðŸ’¬</span> WhatsApp Support</div>
-                <div class="pd-trustbar-item"><span class="pd-trustbar-icon">ðŸ”„</span> Easy Exch</div>
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon"><i class="ph ph-shield-check"></i></span> Original Pre-Loved</div>
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon"><i class="ph ph-truck"></i></span> Fast Ship</div>
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon"><i class="ph ph-whatsapp-logo"></i></span> WhatsApp Support</div>
+                <div class="pd-trustbar-item"><span class="pd-trustbar-icon"><i class="ph ph-arrows-counter-clockwise"></i></span> Easy Exch</div>
             </div>
 
             <!-- Rare Pick Banner -->
@@ -640,26 +640,35 @@
         async function loadProductFromSanity() {
             if (!productId) return; // no id passed, fallback data above is all we have
 
-            const query = `*[_type == "shoe" && _id == $id][0]{
-                name,
-                price,
-                tag,
-                category,
-                description,
-                soldOut,
-                isRarePick,
-                brand,
-                "image": image.asset->url,
-                "gallery": gallery[].asset->url,
-                sizes
+            const query = `{
+                "settings": *[_type == "siteSettings"][0],
+                "shoe": *[_type == "shoe" && _id == $id][0]{
+                    name,
+                    price,
+                    tag,
+                    category,
+                    description,
+                    richDescription,
+                    soldOut,
+                    isSale,
+                    salePercentage,
+                    isRarePick,
+                    brand,
+                    "image": image.asset->url,
+                    "gallery": gallery[].asset->url,
+                    sizes
+                }
             }`;
 
             try {
                 const res = await fetch(sanityQueryUrl(query, { id: productId }));
                 if (!res.ok) throw new Error(`Sanity request failed: ${res.status}`);
                 const json = await res.json();
-                const product = json.result;
+                const data = json.result || {};
+                const product = data.shoe;
                 if (!product) return; // product not found, keep fallback data
+                
+                product.settings = data.settings || {};
 
                 applyProduct(product);
             } catch (err) {
@@ -670,23 +679,51 @@
 
         function applyProduct(p) {
             const name = p.name || PRODUCT.name;
-            const price = Number(p.price) || PRODUCT.price;
+            const basePrice = Number(p.price) || PRODUCT.price;
+            
+            let finalPrice = basePrice;
+            let origPrice = null;
+            let discountPercent = 0;
+            const settings = p.settings || {};
+
+            if (settings.globalSaleActive && settings.globalSalePercentage > 0) {
+                discountPercent = settings.globalSalePercentage;
+            } else if (p.isSale && p.salePercentage > 0) {
+                discountPercent = p.salePercentage;
+            }
+
+            if (discountPercent > 0) {
+                origPrice = basePrice;
+                finalPrice = Math.floor(basePrice * (1 - discountPercent / 100));
+            }
+
             const mainImage = p.image || PRODUCT.image;
             const gallery = Array.isArray(p.gallery) ? p.gallery : [];
             const allImages = [mainImage, ...gallery].filter(Boolean);
             const category = (p.category || 'women').toLowerCase();
 
             PRODUCT.name = name;
-            PRODUCT.price = price;
+            PRODUCT.price = finalPrice;
             PRODUCT.image = mainImage;
             PRODUCT.category = category;
 
             document.getElementById('pageTitle').textContent = name + " | Fariha's Collection";
             document.getElementById('breadcrumbName').textContent = name;
             document.getElementById('pdTitleName').textContent = name;
-            document.getElementById('pdPriceVal').textContent = "Rs" + price.toLocaleString();
-            document.getElementById('pdPriceOriginal').style.display = 'none';
-            document.getElementById('pdDiscountBadge').style.display = 'none';
+            document.getElementById('pdPriceVal').textContent = "Rs" + finalPrice.toLocaleString();
+            
+            const origPriceEl = document.getElementById('pdPriceOriginal');
+            const badgeEl = document.getElementById('pdDiscountBadge');
+            
+            if (origPrice) {
+                origPriceEl.textContent = "Rs" + origPrice.toLocaleString();
+                origPriceEl.style.display = 'inline-block';
+                badgeEl.textContent = `Save ${discountPercent}%`;
+                badgeEl.style.display = 'inline-block';
+            } else {
+                origPriceEl.style.display = 'none';
+                badgeEl.style.display = 'none';
+            }
 
             if (p.tag) document.getElementById('pdBrand').textContent = p.tag;
 
@@ -751,8 +788,29 @@
             // ----- Description -----
             const descItem = document.getElementById('pdDescriptionItem');
             const descContent = document.getElementById('pdDescriptionContent');
-            if (p.description) {
-                if (descContent) descContent.innerHTML = `<p>${p.description.replace(/\n/g, '<br>')}</p>`;
+            const targetDesc = p.richDescription || p.description;
+            
+            if (targetDesc) {
+                if (descContent) {
+                    if (Array.isArray(targetDesc)) {
+                        let html = '';
+                        targetDesc.forEach(block => {
+                            if (block._type === 'block' && block.children) {
+                                let pHtml = '';
+                                block.children.forEach(child => {
+                                    let text = child.text || '';
+                                    if (child.marks && child.marks.includes('strong')) text = `<strong>${text}</strong>`;
+                                    if (child.marks && child.marks.includes('em')) text = `<em>${text}</em>`;
+                                    pHtml += text;
+                                });
+                                html += `<p style="margin-bottom: 0.8rem;">${pHtml}</p>`;
+                            }
+                        });
+                        descContent.innerHTML = html;
+                    } else if (typeof targetDesc === 'string') {
+                        descContent.innerHTML = `<p>${targetDesc.replace(/\n/g, '<br>')}</p>`;
+                    }
+                }
                 if (descItem) descItem.style.display = '';
             } else if (descItem) {
                 descItem.style.display = 'none';
@@ -787,7 +845,7 @@
                 selectedSize = firstSelected ? firstSelected.dataset.size : null;
                 wireSizeButtons();
             } else {
-                // No sizes configured for this product â€” hide the selector entirely
+                // No sizes configured for this product — hide the selector entirely
                 const sizeBlock = sizeSelector.closest('div');
                 if (sizeBlock) sizeBlock.style.display = 'none';
                 selectedSize = null;
@@ -806,7 +864,7 @@
             updateStockDisplay(totalStock, Array.isArray(p.sizes) && p.sizes.length > 0, isSoldOut);
         }
 
-        // Keeps Add to Cart disabled when a product is genuinely out of stock â€”
+        // Keeps Add to Cart disabled when a product is genuinely out of stock —
         // no visible stock-count text is shown, this only guards the button.
         // `soldOut` is a manual override in Sanity that beats everything else,
         // for quick one-click sales or products with no size variants at all.
@@ -843,12 +901,12 @@
 
         function addToCart() {
             const cart = getCart();
-            const key = PRODUCT.name + (selectedSize ? ' Â· ' + selectedSize : '');
+            const key = PRODUCT.name + (selectedSize ? ' · ' + selectedSize : '');
             const ex = cart.find(i => i.name === key);
             if (ex) ex.qty++;
             else cart.push({ name: key, price: PRODUCT.price, image: PRODUCT.image, qty: 1 });
             saveCart(cart);
-            showNotif('âœ“ Added to cart' + (selectedSize ? ' â€” ' + selectedSize : ''));
+            showNotif('✓ Added to cart' + (selectedSize ? ' — ' + selectedSize : ''));
         }
 
         function showNotif(msg) {
