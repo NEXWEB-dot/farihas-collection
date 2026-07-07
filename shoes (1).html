@@ -614,8 +614,10 @@
         } else {
             grid.innerHTML = visible.map(p => {
                 // Calculate Price
-                const basePrice = p.price || 0;
-                let finalPrice = basePrice;
+                // price in Sanity = the actual selling price (sale price)
+                // fakeOriginal = price ÷ (1 - discount%) → the inflated "was" price shown crossed out
+                const salePrice = p.price || 0;
+                let finalPrice = salePrice;
                 let origPrice = null;
                 let discountPercent = 0;
 
@@ -626,8 +628,9 @@
                 }
 
                 if (discountPercent > 0) {
-                    origPrice = basePrice;
-                    finalPrice = Math.floor(basePrice * (1 - discountPercent / 100));
+                    // finalPrice stays as the price entered (what customer pays)
+                    // origPrice is inflated to make it look like a discount
+                    origPrice = Math.ceil(salePrice / (1 - discountPercent / 100) / 100) * 100;
                 }
 
                 // Badges

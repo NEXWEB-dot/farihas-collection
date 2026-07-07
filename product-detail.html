@@ -543,16 +543,16 @@
                         <div class="pd-acc-content">
                             <ul>
                                 <li>We ship orders across Pakistan</li>
-                                <li>Orders are processed within 1â€“2 business days after confirmation</li>
-                                <li>Delivery usually takes 2â€“5 business days, depending on your location</li>
+                                <li>Orders are processed within 1&ndash;2 business days after confirmation</li>
+                                <li>Delivery usually takes 2&ndash;5 business days, depending on your location</li>
                                 <li><strong>Karachi:</strong> Cash on Delivery (COD) available</li>
                                 <li><strong>Outside Karachi:</strong> Full advance payment required before dispatch</li>
                                 <li>Tracking details are shared via WhatsApp or SMS once dispatched</li>
-                                <li><strong>Please record a continuous unboxing video</strong> before opening your parcel â€” claims for damaged, missing, incorrect items, or exchanges are only considered with a clear unboxing video</li>
+                                <li><strong>Please record a continuous unboxing video</strong> before opening your parcel &mdash; claims for damaged, missing, incorrect items, or exchanges are only considered with a clear unboxing video</li>
                                 <li>Contact us via WhatsApp for fastest support</li>
                             </ul>
                             <p style="margin-top:10px;font-size:0.82rem;">
-                                <a href="shipping-policy.html" style="color:#111;text-decoration:underline;font-weight:600;">Read our full Shipping Policy â†’</a>
+                                <a href="shipping-policy.html" style="color:#111;text-decoration:underline;font-weight:600;">Read our full Shipping Policy &rarr;</a>
                             </p>
                         </div>
                     </div>
@@ -705,9 +705,10 @@
 
         function applyProduct(p) {
             const name = p.name || PRODUCT.name;
-            const basePrice = Number(p.price) || PRODUCT.price;
+            // price in Sanity = the actual selling price (what customer pays)
+            const salePrice = Number(p.price) || PRODUCT.price;
             
-            let finalPrice = basePrice;
+            let finalPrice = salePrice;
             let origPrice = null;
             let discountPercent = 0;
             const settings = p.settings || {};
@@ -719,8 +720,9 @@
             }
 
             if (discountPercent > 0) {
-                origPrice = basePrice;
-                finalPrice = Math.floor(basePrice * (1 - discountPercent / 100));
+                // finalPrice stays as price entered (what customer pays)
+                // origPrice is inflated to show a fake higher "was" price
+                origPrice = Math.ceil(salePrice / (1 - discountPercent / 100) / 100) * 100;
             }
 
             const mainImage = p.image || PRODUCT.image;
