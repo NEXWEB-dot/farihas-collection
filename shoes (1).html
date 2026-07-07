@@ -323,18 +323,14 @@
     <!-- Newsletter Section -->
     <div class="max-w-3xl mx-auto px-6 py-16 text-center border-t border-gray-100 mt-10">
 
-        <p class="text-sm text-gray-500 mb-6">Join thousands of happy customers.</p>
-        <form class="flex max-w-md mx-auto gap-2">
-            <input type="email" placeholder="Enter your email address" class="flex-1 px-4 py-3 border border-gray-200 rounded-sm focus:outline-none focus:border-black text-sm">
-            <button type="submit" class="bg-black text-white px-6 py-3 rounded-sm text-sm font-semibold hover:bg-gray-800 transition">Subscribe</button>
-        </form>
+        <p class="text-xl font-bold text-gray-900 mb-6">Join thousands of happy customers.</p>
         
         <div class="flex justify-center gap-6 mt-8 text-gray-800">
-            <a href="https://www.facebook.com/share/1GMaKgnphh/?mibextid=wwXIfr" target="_blank" rel="noopener" class="hover:text-black transition text-2xl"><i class="ph-fill ph-facebook-logo"></i></a>
-            <a href="https://www.instagram.com/farihapreloved_?igsh=MW1vMnp5em1qNTduag%3D%3D&utm_source=qr" target="_blank" rel="noopener" class="hover:text-black transition text-2xl"><i class="ph-fill ph-instagram-logo"></i></a>
-            <a href="https://vt.tiktok.com/ZSCbGXCc5/" target="_blank" rel="noopener" class="hover:text-black transition text-2xl"><i class="ph-fill ph-tiktok-logo"></i></a>
-            <a href="mailto:fariha6484preloved@gmail.com" class="hover:text-black transition text-2xl"><i class="ph-fill ph-envelope-simple"></i></a>
-            <a href="https://wa.me/923090625199" target="_blank" rel="noopener" class="hover:text-black transition text-2xl"><i class="ph-fill ph-whatsapp-logo"></i></a>
+            <a href="https://www.facebook.com/share/1GMaKgnphh/?mibextid=wwXIfr" target="_blank" rel="noopener" class="hover:text-black transition text-4xl"><i class="ph-fill ph-facebook-logo"></i></a>
+            <a href="https://www.instagram.com/farihapreloved_?igsh=MW1vMnp5em1qNTduag%3D%3D&utm_source=qr" target="_blank" rel="noopener" class="hover:text-black transition text-4xl"><i class="ph-fill ph-instagram-logo"></i></a>
+            <a href="https://vt.tiktok.com/ZSCbGXCc5/" target="_blank" rel="noopener" class="hover:text-black transition text-4xl"><i class="ph-fill ph-tiktok-logo"></i></a>
+            <a href="mailto:fariha6484preloved@gmail.com" class="hover:text-black transition text-4xl"><i class="ph-fill ph-envelope-simple"></i></a>
+            <a href="https://wa.me/923090625199" target="_blank" rel="noopener" class="hover:text-black transition text-4xl"><i class="ph-fill ph-whatsapp-logo"></i></a>
         </div>
     </div>
 
@@ -401,6 +397,8 @@
             isSale,
             salePercentage,
             isRarePick,
+            isTagged,
+            soldOut,
             sizes,
             "image": image.asset->url
         }
@@ -635,12 +633,16 @@
 
                 // Badges
                 let badgeHtml = '';
-                if (p.sizes && Array.isArray(p.sizes) && !p.sizes.some(s => s.stock > 0)) {
-                    badgeHtml = '<div class="absolute top-2 left-2 bg-red-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Out of Stock</div>';
+                const isOutOfStock = p.soldOut || (p.sizes && Array.isArray(p.sizes) && !p.sizes.some(s => s.stock > 0));
+
+                if (isOutOfStock) {
+                    badgeHtml = '<div class="absolute top-2 left-2 bg-red-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Sold Out</div>';
                 } else if (discountPercent > 0) {
                     badgeHtml = `<div class="absolute top-2 left-2 bg-black text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Save ${discountPercent}%</div>`;
                 } else if (p.isRarePick) {
                     badgeHtml = '<div class="absolute top-2 left-2 bg-orange-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10 flex items-center gap-1"><i class="ph-fill ph-fire"></i> 1 Pair Left</div>';
+                } else if (p.isTagged) {
+                    badgeHtml = '<div class="absolute top-2 left-2 bg-green-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10 flex items-center gap-1"><i class="ph-fill ph-tag"></i> Tagged</div>';
                 }
 
                 return `

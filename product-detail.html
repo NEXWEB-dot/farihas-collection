@@ -574,18 +574,14 @@
     <!-- Newsletter Section -->
     <section style="max-width: 800px; margin: 60px auto 40px; padding: 0 20px; text-align: center; border-top: 1px solid #eee; padding-top: 50px;">
 
-        <p style="font-size: 0.85rem; color: #777; margin-bottom: 25px;">Join thousands of happy customers.</p>
-        <form style="display: flex; max-width: 450px; margin: 0 auto; gap: 8px;">
-            <input type="email" placeholder="Enter your email address" style="flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 4px; outline: none; font-size: 0.85rem;">
-            <button type="submit" style="background: #111; color: white; padding: 12px 24px; border: none; border-radius: 4px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.3s;" onmouseover="this.style.background='#333'" onmouseout="this.style.background='#111'">Subscribe</button>
-        </form>
+        <p style="font-size: 1.2rem; font-weight: 700; color: #111; margin-bottom: 25px;">Join thousands of happy customers.</p>
         
         <div style="display: flex; justify-content: center; gap: 25px; margin-top: 30px;">
-            <a href="https://www.facebook.com/share/1GMaKgnphh/?mibextid=wwXIfr" target="_blank" rel="noopener" style="color: #333; font-size: 1.5rem; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#333'"><i class="ph-fill ph-facebook-logo"></i></a>
-            <a href="https://www.instagram.com/farihapreloved_?igsh=MW1vMnp5em1qNTduag%3D%3D&utm_source=qr" target="_blank" rel="noopener" style="color: #333; font-size: 1.5rem; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#333'"><i class="ph-fill ph-instagram-logo"></i></a>
-            <a href="https://vt.tiktok.com/ZSCbGXCc5/" target="_blank" rel="noopener" style="color: #333; font-size: 1.5rem; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#333'"><i class="ph-fill ph-tiktok-logo"></i></a>
-            <a href="mailto:fariha6484preloved@gmail.com" style="color: #333; font-size: 1.5rem; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#333'"><i class="ph-fill ph-envelope-simple"></i></a>
-            <a href="https://wa.me/923090625199" target="_blank" rel="noopener" style="color: #333; font-size: 1.5rem; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#333'"><i class="ph-fill ph-whatsapp-logo"></i></a>
+            <a href="https://www.facebook.com/share/1GMaKgnphh/?mibextid=wwXIfr" target="_blank" rel="noopener" style="color: #333; font-size: 2.2rem; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#333'"><i class="ph-fill ph-facebook-logo"></i></a>
+            <a href="https://www.instagram.com/farihapreloved_?igsh=MW1vMnp5em1qNTduag%3D%3D&utm_source=qr" target="_blank" rel="noopener" style="color: #333; font-size: 2.2rem; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#333'"><i class="ph-fill ph-instagram-logo"></i></a>
+            <a href="https://vt.tiktok.com/ZSCbGXCc5/" target="_blank" rel="noopener" style="color: #333; font-size: 2.2rem; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#333'"><i class="ph-fill ph-tiktok-logo"></i></a>
+            <a href="mailto:fariha6484preloved@gmail.com" style="color: #333; font-size: 2.2rem; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#333'"><i class="ph-fill ph-envelope-simple"></i></a>
+            <a href="https://wa.me/923090625199" target="_blank" rel="noopener" style="color: #333; font-size: 2.2rem; transition: color 0.3s;" onmouseover="this.style.color='#000'" onmouseout="this.style.color='#333'"><i class="ph-fill ph-whatsapp-logo"></i></a>
         </div>
     </section>
 
@@ -679,6 +675,7 @@
                     isSale,
                     salePercentage,
                     isRarePick,
+                    isTagged,
                     brand,
                     "image": image.asset->url,
                     "gallery": gallery[].asset->url,
@@ -781,8 +778,19 @@
                 }
             }
 
+            // NWT / Tagged badge fallback removal (done dynamically now if needed)
             const badge = document.querySelector('.nwt-badge');
             if (badge) badge.style.display = 'none';
+
+            // ----- Tagged Shoe Banner (New Badge) -----
+            const taggedBadge = document.getElementById('taggedBadge');
+            if (taggedBadge) {
+                if (p.isTagged === true) {
+                    taggedBadge.style.display = 'flex';
+                } else {
+                    taggedBadge.style.display = 'none';
+                }
+            }
 
             // ----- Size Guide link: pre-filter to this product's category -----
             const sizeGuideLink = document.getElementById('pdSizeGuideLink');
@@ -844,6 +852,29 @@
                 return item;
             }
 
+            // Helper: render rich text blocks or standard strings to HTML
+            function renderDesc(field) {
+                if (!field) return '';
+                if (typeof field === 'string') return `<p>${field.replace(/\n/g,'<br>')}</p>`;
+                if (Array.isArray(field)) {
+                    let html = '';
+                    field.forEach(block => {
+                        if (block._type === 'block' && block.children) {
+                            let pHtml = '';
+                            block.children.forEach(child => {
+                                let text = child.text || '';
+                                if (child.marks && child.marks.includes('strong')) text = `<strong>${text}</strong>`;
+                                if (child.marks && child.marks.includes('em')) text = `<em>${text}</em>`;
+                                pHtml += text;
+                            });
+                            html += `<p style="margin-bottom:0.8rem;">${pHtml}</p>`;
+                        }
+                    });
+                    return html;
+                }
+                return '';
+            }
+
             // Remove any previously injected dynamic section accordions
             document.querySelectorAll('.pd-dynamic-section').forEach(el => el.remove());
 
@@ -852,7 +883,7 @@
             if (hasStructured) {
                 // 1. Intro goes into Product Description accordion (only the intro text)
                 if (p.descIntro) {
-                    descContent.innerHTML = `<p style="line-height:1.7;">${p.descIntro.replace(/\n/g,'<br>')}</p>`;
+                    descContent.innerHTML = `<div style="line-height:1.7;">${renderDesc(p.descIntro)}</div>`;
                     if (descItem) descItem.style.display = '';
                 } else {
                     if (descItem) descItem.style.display = 'none';
@@ -907,17 +938,17 @@
 
                 // 3. Condition
                 if (p.descCondition) {
-                    insertSection('Condition', `<p>${p.descCondition.replace(/\n/g,'<br>')}</p>`);
+                    insertSection('Condition', renderDesc(p.descCondition));
                 }
 
                 // 4. Fit & Comfort
                 if (p.descFitComfort) {
-                    insertSection('Fit &amp; Comfort', `<p>${p.descFitComfort.replace(/\n/g,'<br>')}</p>`);
+                    insertSection('Fit &amp; Comfort', renderDesc(p.descFitComfort));
                 }
 
                 // 5. Perfect For
                 if (p.descPerfectFor) {
-                    insertSection('Perfect For', `<p>${p.descPerfectFor.replace(/\n/g,'<br>')}</p>`);
+                    insertSection('Perfect For', renderDesc(p.descPerfectFor));
                 }
 
                 // 6. Shipping & Payment (always shown)
@@ -930,7 +961,7 @@
 
                 // 7. Exchange Policy
                 if (p.descExchangePolicy) {
-                    insertSection('Exchange Policy', `<p>${p.descExchangePolicy.replace(/\n/g,'<br>')}</p>`);
+                    insertSection('Exchange Policy', renderDesc(p.descExchangePolicy));
                 }
 
                 // 8. Need Help (always shown)
@@ -943,26 +974,7 @@
                 // Legacy fallback for older products (no structured fields)
                 const targetDesc = p.richDescription || p.description;
                 if (targetDesc) {
-                    if (descContent) {
-                        if (Array.isArray(targetDesc)) {
-                            let html = '';
-                            targetDesc.forEach(block => {
-                                if (block._type === 'block' && block.children) {
-                                    let pHtml = '';
-                                    block.children.forEach(child => {
-                                        let text = child.text || '';
-                                        if (child.marks && child.marks.includes('strong')) text = `<strong>${text}</strong>`;
-                                        if (child.marks && child.marks.includes('em')) text = `<em>${text}</em>`;
-                                        pHtml += text;
-                                    });
-                                    html += `<p style="margin-bottom:0.8rem;">${pHtml}</p>`;
-                                }
-                            });
-                            descContent.innerHTML = html;
-                        } else if (typeof targetDesc === 'string') {
-                            descContent.innerHTML = `<p>${targetDesc.replace(/\n/g, '<br>')}</p>`;
-                        }
-                    }
+                    descContent.innerHTML = renderDesc(targetDesc);
                     if (descItem) descItem.style.display = '';
                 } else if (descItem) {
                     descItem.style.display = 'none';
