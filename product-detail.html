@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Product Details | Fariha's Collection</title>
-    <meta name="description" content="Shop quality preloved shoes at Fariha's Collection â€” authentic details, real photos.">
+    <meta name="description" content="Shop quality preloved shoes at Fariha's Collection &mdash; authentic details, real photos.">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -432,7 +432,7 @@
         <!-- Left: Image Gallery -->
         <div class="pd-gallery">
             <div class="pd-main-img-wrap" id="mainImgWrap">
-                <span class="nwt-badge" style="display:none;">âœ¦ New With Tags</span>
+                <span class="nwt-badge" style="display:none;">✦ New With Tags</span>
                 <img id="mainImg" src="" alt="Product Image">
             </div>
             <div class="pd-thumbs" id="thumbStrip" style="display:none;"></div>
@@ -518,20 +518,7 @@
                     </div>
                 </div>
 
-                <!-- Product Details -->
-                <div class="pd-acc-item">
-                    <button class="pd-acc-header">
-                        <span>Product Details</span>
-                        <i class="ph ph-plus pd-acc-icon"></i>
-                    </button>
-                    <div class="pd-acc-body">
-                        <div class="pd-acc-content">
-                            <div class="pd-detail-grid" id="pdDetailGrid">
-                                <!-- Populated dynamically by JS from tag + category -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
 
                 <!-- Shipping -->
                 <div class="pd-acc-item">
@@ -992,15 +979,7 @@
                 }
             }
 
-            // ----- Product Details grid (Brand + Category, dynamic) -----
-            const detailGrid = document.getElementById('pdDetailGrid');
-            if (detailGrid) {
-                const categoryLabel = category.charAt(0).toUpperCase() + category.slice(1);
-                let rows = '';
-                if (p.tag) rows += `<span class="pd-detail-key">Brand</span><span class="pd-detail-val">${p.tag}</span>`;
-                rows += `<span class="pd-detail-key">Category</span><span class="pd-detail-val">${categoryLabel}</span>`;
-                detailGrid.innerHTML = rows;
-            }
+
 
             const isSoldOut = p.soldOut === true;
 
@@ -1107,7 +1086,7 @@
         // Add to cart
         document.getElementById('pdAddToCart').addEventListener('click', addToCart);
 
-        // Cart icon â†’ checkout
+        // Cart icon -> checkout
         document.getElementById('cartBtn').addEventListener('click', () => window.location.href = 'checkout.html');
 
         // Back button

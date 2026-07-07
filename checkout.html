@@ -486,7 +486,7 @@
 
                 <div class="receipt-footer">
                     <p>Thank you for shopping with us! 🙏</p>
-                    <p>Questions? WhatsApp: <strong>0300-2757988</strong></p>
+                    <p>Questions? WhatsApp: <strong>0309-0625199</strong></p>
                     <div style="margin-top: 10px; font-size: 0.75rem; text-decoration: underline; display: flex; justify-content: center; gap: 10px;">
                         <a href="about-us.html" target="_blank" style="color: #666;">About Us</a>
                         <a href="terms-conditions.html" target="_blank" style="color: #666;">Terms &amp; Conditions</a>
@@ -709,7 +709,7 @@
                     <span class="bank-row-value">PK07MEZN0001160105996205</span>
                 </div>
                 <div class="bank-footer">
-                    📲 After transfer, send screenshot to WhatsApp: <strong>0300-2757988</strong>
+                    📲 After transfer, send screenshot to WhatsApp: <strong>0309-0625199</strong>
                 </div>
             `;
         } else if (payMethod === 'easypaisa') {
@@ -729,7 +729,7 @@
                     <span class="bank-row-value" id="epAmount"></span>
                 </div>
                 <div class="bank-footer">
-                    📲 After payment, send screenshot to WhatsApp: <strong>0300-2757988</strong>
+                    📲 After payment, send screenshot to WhatsApp: <strong>0309-0625199</strong>
                 </div>
             `;
             // Fill in amount after rendering
@@ -752,7 +752,7 @@
                     <span class="bank-row-value" id="jcAmount"></span>
                 </div>
                 <div class="bank-footer">
-                    📲 After payment, send screenshot to WhatsApp: <strong>0300-2757988</strong>
+                    📲 After payment, send screenshot to WhatsApp: <strong>0309-0625199</strong>
                 </div>
             `;
             // Fill in amount after rendering
@@ -795,35 +795,49 @@
         btn.disabled = true;
 
         const card = document.getElementById('receiptCard');
-        const canvas = await html2canvas(card, { scale: 2, useCORS: true, backgroundColor: '#fff' });
-
-        // Auto-download screenshot
-        const link = document.createElement('a');
-        link.download = 'FarihasCollection-Receipt.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-
-        // Build WhatsApp message
+        
+        // Build WhatsApp message with full details so screenshot isn't strictly required
         const name = document.getElementById('rName').textContent;
         const phone = document.getElementById('rPhone').textContent;
         const city = document.getElementById('rCity').textContent;
         const total = document.getElementById('rTotal').textContent;
         const payment = document.getElementById('rPaymentLabel').textContent;
+        const cart = getCart();
 
-        const msg = `🧾 *Order Receipt - Fariha's Collection*\n\n`
+        let msg = `🧾 *Order Receipt - Fariha's Collection*\n\n`
             + `👤 *Name:* ${name}\n`
             + `📞 *Phone:* ${phone}\n`
-            + `📍 *City:* ${city}\n`
-            + `💰 *Total:* ${total}\n`
+            + `📍 *City:* ${city}\n\n`
+            + `🛒 *Order Items:*\n`;
+        
+        cart.forEach((item, i) => {
+            const lt = item.price * item.qty;
+            msg += `${i + 1}. ${item.name} × ${item.qty} = Rs${lt.toLocaleString()}\n`;
+        });
+
+        msg += `\n💰 *Total:* ${total}\n`
             + `💳 *Payment:* ${payment}\n\n`
-            + `📎 _Receipt screenshot has been downloaded - please attach it to this chat._\n\n`
+            + `📎 _(Please attach your payment screenshot here)_\n\n`
             + `Please confirm my order. Thank you! 🙏`;
 
+        const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+
+        try {
+            const canvas = await html2canvas(card, { scale: 2, useCORS: true, backgroundColor: '#fff' });
+            const link = document.createElement('a');
+            link.download = 'FarihasCollection-Receipt.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } catch (err) {
+            console.error("Screenshot failed", err);
+        }
+
+        // Use location.href instead of window.open to bypass aggressive iOS Safari popup blockers
         setTimeout(() => {
-            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+            window.location.href = waUrl;
             btn.innerHTML = '<i class="ph-fill ph-whatsapp-logo"></i> Send via WhatsApp';
             btn.disabled = false;
-        }, 800);
+        }, 600);
     });
 
     // ===== PLACE ORDER (always via WhatsApp) =====
