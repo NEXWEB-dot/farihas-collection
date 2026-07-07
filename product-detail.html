@@ -666,11 +666,16 @@
                     description,
                     richDescription,
                     descIntro,
+                    descIntroRich,
                     descProductDetails,
                     descCondition,
+                    descConditionRich,
                     descFitComfort,
+                    descFitComfortRich,
                     descPerfectFor,
+                    descPerfectForRich,
                     descExchangePolicy,
+                    descExchangePolicyRich,
                     soldOut,
                     isSale,
                     salePercentage,
@@ -878,12 +883,18 @@
             // Remove any previously injected dynamic section accordions
             document.querySelectorAll('.pd-dynamic-section').forEach(el => el.remove());
 
-            const hasStructured = p.descIntro || p.descProductDetails || p.descCondition || p.descFitComfort || p.descPerfectFor;
+            const finalIntro = p.descIntroRich || p.descIntro;
+            const finalCondition = p.descConditionRich || p.descCondition;
+            const finalFit = p.descFitComfortRich || p.descFitComfort;
+            const finalPerfectFor = p.descPerfectForRich || p.descPerfectFor;
+            const finalExchange = p.descExchangePolicyRich || p.descExchangePolicy;
+
+            const hasStructured = finalIntro || p.descProductDetails || finalCondition || finalFit || finalPerfectFor;
 
             if (hasStructured) {
                 // 1. Intro goes into Product Description accordion (only the intro text)
-                if (p.descIntro) {
-                    descContent.innerHTML = `<div style="line-height:1.7;">${renderDesc(p.descIntro)}</div>`;
+                if (finalIntro) {
+                    descContent.innerHTML = `<div style="line-height:1.7;">${renderDesc(finalIntro)}</div>`;
                     if (descItem) descItem.style.display = '';
                 } else {
                     if (descItem) descItem.style.display = 'none';
@@ -937,18 +948,18 @@
                 }
 
                 // 3. Condition
-                if (p.descCondition) {
-                    insertSection('Condition', renderDesc(p.descCondition));
+                if (finalCondition) {
+                    insertSection('Condition', renderDesc(finalCondition));
                 }
 
                 // 4. Fit & Comfort
-                if (p.descFitComfort) {
-                    insertSection('Fit &amp; Comfort', renderDesc(p.descFitComfort));
+                if (finalFit) {
+                    insertSection('Fit &amp; Comfort', renderDesc(finalFit));
                 }
 
                 // 5. Perfect For
-                if (p.descPerfectFor) {
-                    insertSection('Perfect For', renderDesc(p.descPerfectFor));
+                if (finalPerfectFor) {
+                    insertSection('Perfect For', renderDesc(finalPerfectFor));
                 }
 
                 // 6. Shipping & Payment (always shown)
@@ -960,8 +971,8 @@
                 </p>`);
 
                 // 7. Exchange Policy
-                if (p.descExchangePolicy) {
-                    insertSection('Exchange Policy', renderDesc(p.descExchangePolicy));
+                if (finalExchange) {
+                    insertSection('Exchange Policy', renderDesc(finalExchange));
                 }
 
                 // 8. Need Help (always shown)
