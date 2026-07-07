@@ -527,10 +527,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===== SCROLL ANIMATIONS (Intersection Observer) =====
+    // Use a lower threshold on mobile so cards on small screens still animate in
+    const isMobile = window.innerWidth <= 768;
     const observerOptions = {
         root: null,
-        rootMargin: '0px',
-        threshold: 0.15
+        rootMargin: '0px 0px -30px 0px',
+        threshold: isMobile ? 0.05 : 0.15
     };
 
     const scrollObserver = new IntersectionObserver((entries, observer) => {
@@ -544,6 +546,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const revealElements = document.querySelectorAll('.reveal, .reveal-up:not(.reveal .reveal-up), .reveal-scale:not(.reveal .reveal-scale), .reveal-fade:not(.reveal .reveal-fade)');
     revealElements.forEach(el => scrollObserver.observe(el));
+
+    // Safety fallback: if any reveal element is still invisible after 2 seconds, force it visible.
+    // This handles edge cases where IntersectionObserver doesn't fire (e.g. old iOS Safari, offscreen quirks).
+    setTimeout(() => {
+        document.querySelectorAll('.reveal-up, .reveal-fade, .reveal-scale, .reveal').forEach(el => {
+            el.classList.add('visible');
+        });
+    }, 2000);
 
     // ===== TRENDY ITEMS FILTERING =====
     const filterBtns = document.querySelectorAll('.filter-btn');
