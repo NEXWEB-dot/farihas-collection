@@ -811,22 +811,54 @@
                 thumbStrip.style.display = 'none';
             }
 
-            // ----- Description (new structured sections) -----
+            // ----- Description (structured sections as separate accordions) -----
             const descItem = document.getElementById('pdDescriptionItem');
             const descContent = document.getElementById('pdDescriptionContent');
+            const accordion = document.querySelector('.pd-accordion');
 
-            // Check if new structured fields exist
+            // Helper: build an accordion item element
+            function makeAccItem(title, contentHtml, id) {
+                const item = document.createElement('div');
+                item.className = 'pd-acc-item';
+                if (id) item.id = id;
+                item.innerHTML = `
+                    <button class="pd-acc-header">
+                        <span>${title}</span>
+                        <i class="ph ph-plus pd-acc-icon"></i>
+                    </button>
+                    <div class="pd-acc-body">
+                        <div class="pd-acc-content" style="font-size:0.83rem;color:#444;line-height:1.7;">
+                            ${contentHtml}
+                        </div>
+                    </div>`;
+                // Wire the toggle
+                item.querySelector('.pd-acc-header').addEventListener('click', function() {
+                    item.classList.toggle('open');
+                    const icon = item.querySelector('.pd-acc-icon');
+                    if (icon) icon.className = item.classList.contains('open')
+                        ? 'ph ph-minus pd-acc-icon'
+                        : 'ph ph-plus pd-acc-icon';
+                });
+                return item;
+            }
+
+            // Remove any previously injected dynamic section accordions
+            document.querySelectorAll('.pd-dynamic-section').forEach(el => el.remove());
+
             const hasStructured = p.descIntro || p.descProductDetails || p.descCondition || p.descFitComfort || p.descPerfectFor;
 
             if (hasStructured) {
-                let html = '';
-
-                // Intro
+                // 1. Intro goes into Product Description accordion (only the intro text)
                 if (p.descIntro) {
-                    html += `<p style="margin-bottom:1rem;line-height:1.7;">${p.descIntro.replace(/\n/g,'<br>')}</p>`;
+                    descContent.innerHTML = `<p style="line-height:1.7;">${p.descIntro.replace(/\n/g,'<br>')}</p>`;
+                    if (descItem) descItem.style.display = '';
+                } else {
+                    if (descItem) descItem.style.display = 'none';
                 }
 
-                // Product Details
+                const insertAfter = accordion; // inject after accordion
+
+                // 2. Product Details section
                 const d = p.descProductDetails || {};
                 const detailRows = [
                     ['Brand', d.brandDetail],
@@ -838,72 +870,75 @@
                     ['Toe Shape', d.toeShape],
                     ['Sole Material', d.soleMaterial],
                 ].filter(([, v]) => v);
+
                 if (detailRows.length > 0) {
-                    html += `<div style="margin-bottom:1rem;">
-                        <p style="font-weight:700;font-size:0.85rem;margin-bottom:6px;color:#111;">▼ Product Details</p>
-                        <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
-                            ${detailRows.map(([k,v]) => `<tr>
-                                <td style="padding:3px 10px 3px 0;color:#666;white-space:nowrap;font-weight:600;">${k}</td>
-                                <td style="padding:3px 0;color:#333;">${v}</td>
-                            </tr>`).join('')}
-                        </table>
-                    </div>`;
+                    const tableHtml = `<table style="width:100%;border-collapse:collapse;">
+                        ${detailRows.map(([k, v]) => `<tr>
+                            <td style="padding:4px 12px 4px 0;color:#666;white-space:nowrap;font-weight:600;font-size:0.82rem;">${k}</td>
+                            <td style="padding:4px 0;color:#333;font-size:0.82rem;">${v}</td>
+                        </tr>`).join('')}
+                    </table>`;
+                    const el = makeAccItem('Product Details', tableHtml);
+                    el.classList.add('pd-dynamic-section');
+                    insertAfter.after(el);
+                    // subsequent ones after this
+                    insertAfter._lastInserted = el;
                 }
 
-                // Condition
+                // helper to insert in order
+                function insertSection(title, html) {
+                    const el = makeAccItem(title, html);
+                    el.classList.add('pd-dynamic-section');
+                    const lastInserted = accordion._lastInserted;
+                    if (lastInserted) {
+                        lastInserted.after(el);
+                    } else {
+                        accordion.after(el);
+                    }
+                    accordion._lastInserted = el;
+                }
+
+                // reset tracker
+                if (!accordion._lastInserted && detailRows.length === 0) {
+                    accordion._lastInserted = null;
+                }
+
+                // 3. Condition
                 if (p.descCondition) {
-                    html += `<div style="margin-bottom:1rem;">
-                        <p style="font-weight:700;font-size:0.85rem;margin-bottom:4px;color:#111;">▼ Condition</p>
-                        <p style="font-size:0.83rem;color:#444;line-height:1.6;">${p.descCondition.replace(/\n/g,'<br>')}</p>
-                    </div>`;
+                    insertSection('Condition', `<p>${p.descCondition.replace(/\n/g,'<br>')}</p>`);
                 }
 
-                // Fit & Comfort
+                // 4. Fit & Comfort
                 if (p.descFitComfort) {
-                    html += `<div style="margin-bottom:1rem;">
-                        <p style="font-weight:700;font-size:0.85rem;margin-bottom:4px;color:#111;">▼ Fit &amp; Comfort</p>
-                        <p style="font-size:0.83rem;color:#444;line-height:1.6;">${p.descFitComfort.replace(/\n/g,'<br>')}</p>
-                    </div>`;
+                    insertSection('Fit &amp; Comfort', `<p>${p.descFitComfort.replace(/\n/g,'<br>')}</p>`);
                 }
 
-                // Perfect For
+                // 5. Perfect For
                 if (p.descPerfectFor) {
-                    html += `<div style="margin-bottom:1rem;">
-                        <p style="font-weight:700;font-size:0.85rem;margin-bottom:4px;color:#111;">▼ Perfect For</p>
-                        <p style="font-size:0.83rem;color:#444;line-height:1.6;">${p.descPerfectFor.replace(/\n/g,'<br>')}</p>
-                    </div>`;
+                    insertSection('Perfect For', `<p>${p.descPerfectFor.replace(/\n/g,'<br>')}</p>`);
                 }
 
-                // Shipping & Payment (always shown, fixed content)
-                html += `<div style="margin-bottom:1rem;">
-                    <p style="font-weight:700;font-size:0.85rem;margin-bottom:6px;color:#111;">▼ Shipping &amp; Payment</p>
-                    <p style="font-size:0.83rem;color:#444;line-height:1.8;">
-                        🚚 Nationwide Shipping Available<br>
-                        💳 Cash on Delivery: Karachi Only<br>
-                        💰 Advance Payment Required: Outside Karachi<br>
-                        📦 Orders are processed within 1–2 working days.
-                    </p>
-                </div>`;
+                // 6. Shipping & Payment (always shown)
+                insertSection('Shipping &amp; Payment', `<p>
+                    🚚 Nationwide Shipping Available<br>
+                    💳 Cash on Delivery: Karachi Only<br>
+                    💰 Advance Payment Required: Outside Karachi<br>
+                    📦 Orders are processed within 1–2 working days.
+                </p>`);
 
-                // Exchange Policy
+                // 7. Exchange Policy
                 if (p.descExchangePolicy) {
-                    html += `<div style="margin-bottom:1rem;">
-                        <p style="font-weight:700;font-size:0.85rem;margin-bottom:4px;color:#111;">▼ Exchange Policy</p>
-                        <p style="font-size:0.83rem;color:#444;line-height:1.6;">${p.descExchangePolicy.replace(/\n/g,'<br>')}</p>
-                    </div>`;
+                    insertSection('Exchange Policy', `<p>${p.descExchangePolicy.replace(/\n/g,'<br>')}</p>`);
                 }
 
-                // Need Help (always shown, fixed)
-                html += `<div style="margin-bottom:0.5rem;">
-                    <p style="font-weight:700;font-size:0.85rem;margin-bottom:4px;color:#111;">▼ Need Help?</p>
-                    <p style="font-size:0.83rem;color:#444;line-height:1.6;">If you have any questions about sizing, condition, or the product, feel free to contact us on WhatsApp. We're always happy to help.</p>
-                </div>`;
+                // 8. Need Help (always shown)
+                insertSection('Need Help?', `<p>If you have any questions about sizing, condition, or the product, feel free to contact us on WhatsApp. We're always happy to help.</p>`);
 
-                descContent.innerHTML = html;
-                if (descItem) descItem.style.display = '';
+                // cleanup tracker
+                delete accordion._lastInserted;
 
             } else {
-                // Legacy fallback for older products
+                // Legacy fallback for older products (no structured fields)
                 const targetDesc = p.richDescription || p.description;
                 if (targetDesc) {
                     if (descContent) {
@@ -918,7 +953,7 @@
                                         if (child.marks && child.marks.includes('em')) text = `<em>${text}</em>`;
                                         pHtml += text;
                                     });
-                                    html += `<p style="margin-bottom: 0.8rem;">${pHtml}</p>`;
+                                    html += `<p style="margin-bottom:0.8rem;">${pHtml}</p>`;
                                 }
                             });
                             descContent.innerHTML = html;
