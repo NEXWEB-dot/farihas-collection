@@ -201,10 +201,21 @@
 </head>
 <body class="bg-white text-gray-900">
 
-        <!-- Top Pinned Banner -->
-    <div style="background-color:#111; color:#fff; text-align:center; padding:10px 15px; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300;">
-        <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel. Claims for damage or exchange will only be accepted with an unboxing video.
+    <!-- Top Marquee Banner -->
+    <div style="background-color:#111; color:#fff; padding:10px 0; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300; overflow:hidden; white-space:nowrap;">
+        <div style="display:inline-block; animation: marquee 25s linear infinite; padding-left:100%;">
+            <span style="margin-right: 50px;">🔥 <strong>Summer Sale 2026</strong> is live!</span>
+            <span style="margin-right: 50px;">📹 <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel.</span>
+            <span style="margin-right: 50px;">Premium <strong>Preloved Condition</strong> Shoes</span>
+        </div>
     </div>
+    <style>
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+    </style>
+
     <!-- Header with integrated nav -->
     <header class="shoes-header" style="flex-direction:column;padding:0.75rem 2rem 0;gap:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;width:100%;padding-bottom:0.65rem;">
@@ -230,6 +241,8 @@
                     <a href="shoes (1).html?filter=women">Women</a>
                     <a href="shoes (1).html?filter=men">Men</a>
                     <a href="shoes (1).html?filter=unisex">Unisex</a>
+                    <a href="shoes (1).html?filter=loafers">Loafers</a>
+                    <a href="shoes (1).html?filter=sandals">Sandals</a>
                 </div>
             </div>
             <a href="reviews.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Reviews</a>
@@ -248,6 +261,8 @@
             <button class="filter-pill" data-filter="women">Women</button>
             <button class="filter-pill" data-filter="men">Men</button>
             <button class="filter-pill" data-filter="unisex">Unisex</button>
+            <button class="filter-pill" data-filter="loafers">Loafers</button>
+            <button class="filter-pill" data-filter="sandals">Sandals</button>
         </div>
         <select class="sort-select" id="shSortSelect">
             <option value="default">Sort by: Featured</option>
@@ -307,7 +322,7 @@
     <!-- Footer -->
     <!-- Newsletter Section -->
     <div class="max-w-3xl mx-auto px-6 py-16 text-center border-t border-gray-100 mt-10">
-        <h2 class="text-2xl font-bold mb-2">Newsletter</h2>
+
         <p class="text-sm text-gray-500 mb-6">Join thousands of happy customers.</p>
         <form class="flex max-w-md mx-auto gap-2">
             <input type="email" placeholder="Enter your email address" class="flex-1 px-4 py-3 border border-gray-200 rounded-sm focus:outline-none focus:border-black text-sm">

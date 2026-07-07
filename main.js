@@ -305,9 +305,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="menu-shop-submenu menu-subsubmenu" id="menuWomenSubmenu">
                                 <a href="shoes (1).html?filter=women&category=heels" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-high-heel"></i> Heels</a>
                                 <a href="shoes (1).html?filter=women&category=sneakers" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-sneaker"></i> Sneakers</a>
-                                <a href="shoes (1).html?filter=women&category=loafers" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-shoe"></i> Loafers</a>
+                                <a href="shoes (1).html?filter=loafers" class="menu-link menu-sublink menu-subsublink"><img src="images/loafer_icon.png" alt="Loafers" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;"> Loafers</a>
                                 <a href="shoes (1).html?filter=women&category=boots" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-boot"></i> Boots</a>
-                                <a href="shoes (1).html?filter=women&category=sandals" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-flip-flops"></i> Sandals</a>
+                                <a href="shoes (1).html?filter=sandals" class="menu-link menu-sublink menu-subsublink"><img src="images/sandal_icon.png" alt="Sandals" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;"> Sandals</a>
                             </div>
                         </div>
                         <a href="shoes (1).html?filter=men" class="menu-link menu-sublink"><i class="ph ph-gender-male"></i> Men</a>
