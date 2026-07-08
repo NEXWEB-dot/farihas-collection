@@ -1097,7 +1097,8 @@
 
         // ===== IMAGE GALLERY ===== (re-bindable since thumbs render dynamically)
         function wireGalleryThumbs() {
-            document.querySelectorAll('.pd-thumb').forEach(thumb => {
+            const thumbs = Array.from(document.querySelectorAll('.pd-thumb'));
+            thumbs.forEach((thumb, index) => {
                 thumb.addEventListener('click', () => {
                     document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
                     thumb.classList.add('active');
@@ -1113,6 +1114,45 @@
                     }, 150);
                 });
             });
+
+            // Swipe logic for mobile
+            const mainImgWrap = document.getElementById('mainImgWrap');
+            let touchStartX = 0;
+            let touchStartY = 0;
+
+            mainImgWrap.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            }, {passive: true});
+
+            mainImgWrap.addEventListener('touchend', (e) => {
+                const touchEndX = e.changedTouches[0].screenX;
+                const touchEndY = e.changedTouches[0].screenY;
+                
+                const diffX = touchEndX - touchStartX;
+                const diffY = touchEndY - touchStartY;
+
+                // Detect horizontal swipe (must be mostly horizontal and > 40px)
+                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+                    const thumbsList = Array.from(document.querySelectorAll('.pd-thumb'));
+                    if (thumbsList.length <= 1) return;
+                    
+                    const activeIndex = thumbsList.findIndex(t => t.classList.contains('active'));
+                    let nextIndex = activeIndex;
+
+                    if (diffX < 0) {
+                        // Swiped left (next image)
+                        nextIndex = (activeIndex + 1) % thumbsList.length;
+                    } else {
+                        // Swiped right (previous image)
+                        nextIndex = (activeIndex - 1 + thumbsList.length) % thumbsList.length;
+                    }
+
+                    if (nextIndex !== activeIndex) {
+                        thumbsList[nextIndex].click();
+                    }
+                }
+            }, {passive: true});
         }
 
         // ===== ACCORDION =====
