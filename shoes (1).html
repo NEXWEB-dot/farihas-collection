@@ -258,6 +258,7 @@
         <div class="filter-pills">
             <button class="filter-pill active" data-filter="all">All</button>
             <button class="filter-pill" data-filter="women">Women</button>
+            <button class="filter-pill" data-filter="heels">Heels</button>
             <button class="filter-pill" data-filter="men">Men</button>
             <button class="filter-pill" data-filter="unisex">Unisex</button>
             <button class="filter-pill" data-filter="loafers">Loafers</button>
@@ -566,7 +567,7 @@
     // Check URL for initial filter
     const urlParams = new URLSearchParams(window.location.search);
     const initialFilter = urlParams.get('filter');
-    if (initialFilter && ['men', 'women', 'unisex'].includes(initialFilter.toLowerCase())) {
+    if (initialFilter && ['men', 'women', 'heels', 'unisex', 'loafers', 'sandals'].includes(initialFilter.toLowerCase())) {
         activeFilter = initialFilter.toLowerCase();
         document.querySelectorAll('.filter-pill').forEach(p => {
             p.classList.toggle('active', p.dataset.filter === activeFilter);
