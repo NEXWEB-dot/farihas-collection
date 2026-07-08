@@ -632,7 +632,7 @@
 
                 // Badges
                 let badgeHtml = '';
-                const isOutOfStock = p.soldOut || (p.sizes && Array.isArray(p.sizes) && !p.sizes.some(s => s.stock > 0));
+                const isOutOfStock = p.soldOut === true || (Array.isArray(p.sizes) && p.sizes.length > 0 && !p.sizes.some(s => s.stock > 0));
 
                 if (isOutOfStock) {
                     badgeHtml = '<div class="absolute top-2 left-2 bg-red-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Sold Out</div>';
