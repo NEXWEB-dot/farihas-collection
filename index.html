@@ -147,8 +147,12 @@
                 <div class="nav-shop-menu">
                     <a href="shoes (1).html">Shop</a>
                     <a href="shoes (1).html?filter=women">Women</a>
+                    <a href="shoes (1).html?filter=heels">Heels</a>
+                    <a href="shoes (1).html?filter=slides">Slides</a>
                     <a href="shoes (1).html?filter=men">Men</a>
                     <a href="shoes (1).html?filter=unisex">Unisex</a>
+                    <a href="shoes (1).html?filter=loafers">Loafers</a>
+                    <a href="shoes (1).html?filter=sandals">Sandals</a>
                 </div>
             </div>
             <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
@@ -299,7 +303,7 @@
         <div class="product-grid" id="heelsGrid">
             <p id="heelsLoading" class="col-span-full" style="text-align:center;color:#aaa;font-size:0.9rem;padding:40px 0;">Loading heels...</p>
         </div>
-        <a href="shoes (1).html?filter=women&category=heels" class="view-all-btn btn-outline reveal-up" style="display:inline-block;text-decoration:none;text-align:center;">View All Heels</a>
+        <a href="shoes (1).html?filter=heels" class="view-all-btn btn-outline reveal-up" style="display:inline-block;text-decoration:none;text-align:center;">View All Heels</a>
     </section>
 
     <script>
@@ -367,6 +371,84 @@
         } catch (err) {
             console.error('Failed to load heels:', err);
             grid.innerHTML = '<p style="text-align:center;color:#e53935;padding:40px 0;">Could not load heels.</p>';
+        }
+    })();
+    </script>
+
+    <!-- Slides Section -->
+    <section class="section trendy-section reveal" style="margin-top:0;">
+        <h3 class="section-title">Slides</h3>
+        <div class="product-grid" id="slidesGrid">
+            <p id="slidesLoading" class="col-span-full" style="text-align:center;color:#aaa;font-size:0.9rem;padding:40px 0;">Loading slides...</p>
+        </div>
+        <a href="shoes (1).html?filter=slides" class="view-all-btn btn-outline reveal-up" style="display:inline-block;text-decoration:none;text-align:center;">View All Slides</a>
+    </section>
+
+    <script>
+    (async function loadSlides() {
+        const SANITY_PROJECT_ID = 'kxnjofhp';
+        const SANITY_DATASET = 'production';
+        const SANITY_API_VERSION = '2024-01-01';
+
+        const query = `*[_type == "shoe" && category == "slides"] | order(order asc) [0...8]{
+            _id, name, price, tag, brand, soldOut,
+            "sizes": sizes[]{size, stock},
+            "image": image.asset->url
+        }`;
+
+        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+        const grid = document.getElementById('slidesGrid');
+
+        try {
+            const res = await fetch(url);
+            const json = await res.json();
+            const products = json.result || [];
+
+            if (!products.length) {
+                grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No slides available right now.</p>';
+                return;
+            }
+
+            grid.innerHTML = products.map((p, i) => {
+                const id    = p._id || '';
+                const name  = p.name || 'Untitled';
+                const price = Number(p.price) || 0;
+                const image = p.image || '';
+                const tag   = p.brand || p.tag || "Fariha's Collection";
+                const delay = i + 1;
+                const params = new URLSearchParams({ id, name, price, image, tag });
+                const esc = s => String(s).replace(/"/g, '&quot;');
+
+                // Sold out check: only flag if explicitly soldOut, or if sizes exist and ALL have 0 stock
+                const isOutOfStock = p.soldOut === true || (Array.isArray(p.sizes) && p.sizes.length > 0 && !p.sizes.some(s => s.stock > 0));
+                const soldOutOverlay = isOutOfStock ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
+
+                return `
+                    <a href="product-detail.html?${params.toString()}"
+                       class="product-card reveal-up delay-${delay}"
+                       style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
+                        <div class="product-img-wrap" style="position:relative;border-radius:0;margin-bottom:0;">
+                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            ${soldOutOverlay}
+                        </div>
+                        <div class="product-info" style="padding:12px 14px 14px;">
+                            <p class="brand">${esc(tag)}</p>
+                            <h4>${esc(name)}</h4>
+                            <p class="price">Rs${price.toLocaleString()}</p>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+
+            // Trigger scroll reveal for slides cards
+            document.querySelectorAll('#slidesGrid .reveal-up').forEach(el => {
+                if (typeof scrollObserver !== 'undefined') scrollObserver.observe(el);
+                else el.classList.add('visible');
+            });
+
+        } catch (err) {
+            console.error('Failed to load slides:', err);
+            grid.innerHTML = '<p style="text-align:center;color:#e53935;padding:40px 0;">Could not load slides.</p>';
         }
     })();
     </script>
