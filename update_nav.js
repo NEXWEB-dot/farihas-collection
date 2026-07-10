@@ -5,7 +5,10 @@ const replacement = `<div class="nav-shop-menu">
                     <a href="shoes (1).html">Shop</a>
                     <a href="shoes (1).html?filter=women">Women</a>
                     <a href="shoes (1).html?filter=heels">Heels</a>
+                    <a href="shoes (1).html?filter=flats">Flats</a>
                     <a href="shoes (1).html?filter=slides">Slides</a>
+                    <a href="shoes (1).html?filter=sneakers">Sneakers</a>
+                    <a href="shoes (1).html?filter=pumps">Pumps</a>
                     <a href="shoes (1).html?filter=men">Men</a>
                     <a href="shoes (1).html?filter=unisex">Unisex</a>
                     <a href="shoes (1).html?filter=loafers">Loafers</a>

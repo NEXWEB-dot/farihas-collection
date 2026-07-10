@@ -1199,7 +1199,7 @@ button {
         align-items: stretch !important;
     }
     .filter-pills {
-        justify-content: center !important;
+        justify-content: flex-start !important;
     }
     .sort-select {
         width: 100%;

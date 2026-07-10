@@ -81,7 +81,8 @@
 
         /* Filter bar */
         .filter-bar { background:#f9f9f9 !important; border-bottom:1px solid rgba(0,0,0,0.07); padding:0.6rem 1.5rem; display:flex !important; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; visibility:visible !important; opacity:1 !important; }
-        .filter-pills { display:flex !important; gap:0.5rem; flex-wrap:wrap; visibility:visible !important; }
+        .filter-pills { display:flex !important; gap:0.5rem; flex-wrap:nowrap; visibility:visible !important; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px; }
+        .filter-pills::-webkit-scrollbar { display:none; }
         .filter-pill {
             display:inline-block !important; visibility:visible !important;
             padding:5px 14px; border-radius:99px; border:1.5px solid #ddd;
@@ -239,7 +240,10 @@
                     <a href="shoes (1).html">Shop</a>
                     <a href="shoes (1).html?filter=women">Women</a>
                     <a href="shoes (1).html?filter=heels">Heels</a>
+                    <a href="shoes (1).html?filter=flats">Flats</a>
                     <a href="shoes (1).html?filter=slides">Slides</a>
+                    <a href="shoes (1).html?filter=sneakers">Sneakers</a>
+                    <a href="shoes (1).html?filter=pumps">Pumps</a>
                     <a href="shoes (1).html?filter=men">Men</a>
                     <a href="shoes (1).html?filter=unisex">Unisex</a>
                     <a href="shoes (1).html?filter=loafers">Loafers</a>
@@ -261,7 +265,10 @@
             <button class="filter-pill active" data-filter="all">All</button>
             <button class="filter-pill" data-filter="women">Women</button>
             <button class="filter-pill" data-filter="heels">Heels</button>
+            <button class="filter-pill" data-filter="flats">Flats</button>
             <button class="filter-pill" data-filter="slides">Slides</button>
+            <button class="filter-pill" data-filter="sneakers">Sneakers</button>
+            <button class="filter-pill" data-filter="pumps">Pumps</button>
             <button class="filter-pill" data-filter="men">Men</button>
             <button class="filter-pill" data-filter="unisex">Unisex</button>
             <button class="filter-pill" data-filter="loafers">Loafers</button>
@@ -570,7 +577,7 @@
     // Check URL for initial filter
     const urlParams = new URLSearchParams(window.location.search);
     const initialFilter = urlParams.get('filter');
-    if (initialFilter && ['men', 'women', 'heels', 'slides', 'unisex', 'loafers', 'sandals'].includes(initialFilter.toLowerCase())) {
+    if (initialFilter && ['men', 'women', 'heels', 'flats', 'slides', 'sneakers', 'pumps', 'unisex', 'loafers', 'sandals'].includes(initialFilter.toLowerCase())) {
         activeFilter = initialFilter.toLowerCase();
         document.querySelectorAll('.filter-pill').forEach(p => {
             p.classList.toggle('active', p.dataset.filter === activeFilter);
