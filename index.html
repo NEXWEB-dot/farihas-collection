@@ -9,6 +9,18 @@
     <meta property="og:image" content="images/hero_closet.jpg">
     <meta property="og:url" content="https://farihascollection.com">
     <link rel="icon" type="image/png" href="images/favicon.png">
+    <script>
+        // Dark mode: apply before page renders to prevent flash
+        (function(){
+            var saved = localStorage.getItem('fc_theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
     <title>Fariha's Collection</title>
     <link rel="stylesheet" href="style.css">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&display=swap" rel="stylesheet">
@@ -142,7 +154,11 @@
                     <h1 class="logo" style="font-family:'Poppins', sans-serif; font-weight:300; font-size:1.15rem; line-height:1.2; margin:0; letter-spacing:4px;">FARIHA'S<br>COLLECTION</h1>
                 </a>
             </div>
-            <div class="header-right" style="flex:1; display:flex; justify-content:flex-end;">
+            <div class="header-right" style="flex:1; display:flex; justify-content:flex-end; align-items:center; gap:12px;">
+                <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode" aria-label="Toggle dark mode">
+                    <div class="dm-track"></div>
+                    <div class="dm-knob">☀️</div>
+                </button>
                 <button class="icon-btn" id="cartToggle" style="position:relative;"><i class="ph ph-shopping-bag"></i><span class="cart-badge">0</span></button>
             </div>
         </div>
@@ -285,12 +301,10 @@
                 
                 // Badges
                 let badgeHtml = '';
-                const isNewArrival = p._createdAt ? (new Date() - new Date(p._createdAt)) < 14 * 24 * 60 * 60 * 1000 : false;
+                
                 
                 if (p.soldOut) {
                     badgeHtml = '<div style="position:absolute;top:10px;left:10px;background:#e53935;color:#fff;font-size:0.65rem;font-weight:700;padding:4px 8px;border-radius:4px;z-index:2;text-transform:uppercase;letter-spacing:1px;">Sold Out</div>';
-                } else if (isNewArrival) {
-                    badgeHtml = '<div style="position:absolute;top:10px;left:10px;background:#1e88e5;color:#fff;font-size:0.65rem;font-weight:700;padding:4px 8px;border-radius:4px;z-index:2;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:4px;"><i class="ph-fill ph-sparkle"></i> New</div>';
                 }
 
                 return `
@@ -785,6 +799,12 @@
             <p>&copy; 2026 Fariha's Collection. All rights reserved. | <a href="checkout.html" style="color:#888;text-decoration:none;">Checkout</a></p>
         </div>
     </footer>
+
+    <!-- WhatsApp Float -->
+    <a href="https://wa.me/923090625199?text=Hi! I'm interested in your shoes collection." target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
+        <i class="ph-fill ph-whatsapp-logo" style="font-size:1.4rem;"></i>
+        <span style="font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:600;color:white;">Need Help?</span>
+    </a>
 
     <script src="main.js"></script>
 

@@ -9,6 +9,18 @@
     <meta property="og:image" content="images/hero_closet.jpg">
     <meta property="og:url" content="https://farihascollection.com">
     <link rel="icon" type="image/png" href="images/favicon.png">
+    <script>
+        // Dark mode: apply before page renders to prevent flash
+        (function(){
+            var saved = localStorage.getItem('fc_theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
     <title>Checkout &ndash; FARIHA'S COLLECTION</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -443,12 +455,12 @@
     <div class="receipt-overlay" id="receiptOverlay">
         <div class="receipt-box">
             <button class="receipt-close-btn" onclick="document.getElementById('receiptOverlay').classList.remove('show')" title="Close">
-                &times;
+                <i class="ph-bold ph-x"></i>
             </button>
             <div id="receiptCard">
                 <div class="receipt-header">
                     <div class="receipt-logo">FARIHA'S COLLECTION</div>
-                    <div class="receipt-tagline">PREMIUM FOOTWEAR Â· PAKISTAN</div>
+                    <div class="receipt-tagline">PREMIUM FOOTWEAR | PAKISTAN</div>
                     <div class="receipt-title">Order Receipt</div>
                     <div class="receipt-date" id="receiptDate"></div>
                 </div>
@@ -516,7 +528,7 @@
     <div class="co-success" id="successOverlay">
         <div class="co-success-box">
             <div class="co-success-icon"><i class="ph-fill ph-check-circle"></i></div>
-            <h2>Order Placed! ðŸŽ‰</h2>
+            <h2>Order Placed! 🥳</h2>
             <p id="successMsg">Your order has been received. We'll confirm via WhatsApp shortly.</p>
             <div class="co-success-actions">
                 <button class="co-success-btn secondary" onclick="window.location.href='shop.html'">Continue Shopping</button>
@@ -678,7 +690,7 @@
             const lt = item.price * item.qty;
             subtotal += lt;
             itemsHtml += `<div class="receipt-item">
-                <span class="receipt-item-name">${item.name} Ã— ${item.qty}</span>
+                <span class="receipt-item-name">${item.name} &times; ${item.qty}</span>
                 <span class="receipt-item-price">${formatPrice(lt)}</span>
             </div>`;
         });

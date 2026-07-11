@@ -9,6 +9,18 @@
     <meta property="og:image" content="images/hero_closet.jpg">
     <meta property="og:url" content="https://farihascollection.com">
     <link rel="icon" type="image/png" href="images/favicon.png">
+    <script>
+        // Dark mode: apply before page renders to prevent flash
+        (function(){
+            var saved = localStorage.getItem('fc_theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
     <title>FARIHA'S COLLECTION - Shoes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -656,14 +668,12 @@
                 let badgeHtml = '';
                 const isSoldOut = p.soldOut === true || (Array.isArray(p.sizes) && p.sizes.length > 0 && !p.sizes.some(s => s.stock > 0));
                 const discountPct = origPrice && origPrice > finalPrice ? Math.round(((origPrice - finalPrice) / origPrice) * 100) : 0;
-                const isNewArrival = p._createdAt ? (new Date() - new Date(p._createdAt)) < 14 * 24 * 60 * 60 * 1000 : false;
+                
 
                 if (isSoldOut) {
                     badgeHtml = '<div class="absolute top-2 left-2 bg-red-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Sold Out</div>';
                 } else if (discountPct > 0) {
                     badgeHtml = `<div class="absolute top-2 left-2 bg-black text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Save ${discountPct}%</div>`;
-                } else if (isNewArrival) {
-                    badgeHtml = '<div class="absolute top-2 left-2 bg-blue-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10 flex items-center gap-1"><i class="ph-fill ph-sparkle"></i> New</div>';
                 } else if (p.sizes && p.sizes.length === 1 && Number(p.sizes[0].stock) === 1) {
                     badgeHtml = '<div class="absolute top-2 left-2 bg-orange-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10 flex items-center gap-1"><i class="ph-fill ph-fire"></i> 1 Pair Left</div>';
                 } else if (p.tag) {

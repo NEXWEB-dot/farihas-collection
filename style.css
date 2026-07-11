@@ -1,10 +1,22 @@
 :root {
     --color-bg: #ffffff;
+    --color-surface: #f5f5f5;
+    --color-surface-2: #eeeeee;
     --color-text: #000000;
+    --color-text-muted: #666666;
+    --color-text-subtle: #999999;
     --color-primary: #000000;
     --color-primary-light: #333333;
     --color-gray-light: #f5f5f5;
     --color-gray-dark: #222222;
+    --color-border: #eeeeee;
+    --color-border-light: #f0f0f0;
+    --color-card-bg: #ffffff;
+    --color-header-bg: rgba(255, 255, 255, 0.9);
+    --color-search-bg: rgba(255,255,255,0.97);
+    --color-input-bg: #ffffff;
+    --color-skeleton-base: #f6f7f8;
+    --color-skeleton-shine: #e2e4e8;
     --font-main: 'Poppins', sans-serif;
     --font-display: 'Playfair Display', serif;
     --spacing-xs: 0.5rem;
@@ -14,6 +26,33 @@
     --spacing-xl: 6rem;
     --transition-fast: 0.3s ease;
     --transition-smooth: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ================= DARK MODE THEME ================= */
+[data-theme="dark"] {
+    --color-bg: #0f0f0f;
+    --color-surface: #1a1a1a;
+    --color-surface-2: #242424;
+    --color-text: #f0f0f0;
+    --color-text-muted: #aaaaaa;
+    --color-text-subtle: #777777;
+    --color-primary: #f0f0f0;
+    --color-primary-light: #cccccc;
+    --color-gray-light: #1e1e1e;
+    --color-gray-dark: #e0e0e0;
+    --color-border: #2a2a2a;
+    --color-border-light: #252525;
+    --color-card-bg: #1a1a1a;
+    --color-header-bg: rgba(15, 15, 15, 0.92);
+    --color-search-bg: rgba(15,15,15,0.98);
+    --color-input-bg: #1e1e1e;
+    --color-skeleton-base: #1e1e1e;
+    --color-skeleton-shine: #2a2a2a;
+}
+
+/* Dark mode: transition all color-bearing properties smoothly */
+*, *::before, *::after {
+    transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease;
 }
 
 * {
@@ -69,11 +108,11 @@ button {
     width: 100%;
     top: 0;
     left: 0;
-    background-color: rgba(255, 255, 255, 0.25);
+    background-color: var(--color-header-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     z-index: 100;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid var(--color-border);
     opacity: 0;
     pointer-events: none;
     transform: translateY(-20px);
@@ -306,7 +345,7 @@ button {
     position: absolute;
     bottom: 20px;
     left: 20px;
-    background: rgba(255,255,255,0.9);
+    background: var(--color-card-bg);
     padding: 1rem;
     text-align: left;
     border-radius: 4px;
@@ -520,7 +559,7 @@ button {
 /* ================= FOOTER ================= */
 .footer {
     background-color: var(--color-bg);
-    border-top: 1px solid var(--color-gray-light);
+    border-top: 1px solid var(--color-border);
     padding: var(--spacing-xl) 2rem 2rem;
     font-size: 0.9rem;
 }
@@ -552,7 +591,7 @@ button {
 }
 
 .footer-col ul li a {
-    color: #666;
+    color: var(--color-text-muted);
     transition: color var(--transition-fast);
 }
 
@@ -606,9 +645,9 @@ button {
 
 .footer-bottom {
     text-align: center;
-    border-top: 1px solid var(--color-gray-light);
+    border-top: 1px solid var(--color-border);
     padding-top: 2rem;
-    color: #888;
+    color: var(--color-text-subtle);
 }
 
 /* ================= ANIMATIONS (Fresh & Alive) ================= */
@@ -738,7 +777,7 @@ button {
     width: 400px;
     max-width: 90vw;
     height: 100vh;
-    background: #fff;
+    background: var(--color-card-bg);
     z-index: 9999;
     display: flex;
     flex-direction: column;
@@ -755,7 +794,7 @@ button {
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
 }
 .cart-panel-header h3 {
     font-size: 1.2rem;
@@ -766,7 +805,7 @@ button {
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #333;
+    color: var(--color-text-muted);
 }
 
 .cart-items {
@@ -782,7 +821,7 @@ button {
     justify-content: center;
     gap: 1rem;
     padding: 4rem 1rem;
-    color: #999;
+    color: var(--color-text-subtle);
     font-size: 1rem;
 }
 
@@ -791,12 +830,12 @@ button {
     align-items: center;
     gap: 1rem;
     padding: 1rem 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--color-border-light);
 }
 .cart-item-img {
     width: 70px;
     height: 70px;
-    background: #f5f5f5;
+    background: var(--color-surface);
     border-radius: 8px;
     overflow: hidden;
     flex-shrink: 0;
@@ -819,7 +858,7 @@ button {
 }
 .cart-item-price {
     font-size: 0.85rem;
-    color: #666;
+    color: var(--color-text-muted);
     margin-bottom: 6px;
 }
 .cart-qty-controls {
@@ -830,18 +869,19 @@ button {
 .cart-qty-controls button {
     width: 28px;
     height: 28px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--color-border);
     border-radius: 4px;
-    background: #fff;
+    background: var(--color-card-bg);
     cursor: pointer;
     font-size: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background 0.2s;
+    color: var(--color-text);
 }
 .cart-qty-controls button:hover {
-    background: #f0f0f0;
+    background: var(--color-surface);
 }
 .cart-qty-controls span {
     font-weight: 600;
@@ -862,7 +902,8 @@ button {
 
 .cart-footer {
     padding: 1.5rem;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-card-bg);
 }
 .cart-total {
     display: flex;
@@ -926,7 +967,7 @@ button {
 .search-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255,255,255,0.97);
+    background: var(--color-search-bg);
     z-index: 9998;
     opacity: 0;
     pointer-events: none;
@@ -947,14 +988,14 @@ button {
 .search-bar-wrap {
     display: flex;
     align-items: center;
-    border-bottom: 2px solid #000;
+    border-bottom: 2px solid var(--color-text);
     padding-bottom: 8px;
     margin-bottom: 2rem;
 }
 .search-bar-wrap .search-icon {
     font-size: 1.5rem;
     margin-right: 12px;
-    color: #333;
+    color: var(--color-text-muted);
 }
 .search-bar-wrap input {
     flex: 1;
@@ -969,7 +1010,7 @@ button {
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #333;
+    color: var(--color-text-muted);
 }
 .search-hint {
     color: #999;
@@ -985,35 +1026,36 @@ button {
     align-items: center;
     gap: 1rem;
     padding: 12px 0;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--color-border-light);
     cursor: pointer;
     transition: background 0.2s;
 }
 .search-result-item:hover {
-    background: #f9f9f9;
+    background: var(--color-surface);
 }
 .search-result-item img {
     width: 60px;
     height: 60px;
     object-fit: contain;
-    background: #f5f5f5;
+    background: var(--color-surface);
     border-radius: 6px;
     padding: 4px;
 }
 .search-result-brand {
     font-size: 0.7rem;
-    color: #999;
+    color: var(--color-text-subtle);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 .search-result-name {
     font-weight: 600;
     font-size: 0.95rem;
+    color: var(--color-text);
 }
 .search-result-price {
     font-weight: 700;
     font-size: 0.9rem;
-    color: #333;
+    color: var(--color-text-muted);
 }
 
 /* ================= MENU DRAWER ================= */
@@ -1038,7 +1080,7 @@ button {
     width: 340px;
     max-width: 85vw;
     height: 100vh;
-    background: #fff;
+    background: var(--color-card-bg);
     z-index: 9997;
     display: flex;
     flex-direction: column;
@@ -1055,7 +1097,7 @@ button {
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
 }
 .menu-drawer-header h3 {
     font-size: 1.15rem;
@@ -1067,7 +1109,7 @@ button {
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #333;
+    color: var(--color-text-muted);
 }
 
 .menu-nav {
@@ -1081,14 +1123,14 @@ button {
     gap: 12px;
     padding: 14px 1.5rem;
     font-size: 0.95rem;
-    color: #333;
+    color: var(--color-text-muted);
     text-decoration: none;
     transition: background 0.2s, color 0.2s;
     font-weight: 500;
 }
 .menu-link:hover {
-    background: #f5f5f5;
-    color: #000;
+    background: var(--color-surface);
+    color: var(--color-text);
 }
 .menu-link i {
     font-size: 1.3rem;
@@ -1096,20 +1138,20 @@ button {
 
 .menu-footer {
     padding: 1.5rem;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--color-border);
 }
 .menu-social {
     display: flex;
     gap: 1.2rem;
 }
 .menu-social a {
-    color: #333;
+    color: var(--color-text-muted);
     font-size: 1.4rem;
     transition: color 0.2s;
     text-decoration: none;
 }
 .menu-social a:hover {
-    color: #000;
+    color: var(--color-text);
 }
 
 /* ================= WHATSAPP FLOATING BUTTON ================= */
@@ -1117,13 +1159,17 @@ button {
     position: fixed;
     bottom: 24px;
     right: 24px;
-    width: 56px;
-    height: 56px;
+    width: auto;
+    height: auto;
+    padding: 12px 20px;
+    gap: 8px;
     background: #25D366;
-    border-radius: 50%;
+    border-radius: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: white;
+    text-decoration: none;
     color: #fff;
     font-size: 1.8rem;
     box-shadow: 0 4px 20px rgba(37,211,102,0.4);
@@ -1237,22 +1283,7 @@ button {
         padding-bottom: 4px;
     }
 
-    /* Skeleton Loading */
-    @keyframes skeleton-shimmer {
-        0% { background-position: -200% 0; }
-        100% { background-position: 200% 0; }
-    }
-    .skeleton {
-        background: #f6f7f8;
-        background-image: linear-gradient(90deg, #f6f7f8 0px, #e2e4e8 40px, #f6f7f8 80px);
-        background-size: 200% 100%;
-        animation: skeleton-shimmer 1.5s infinite linear;
-    }
-
-    /* Product Image Hover Zoom */
-    .product-img-wrap { overflow: hidden; }
-    .product-img-wrap img { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important; }
-    .product-card:hover .product-img-wrap img, .shoe-card:hover img { transform: scale(1.08) !important; }
+    /* nothing extra needed here – skeleton/zoom CSS is in the global section below */
 
     /* Size guide table: allow horizontal scroll instead of squeezing columns unreadably */
     .sg-table-wrap {
@@ -1290,4 +1321,100 @@ button {
     .banner-card img {
         max-height: 200px !important;
     }
+}
+
+/* ================= SKELETON LOADING (GLOBAL) ================= */
+@keyframes skeleton-shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+}
+.skeleton {
+    background: var(--color-skeleton-base);
+    background-image: linear-gradient(
+        90deg,
+        var(--color-skeleton-base) 0px,
+        var(--color-skeleton-shine) 40px,
+        var(--color-skeleton-base) 80px
+    );
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite linear;
+    border-radius: 6px;
+}
+
+/* ================= PRODUCT IMAGE HOVER ZOOM (GLOBAL) ================= */
+.product-img-wrap { overflow: hidden; }
+.product-img-wrap img {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.product-card:hover .product-img-wrap img,
+.shoe-card:hover img {
+    transform: scale(1.08) !important;
+}
+
+/* ================= DARK MODE TOGGLE BUTTON ================= */
+.dark-mode-toggle {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    flex-shrink: 0;
+}
+.dark-mode-toggle .dm-track {
+    position: absolute;
+    inset: 0;
+    border-radius: 50px;
+    background: #ddd;
+    transition: background 0.35s ease;
+}
+[data-theme="dark"] .dark-mode-toggle .dm-track {
+    background: #555;
+}
+.dark-mode-toggle .dm-knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.35s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+[data-theme="dark"] .dark-mode-toggle .dm-knob {
+    left: 25px;
+    background: #1a1a1a;
+}
+
+/* Dark mode: ensure hero CTA stays readable */
+[data-theme="dark"] .hero-cta {
+    background: #f0f0f0;
+    color: #111;
+}
+
+/* Dark mode: product cards on index */
+[data-theme="dark"] .product-card,
+[data-theme="dark"] .shoe-card {
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+[data-theme="dark"] .product-img-wrap {
+    background-color: var(--color-surface);
+}
+[data-theme="dark"] .product-info .brand,
+[data-theme="dark"] .search-hint {
+    color: var(--color-text-subtle);
+}
+
+/* Dark mode: announcement banner on top */
+[data-theme="dark"] .announcement-bar,
+[data-theme="dark"] .ann-bar {
+    background: #1a1a1a !important;
+    color: #f0f0f0 !important;
+    border-bottom: 1px solid #2a2a2a !important;
 }

@@ -9,6 +9,18 @@
     <meta property="og:image" content="images/hero_closet.jpg">
     <meta property="og:url" content="https://farihascollection.com">
     <link rel="icon" type="image/png" href="images/favicon.png">
+    <script>
+        // Dark mode: apply before page renders to prevent flash
+        (function(){
+            var saved = localStorage.getItem('fc_theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
     <title id="pageTitle">Product Details | Fariha's Collection</title>
     <meta name="description" content="Shop quality preloved shoes at Fariha's Collection &mdash; authentic details, real photos.">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -583,7 +595,8 @@
 
     <!-- WhatsApp Float -->
     <a href="https://wa.me/923090625199?text=Hi! I'm interested in your shoes collection." target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
-        <i class="ph-fill ph-whatsapp-logo"></i>
+        <i class="ph-fill ph-whatsapp-logo" style="font-size:1.4rem;"></i>
+        <span style="font-family:'Poppins',sans-serif;font-size:0.85rem;font-weight:600;">Need Help?</span>
     </a>
 
     <script>
@@ -623,6 +636,12 @@
             document.getElementById('pageTitle').textContent = pdName + " | Fariha's Collection";
             document.getElementById('breadcrumbName').textContent = pdName;
             document.getElementById('pdTitleName').textContent = pdName;
+            
+            // Smart WhatsApp Pre-fill
+            const waFloat = document.querySelector('.whatsapp-float');
+            if (waFloat) {
+                waFloat.href = `https://wa.me/923090625199?text=Hi! I'm interested in the ${encodeURIComponent(pdName)}.`;
+            }
         }
         if (pdPrice) {
             document.getElementById('pdPriceVal').textContent = "Rs" + parseInt(pdPrice).toLocaleString();
