@@ -9,16 +9,6 @@
     <meta property="og:image" content="images/hero_closet.jpg">
     <meta property="og:url" content="https://farihascollection.com">
     <link rel="icon" type="image/png" href="images/favicon.png">
-    <script>
-        // Dark mode: apply before page renders to prevent flash
-        (function(){
-            var saved = localStorage.getItem('fc_theme');
-            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (saved === 'dark' || (!saved && prefersDark)) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            }
-        })();
-    </script>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
     <title>Customer Reviews &mdash; Fariha's Collection</title>
@@ -611,7 +601,7 @@
 </head>
 <body>
         <!-- Top Pinned Banner -->
-    <div style="background-color:#111; color:#fff; text-align:center; padding:10px 15px; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300;">
+    <div id="topPinnedBanner" style="background-color:#111; color:#fff; text-align:center; padding:10px 15px; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300;">
         <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel. Claims for damage or exchange will only be accepted with an unboxing video.
     </div>
     <!-- Header with integrated nav -->

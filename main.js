@@ -645,6 +645,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== INIT =====
     updateCartBadge();
+
+    // ===== SANITY POWERED BANNER =====
+    async function loadGlobalBanner() {
+        try {
+            const SANITY_PROJECT_ID = 'kxnjofhp';
+            const SANITY_DATASET = 'production';
+            const SANITY_API_VERSION = '2024-01-01';
+            const query = `*[_type == "siteSettings"][0]{announcementText, isAnnouncementActive}`;
+            const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+            
+            const res = await fetch(url);
+            const json = await res.json();
+            const settings = json.result;
+            
+            const banner = document.getElementById('topPinnedBanner');
+            if (banner && settings) {
+                // If it's explicitly active and has text, replace the default text
+                if (settings.isAnnouncementActive && settings.announcementText) {
+                    banner.innerHTML = settings.announcementText;
+                    banner.style.display = 'block';
+                } 
+                // If it's explicitly set to not active, hide the banner entirely
+                else if (settings.isAnnouncementActive === false) {
+                    banner.style.display = 'none';
+                }
+            }
+        } catch (e) {
+            console.error('Error loading Sanity banner:', e);
+        }
+    }
+    loadGlobalBanner();
 });
 
 // Apply theme before DOMContentLoaded to prevent flash of light mode
