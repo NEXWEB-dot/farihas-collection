@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Shop premium preloved and new condition shoes at Fariha's Collection. Nationwide shipping available in Pakistan.">
+    <meta property="og:title" content="Fariha's Collection - Premium Preloved Shoes">
+    <meta property="og:description" content="Shop premium preloved and new condition shoes at Fariha's Collection. Nationwide shipping available in Pakistan.">
+    <meta property="og:image" content="images/hero_closet.jpg">
+    <meta property="og:url" content="https://farihascollection.com">
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <title id="pageTitle">Product Details | Fariha's Collection</title>
     <meta name="description" content="Shop quality preloved shoes at Fariha's Collection &mdash; authentic details, real photos.">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -421,7 +427,7 @@
     <nav class="breadcrumb" aria-label="Breadcrumb">
         <a href="index.html">Home</a>
         <i class="ph ph-caret-right" style="font-size:0.7rem;"></i>
-        <a href="shoes (1).html" id="breadcrumbCategory">Shoes</a>
+        <a href="shop.html" id="breadcrumbCategory">Shoes</a>
         <i class="ph ph-caret-right" style="font-size:0.7rem;"></i>
         <span id="breadcrumbName">Loading...</span>
     </nav>
@@ -576,7 +582,7 @@
     <div id="pd-notif"></div>
 
     <!-- WhatsApp Float -->
-    <a href="https://wa.me/923412173887?text=Hi! I'm interested in your shoes collection." target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
+    <a href="https://wa.me/923090625199?text=Hi! I'm interested in your shoes collection." target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
         <i class="ph-fill ph-whatsapp-logo"></i>
     </a>
 
@@ -635,7 +641,7 @@
             const waLink = document.getElementById('pdWhatsappLink');
             if (waLink) {
                 const msg = encodeURIComponent(`Hi! I'm interested in the ${pdName}. Is it available?`);
-                waLink.href = `https://wa.me/923412173887?text=${msg}`;
+                waLink.href = `https://wa.me/923090625199?text=${msg}`;
             }
         }
 
@@ -760,13 +766,13 @@
             if (crumb) {
                 if (category === 'men') {
                     crumb.textContent = "Men's Shoes";
-                    crumb.href = 'shoes (1).html?filter=men';
+                    crumb.href = 'shop.html?filter=men';
                 } else if (category === 'unisex') {
                     crumb.textContent = 'Unisex Shoes';
-                    crumb.href = 'shoes (1).html?filter=unisex';
+                    crumb.href = 'shop.html?filter=unisex';
                 } else {
                     crumb.textContent = "Women's Shoes";
-                    crumb.href = 'shoes (1).html?filter=women';
+                    crumb.href = 'shop.html?filter=women';
                 }
             }
 
@@ -792,7 +798,7 @@
             const waLink = document.getElementById('pdWhatsappLink');
             if (waLink) {
                 const msg = encodeURIComponent(`Hi! I'm interested in the ${name}. Is it available?`);
-                waLink.href = `https://wa.me/923412173887?text=${msg}`;
+                waLink.href = `https://wa.me/923090625199?text=${msg}`;
             }
 
             // ----- Gallery: main image + thumbnails -----
@@ -1092,7 +1098,7 @@
         // Back button
         document.getElementById('backBtn').addEventListener('click', () => {
             if (document.referrer) window.history.back();
-            else window.location.href = 'shoes (1).html';
+            else window.location.href = 'shop.html';
         });
 
         // ===== IMAGE GALLERY ===== (re-bindable since thumbs render dynamically)

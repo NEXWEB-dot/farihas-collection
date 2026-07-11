@@ -296,25 +296,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         <i class="ph ph-caret-down menu-shop-caret"></i>
                     </button>
                     <div class="menu-shop-submenu" id="menuShopSubmenu">
-                        <a href="shoes (1).html" class="menu-link menu-sublink"><i class="ph ph-squares-four"></i> All</a>
+                        <a href="shop.html" class="menu-link menu-sublink"><i class="ph ph-squares-four"></i> All</a>
                         <div class="menu-link-group menu-subgroup" id="menuWomenGroup">
                             <button type="button" id="menuWomenToggle" class="menu-link menu-sublink menu-shop-toggle">
                                 <span class="menu-shop-toggle-label"><i class="ph ph-gender-female"></i> Women</span>
                                 <i class="ph ph-caret-down menu-shop-caret"></i>
                             </button>
                             <div class="menu-shop-submenu menu-subsubmenu" id="menuWomenSubmenu">
-                                <a href="shoes (1).html?filter=heels" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-high-heel"></i> Heels</a>
-                                <a href="shoes (1).html?filter=flats" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-sneaker"></i> Flats</a>
-                                <a href="shoes (1).html?filter=slides" class="menu-link menu-sublink menu-subsublink"><img src="images/sandal_icon.png" alt="Slides" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;"> Slides</a>
-                                <a href="shoes (1).html?filter=sneakers" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-sneaker"></i> Sneakers</a>
-                                <a href="shoes (1).html?filter=pumps" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-high-heel"></i> Pumps</a>
-                                <a href="shoes (1).html?filter=loafers" class="menu-link menu-sublink menu-subsublink"><img src="images/loafer_icon.png" alt="Loafers" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;"> Loafers</a>
-                                <a href="shoes (1).html?filter=women&category=boots" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-boot"></i> Boots</a>
-                                <a href="shoes (1).html?filter=sandals" class="menu-link menu-sublink menu-subsublink"><img src="images/sandal_icon.png" alt="Sandals" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;"> Sandals</a>
+                                <a href="shop.html?filter=heels" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-high-heel"></i> Heels</a>
+                                <a href="shop.html?filter=flats" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-sneaker"></i> Flats</a>
+                                <a href="shop.html?filter=slides" class="menu-link menu-sublink menu-subsublink"><img src="images/sandal_icon.png" alt="Slides" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;"> Slides</a>
+                                <a href="shop.html?filter=sneakers" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-sneaker"></i> Sneakers</a>
+                                <a href="shop.html?filter=pumps" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-high-heel"></i> Pumps</a>
+                                <a href="shop.html?filter=loafers" class="menu-link menu-sublink menu-subsublink"><img src="images/loafer_icon.png" alt="Loafers" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;"> Loafers</a>
+                                <a href="shop.html?filter=women&category=boots" class="menu-link menu-sublink menu-subsublink"><i class="ph ph-boot"></i> Boots</a>
+                                <a href="shop.html?filter=sandals" class="menu-link menu-sublink menu-subsublink"><img src="images/sandal_icon.png" alt="Sandals" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;"> Sandals</a>
                             </div>
                         </div>
-                        <a href="shoes (1).html?filter=men" class="menu-link menu-sublink"><i class="ph ph-gender-male"></i> Men</a>
-                        <a href="shoes (1).html?filter=unisex" class="menu-link menu-sublink"><i class="ph ph-gender-intersex"></i> Unisex</a>
+                        <a href="shop.html?filter=men" class="menu-link menu-sublink"><i class="ph ph-gender-male"></i> Men</a>
+                        <a href="shop.html?filter=unisex" class="menu-link menu-sublink"><i class="ph ph-gender-intersex"></i> Unisex</a>
                     </div>
                 </div>
                 <a href="reviews.html" class="menu-link"><i class="ph ph-star"></i> Reviews</a>
@@ -406,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Detect if we are on the home page or collection page
     const isCollectionPage = window.location.pathname.includes('collection/');
     const homePath = isCollectionPage ? '../index.html' : 'index.html';
-    const shoesPath = isCollectionPage ? 'shoes (1).html' : 'shoes (1).html';
+    const shoesPath = isCollectionPage ? 'shop.html' : 'shop.html';
 
     // Menu buttons (hamburger icon)
     document.querySelectorAll('.icon-btn, button').forEach(btn => {
@@ -518,7 +518,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===== WHATSAPP FLOATING BUTTON =====
-    // Skip if the page already has its own (e.g. product-detail.html, shoes (1).html)
+    // Skip if the page already has its own (e.g. product-detail.html, shop.html)
     if (!document.querySelector('.whatsapp-float')) {
         const whatsappFloat = document.createElement('a');
         whatsappFloat.href = 'https://wa.me/923090625199?text=Hi! I\'m interested in Fariha\'s Collection products.';

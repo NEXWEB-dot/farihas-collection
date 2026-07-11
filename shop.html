@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Shop premium preloved and new condition shoes at Fariha's Collection. Nationwide shipping available in Pakistan.">
+    <meta property="og:title" content="Fariha's Collection - Premium Preloved Shoes">
+    <meta property="og:description" content="Shop premium preloved and new condition shoes at Fariha's Collection. Nationwide shipping available in Pakistan.">
+    <meta property="og:image" content="images/hero_closet.jpg">
+    <meta property="og:url" content="https://farihascollection.com">
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <title>FARIHA'S COLLECTION - Shoes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -235,19 +241,19 @@
         <nav class="shoes-nav" style="font-family:'Poppins', serif; display:flex;gap:1.75rem;flex-wrap:wrap;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
             <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Home</a>
             <div class="nav-shop-dropdown">
-                <a href="shoes (1).html" class="nav-shop-toggle active">Shop <i class="ph ph-caret-down caret"></i></a>
+                <a href="shop.html" class="nav-shop-toggle active">Shop <i class="ph ph-caret-down caret"></i></a>
                 <div class="nav-shop-menu">
-                    <a href="shoes (1).html">Shop</a>
-                    <a href="shoes (1).html?filter=women">Women</a>
-                    <a href="shoes (1).html?filter=heels">Heels</a>
-                    <a href="shoes (1).html?filter=flats">Flats</a>
-                    <a href="shoes (1).html?filter=slides">Slides</a>
-                    <a href="shoes (1).html?filter=sneakers">Sneakers</a>
-                    <a href="shoes (1).html?filter=pumps">Pumps</a>
-                    <a href="shoes (1).html?filter=men">Men</a>
-                    <a href="shoes (1).html?filter=unisex">Unisex</a>
-                    <a href="shoes (1).html?filter=loafers">Loafers</a>
-                    <a href="shoes (1).html?filter=sandals">Sandals</a>
+                    <a href="shop.html">Shop</a>
+                    <a href="shop.html?filter=women">Women</a>
+                    <a href="shop.html?filter=heels">Heels</a>
+                    <a href="shop.html?filter=flats">Flats</a>
+                    <a href="shop.html?filter=slides">Slides</a>
+                    <a href="shop.html?filter=sneakers">Sneakers</a>
+                    <a href="shop.html?filter=pumps">Pumps</a>
+                    <a href="shop.html?filter=men">Men</a>
+                    <a href="shop.html?filter=unisex">Unisex</a>
+                    <a href="shop.html?filter=loafers">Loafers</a>
+                    <a href="shop.html?filter=sandals">Sandals</a>
                 </div>
             </div>
             <a href="reviews.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Reviews</a>
@@ -317,7 +323,12 @@
     <main class="max-w-7xl mx-auto px-6 py-10">
         <div id="productGrid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
             <!-- Products are injected here from Sanity at runtime. See <script> at bottom. -->
-            <p id="productLoading" class="col-span-full text-center text-sm text-gray-400 py-10">Loading products...</p>
+            <div id="productLoading" class="col-span-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10 w-full">
+                <!-- Skeletons -->
+                <script>
+                    document.write(Array(8).fill('<div class="w-full mb-4"><div class="w-full aspect-[4/5] skeleton rounded-lg mb-4"></div><div class="h-3 w-1/3 skeleton rounded mb-2"></div><div class="h-4 w-3/4 skeleton rounded mb-3"></div><div class="h-4 w-1/4 skeleton rounded"></div></div>').join(''));
+                </script>
+            </div>
         </div>
 
         <!-- Load More -->
@@ -368,7 +379,7 @@
                     <p class="text-sm font-semibold mb-4">Quick Links</p>
                     <ul class="text-xs text-gray-500 space-y-3">
                         <li><a href="index.html" class="hover:text-black transition">Home</a></li>
-                        <li><a href="shoes (1).html" class="hover:text-black transition">All Shoes</a></li>
+                        <li><a href="shop.html" class="hover:text-black transition">All Shoes</a></li>
                         <li><a href="checkout.html" class="hover:text-black transition">Checkout</a></li>
                         <li><a href="privacy-policy.html" class="hover:text-black transition">Privacy Policy</a></li>
                     </ul>
@@ -479,7 +490,7 @@
     }
 
     // Shoe page specific cart logic (self-contained, syncs with main cart via localStorage)
-    const WHATSAPP_NUMBER = '923412173887'; // Change to real number
+    const WHATSAPP_NUMBER = '923090625199'; // Change to real number
 
     function getCart() { return JSON.parse(localStorage.getItem('fc_cart') || '[]'); }
     function saveCart(cart) { localStorage.setItem('fc_cart', JSON.stringify(cart)); updateBadge(); }
@@ -544,7 +555,7 @@
         if (window.openSearch) window.openSearch();
         else {
             const q = prompt('Search for a shoe:');
-            if (q) window.location.href = `shoes (1).html?q=${encodeURIComponent(q)}`;
+            if (q) window.location.href = `shop.html?q=${encodeURIComponent(q)}`;
         }
     });
 
@@ -641,22 +652,26 @@
                     origPrice = Math.ceil(salePrice / (1 - discountPercent / 100) / 100) * 100;
                 }
 
-                // Badges
+                // Determine Badges
                 let badgeHtml = '';
-                const isOutOfStock = p.soldOut === true || (Array.isArray(p.sizes) && p.sizes.length > 0 && !p.sizes.some(s => s.stock > 0));
+                const isSoldOut = p.soldOut === true || (Array.isArray(p.sizes) && p.sizes.length > 0 && !p.sizes.some(s => s.stock > 0));
+                const discountPct = origPrice && origPrice > finalPrice ? Math.round(((origPrice - finalPrice) / origPrice) * 100) : 0;
+                const isNewArrival = p._createdAt ? (new Date() - new Date(p._createdAt)) < 14 * 24 * 60 * 60 * 1000 : false;
 
-                if (isOutOfStock) {
+                if (isSoldOut) {
                     badgeHtml = '<div class="absolute top-2 left-2 bg-red-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Sold Out</div>';
-                } else if (discountPercent > 0) {
-                    badgeHtml = `<div class="absolute top-2 left-2 bg-black text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Save ${discountPercent}%</div>`;
-                } else if (p.isRarePick) {
+                } else if (discountPct > 0) {
+                    badgeHtml = `<div class="absolute top-2 left-2 bg-black text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10">Save ${discountPct}%</div>`;
+                } else if (isNewArrival) {
+                    badgeHtml = '<div class="absolute top-2 left-2 bg-blue-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10 flex items-center gap-1"><i class="ph-fill ph-sparkle"></i> New</div>';
+                } else if (p.sizes && p.sizes.length === 1 && Number(p.sizes[0].stock) === 1) {
                     badgeHtml = '<div class="absolute top-2 left-2 bg-orange-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10 flex items-center gap-1"><i class="ph-fill ph-fire"></i> 1 Pair Left</div>';
-                } else if (p.isTagged) {
+                } else if (p.tag) {
                     badgeHtml = '<div class="absolute top-2 left-2 bg-green-600 text-white text-[0.6rem] font-bold uppercase tracking-widest py-1 px-2 rounded-sm shadow-sm z-10 flex items-center gap-1"><i class="ph-fill ph-tag"></i> Tagged</div>';
                 }
 
                 return `
-                <div class="shoe-card group block relative pb-4 cursor-pointer" data-id="${p._id}" data-name="${p.name || ''}" data-price="${finalPrice}" data-image="${p.image || ''}">
+                <a href="product-detail.html?id=${p._id}&name=${encodeURIComponent(p.name||'')}&price=${finalPrice}&image=${encodeURIComponent(p.image||'')}&tag=${encodeURIComponent(p.brand||p.tag||'')}" class="group block relative no-underline">
                     ${badgeHtml}
                     <div class="relative w-full aspect-[4/5] bg-gray-50 rounded-lg overflow-hidden mb-4">
                         <img src="${p.image || ''}" alt="${p.name || ''}" class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out">
@@ -669,7 +684,7 @@
                             ${origPrice ? `<p class="text-xs text-gray-400 line-through">Rs${origPrice.toLocaleString()}</p>` : ''}
                         </div>
                     </div>
-                </div>
+                </a>
                 `;
             }).join('');
             wireProductCards();
