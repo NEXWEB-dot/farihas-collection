@@ -29,31 +29,6 @@
 }
 
 /* ================= DARK MODE THEME ================= */
-[data-theme="dark"] {
-    --color-bg: #0f0f0f;
-    --color-surface: #1a1a1a;
-    --color-surface-2: #242424;
-    --color-text: #f0f0f0;
-    --color-text-muted: #aaaaaa;
-    --color-text-subtle: #777777;
-    --color-primary: #f0f0f0;
-    --color-primary-light: #cccccc;
-    --color-gray-light: #1e1e1e;
-    --color-gray-dark: #e0e0e0;
-    --color-border: #2a2a2a;
-    --color-border-light: #252525;
-    --color-card-bg: #1a1a1a;
-    --color-header-bg: rgba(15, 15, 15, 0.92);
-    --color-search-bg: rgba(15,15,15,0.98);
-    --color-input-bg: #1e1e1e;
-    --color-skeleton-base: #1e1e1e;
-    --color-skeleton-shine: #2a2a2a;
-}
-
-/* Dark mode: transition all color-bearing properties smoothly */
-*, *::before, *::after {
-    transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease;
-}
 
 * {
     margin: 0;
@@ -1369,9 +1344,7 @@ button {
     background: #ddd;
     transition: background 0.35s ease;
 }
-[data-theme="dark"] .dark-mode-toggle .dm-track {
-    background: #555;
-}
+
 .dark-mode-toggle .dm-knob {
     position: absolute;
     top: 3px;
@@ -1387,25 +1360,8 @@ button {
     transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.35s ease;
     box-shadow: 0 1px 4px rgba(0,0,0,0.25);
 }
-[data-theme="dark"] .dark-mode-toggle .dm-knob {
-    left: 25px;
-    background: #1a1a1a;
-}
 
-/* Dark mode: ensure hero CTA stays readable */
-[data-theme="dark"] .hero-cta {
-    background: #f0f0f0;
-    color: #111;
-}
 
-/* Dark mode: product cards on index */
-[data-theme="dark"] .product-card,
-[data-theme="dark"] .shoe-card {
-    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
-}
-[data-theme="dark"] .product-img-wrap {
-    background-color: var(--color-surface);
-}
 [data-theme="dark"] .product-info .brand,
 [data-theme="dark"] .search-hint {
     color: var(--color-text-subtle);

@@ -324,13 +324,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="about-us.html" class="menu-link"><i class="ph ph-info"></i> About Us</a>
             </nav>
             <div class="menu-footer">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-                    <span style="font-size:0.82rem;font-weight:600;letter-spacing:1px;color:var(--color-text-muted);text-transform:uppercase;">Dark Mode</span>
-                    <button class="dark-mode-toggle" aria-label="Toggle dark mode" title="Toggle Dark Mode">
-                        <div class="dm-track"></div>
-                        <div class="dm-knob">☀️</div>
-                    </button>
-                </div>
                 <div class="menu-social">
                     <a href="https://www.facebook.com/share/1GMaKgnphh/?mibextid=wwXIfr" target="_blank" rel="noopener"><i class="ph ph-facebook-logo"></i></a>
                     <a href="https://www.instagram.com/farihapreloved_?igsh=MW1vMnp5em1qNTduag%3D%3D&utm_source=qr" target="_blank" rel="noopener"><i class="ph ph-instagram-logo"></i></a>
@@ -605,44 +598,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ===== DARK MODE TOGGLE =====
-    function applyTheme(dark) {
-        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-        // Update all toggle knob icons on the page
-        document.querySelectorAll('.dm-knob').forEach(knob => {
-            knob.textContent = dark ? '🌙' : '☀️';
-        });
-    }
-
-    function initDarkMode() {
-        const saved = localStorage.getItem('fc_theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const isDark = saved ? saved === 'dark' : prefersDark;
-        applyTheme(isDark);
-    }
-
-    function toggleDarkMode() {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const next = !isDark;
-        applyTheme(next);
-        localStorage.setItem('fc_theme', next ? 'dark' : 'light');
-    }
-
-    // Apply theme immediately on load (no flash)
-    initDarkMode();
-
-    // Wire up any toggle buttons already in the DOM
-    document.querySelectorAll('.dark-mode-toggle').forEach(btn => {
-        btn.addEventListener('click', toggleDarkMode);
-    });
-
-    // Also wire the button injected into the mobile menu drawer
-    document.addEventListener('click', e => {
-        if (e.target.closest('.dark-mode-toggle')) {
-            toggleDarkMode();
-        }
-    });
-
     // ===== INIT =====
     updateCartBadge();
 
@@ -652,7 +607,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const SANITY_PROJECT_ID = 'kxnjofhp';
             const SANITY_DATASET = 'production';
             const SANITY_API_VERSION = '2024-01-01';
-            const query = `*[_type == "siteSettings"][0]{announcementText, isAnnouncementActive}`;
+            const query = `*[_type == "siteSettings"][0]{
+                announcementText, 
+                isAnnouncementActive,
+                "promoBanner1": promoBanner1.asset->url,
+                "promoBanner2": promoBanner2.asset->url
+            }`;
             const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
             
             const res = await fetch(url);
@@ -671,6 +631,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     banner.style.display = 'none';
                 }
             }
+
+            // Also update the promotional image banners on index.html if they exist
+            if (settings) {
+                const img1 = document.getElementById('promoBannerImg1');
+                if (img1 && settings.promoBanner1) img1.src = settings.promoBanner1;
+                
+                const img2 = document.getElementById('promoBannerImg2');
+                if (img2 && settings.promoBanner2) img2.src = settings.promoBanner2;
+            }
         } catch (e) {
             console.error('Error loading Sanity banner:', e);
         }
@@ -678,10 +647,4 @@ document.addEventListener('DOMContentLoaded', () => {
     loadGlobalBanner();
 });
 
-// Apply theme before DOMContentLoaded to prevent flash of light mode
-(function() {
-    const saved = localStorage.getItem('fc_theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const isDark = saved ? saved === 'dark' : prefersDark;
-    if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
-})();
+

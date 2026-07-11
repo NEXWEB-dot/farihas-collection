@@ -9,16 +9,6 @@
     <meta property="og:image" content="images/hero_closet.jpg">
     <meta property="og:url" content="https://farihascollection.com">
     <link rel="icon" type="image/png" href="images/favicon.png">
-    <script>
-        // Dark mode: apply before page renders to prevent flash
-        (function(){
-            var saved = localStorage.getItem('fc_theme');
-            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (saved === 'dark' || (!saved && prefersDark)) {
-                document.documentElement.setAttribute('data-theme', 'dark');
-            }
-        })();
-    </script>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
     <title>Fariha's Collection</title>
@@ -753,10 +743,10 @@
     <section class="banner-section reveal">
         <div class="banner-grid">
             <a href="shop.html" class="banner-card reveal-fade delay-1" style="display:block;">
-                <img src="images/4.jpg" alt="Banner 1">
+                <img id="promoBannerImg1" src="images/4.jpg" alt="Banner 1">
             </a>
             <a href="shop.html" class="banner-card reveal-fade delay-2" style="display:block;">
-                <img src="images/5.jpg" alt="Banner 2">
+                <img id="promoBannerImg2" src="images/5.jpg" alt="Banner 2">
             </a>
         </div>
     </section>
