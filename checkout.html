@@ -1019,14 +1019,24 @@
 
     // ===== PROMO CODE LOGIC =====
     async function fetchPromoCodes() {
-        const query = `*[_type == "promoCode" && isActive == true]{ code, discountType, discountValue, label }`;
+        const query = `*[_type == "siteSettings"][0]{ promoCode, promoPercentage, promoActive }`;
         const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VER}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
         try {
             const res  = await fetch(url);
             const json = await res.json();
-            return json.result || [];
+            const settings = json.result;
+            
+            if (settings && settings.promoCode && settings.promoActive) {
+                return [{
+                    code: settings.promoCode,
+                    discountType: 'percent', // Based on site settings percentage
+                    discountValue: settings.promoPercentage || 10,
+                    label: 'Store Promo'
+                }];
+            }
+            return [];
         } catch (e) {
-            console.error('Failed to fetch promo codes', e);
+            console.error('Failed to fetch promo settings', e);
             return [];
         }
     }
