@@ -95,6 +95,59 @@
         .co-totals { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #f0f0f0; }
         .co-total-row { display: flex; justify-content: space-between; margin-bottom: 0.6rem; font-size: 0.88rem; color: #555; }
         .co-total-row.grand { font-size: 1rem; font-weight: 700; color: #000; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid #eee; }
+        .co-total-row.promo-row { color: #16a34a; font-weight: 600; }
+
+        /* ===== PROMO CODE ===== */
+        .promo-wrap {
+            margin-top: 1.2rem; padding-top: 1.2rem;
+            border-top: 1px solid #f0f0f0;
+        }
+        .promo-label {
+            font-size: 0.72rem; font-weight: 700; color: #555;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 8px; display: block;
+        }
+        .promo-input-row {
+            display: flex; gap: 8px;
+        }
+        .promo-input {
+            flex: 1; padding: 10px 13px;
+            border: 1.5px solid #ddd; border-radius: 8px;
+            font-family: 'Poppins', sans-serif; font-size: 0.88rem;
+            outline: none; transition: border 0.2s;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .promo-input:focus { border-color: #000; }
+        .promo-apply-btn {
+            padding: 10px 16px; border-radius: 8px;
+            background: #111; color: #fff; border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.82rem; font-weight: 700;
+            cursor: pointer; white-space: nowrap;
+            transition: background 0.2s;
+        }
+        .promo-apply-btn:hover { background: #333; }
+        .promo-apply-btn:disabled { background: #999; cursor: not-allowed; }
+        .promo-msg {
+            font-size: 0.78rem; margin-top: 7px;
+            font-weight: 600; display: none;
+        }
+        .promo-msg.success { color: #16a34a; display: block; }
+        .promo-msg.error   { color: #dc2626; display: block; }
+        .promo-applied-badge {
+            display: none; margin-top: 8px;
+            padding: 8px 12px; border-radius: 8px;
+            background: #f0faf4; border: 1.5px solid #16a34a;
+            font-size: 0.78rem; font-weight: 600; color: #16a34a;
+            align-items: center; justify-content: space-between; gap: 8px;
+        }
+        .promo-applied-badge.show { display: flex; }
+        .promo-remove-btn {
+            background: none; border: none; cursor: pointer;
+            color: #dc2626; font-size: 1rem; line-height: 1;
+            padding: 0; transition: transform 0.2s;
+        }
+        .promo-remove-btn:hover { transform: scale(1.2); }
 
         /* PAYMENT METHOD */
         .payment-methods { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
@@ -424,8 +477,23 @@
                 </div>
                 <div class="co-totals" id="coTotals" style="display:none;">
                     <div class="co-total-row"><span>Subtotal</span><span id="coSubtotal">Rs0</span></div>
+                    <div class="co-total-row promo-row" id="coPromoRow" style="display:none;"><span id="coPromoLabel">Promo</span><span id="coPromoSaving"></span></div>
                     <div class="co-total-row"><span>Shipping</span><span style="color:#25D366;font-weight:600;">FREE</span></div>
                     <div class="co-total-row grand"><span>Total</span><span id="coTotal">Rs0</span></div>
+                </div>
+
+                <!-- Promo Code -->
+                <div class="promo-wrap">
+                    <span class="promo-label"><i class="ph ph-tag" style="margin-right:4px;"></i>Promo Code</span>
+                    <div class="promo-input-row">
+                        <input type="text" class="promo-input" id="promoInput" placeholder="Enter code" maxlength="30">
+                        <button class="promo-apply-btn" id="promoApplyBtn">Apply</button>
+                    </div>
+                    <div class="promo-msg" id="promoMsg"></div>
+                    <div class="promo-applied-badge" id="promoAppliedBadge">
+                        <span id="promoAppliedText"></span>
+                        <button class="promo-remove-btn" id="promoRemoveBtn" title="Remove promo"><i class="ph ph-x-circle"></i></button>
+                    </div>
                 </div>
             </div>
 
@@ -472,6 +540,7 @@
 
                 <div>
                     <div class="receipt-total-row"><span>Subtotal</span><span id="rSubtotal"></span></div>
+                    <div class="receipt-total-row" id="rPromoRow" style="display:none;color:#16a34a;font-weight:600;"><span id="rPromoCode">Promo</span><span id="rPromoSave"></span></div>
                     <div class="receipt-total-row"><span>Shipping</span><span style="color:#25D366;font-weight:700;">FREE</span></div>
                     <div class="receipt-grand"><span>Total</span><span id="rTotal"></span></div>
                 </div>
@@ -529,10 +598,29 @@
 
     <script>
     const WHATSAPP_NUMBER = '923090625199';
+    const SANITY_PROJECT_ID = 'kxnjofhp';
+    const SANITY_DATASET    = 'production';
+    const SANITY_API_VER    = '2024-01-01';
+
+    // ===== PROMO CODE STATE =====
+    let activePromo = null; // { code, type:'percent'|'flat', value:Number, label:String }
 
     function getCart() { return JSON.parse(localStorage.getItem('fc_cart') || '[]'); }
     function saveCart(c) { localStorage.setItem('fc_cart', JSON.stringify(c)); renderCart(); }
     function formatPrice(n) { return 'Rs' + Number(n).toLocaleString('en-PK') + '.00'; }
+
+    function getSubtotal() {
+        return getCart().reduce((s, i) => s + i.price * i.qty, 0);
+    }
+    function getDiscountedTotal(subtotal) {
+        if (!activePromo) return subtotal;
+        if (activePromo.type === 'percent') return Math.max(0, subtotal - Math.round(subtotal * activePromo.value / 100));
+        if (activePromo.type === 'flat')    return Math.max(0, subtotal - activePromo.value);
+        return subtotal;
+    }
+    function getDiscountAmount(subtotal) {
+        return subtotal - getDiscountedTotal(subtotal);
+    }
 
     // ===== RENDER CART =====
     function renderCart() {
@@ -571,7 +659,19 @@
 
         container.innerHTML = html;
         document.getElementById('coSubtotal').textContent = formatPrice(subtotal);
-        document.getElementById('coTotal').textContent = formatPrice(subtotal);
+
+        // Apply promo discount display
+        const discount = getDiscountAmount(subtotal);
+        const promoRow = document.getElementById('coPromoRow');
+        if (activePromo && discount > 0) {
+            promoRow.style.display = '';
+            document.getElementById('coPromoLabel').textContent = `🏷 Code: ${activePromo.code}`;
+            document.getElementById('coPromoSaving').textContent = `- ${formatPrice(discount)}`;
+        } else {
+            promoRow.style.display = 'none';
+        }
+
+        document.getElementById('coTotal').textContent = formatPrice(getDiscountedTotal(subtotal));
         totalsEl.style.display = 'block';
     }
 
@@ -686,7 +786,20 @@
         });
         document.getElementById('rItems').innerHTML = itemsHtml;
         document.getElementById('rSubtotal').textContent = formatPrice(subtotal);
-        document.getElementById('rTotal').textContent    = formatPrice(subtotal);
+
+        // Promo on receipt
+        const rPromoRow = document.getElementById('rPromoRow');
+        if (activePromo) {
+            const disc = getDiscountAmount(subtotal);
+            if (rPromoRow) {
+                rPromoRow.style.display = '';
+                document.getElementById('rPromoCode').textContent  = `Code: ${activePromo.code}`;
+                document.getElementById('rPromoSave').textContent  = `- ${formatPrice(disc)}`;
+            }
+        } else {
+            if (rPromoRow) rPromoRow.style.display = 'none';
+        }
+        document.getElementById('rTotal').textContent = formatPrice(getDiscountedTotal(subtotal));
 
         // Payment label
         const labels = { whatsapp: '✅ WhatsApp Order — Pay on Delivery', cod: '✅ Cash on Delivery', bank: '🏦 Bank Transfer — Pending Payment', easypaisa: '📱 EasyPaisa — Pending Payment', jazzcash: '📱 JazzCash — Pending Payment' };
@@ -822,6 +935,11 @@
             msg += `${i + 1}. ${item.name} × ${item.qty} = Rs${lt.toLocaleString()}\n`;
         });
 
+        if (activePromo) {
+            const sub  = getSubtotal();
+            const disc = getDiscountAmount(sub);
+            msg += `\n🏷 *Promo Code:* ${activePromo.code} (-${formatPrice(disc)})`;
+        }
         msg += `\n💰 *Total:* ${total}\n`
             + `💳 *Payment:* ${payment}\n\n`
             + `📎 _(Please attach your payment screenshot here)_\n\n`
@@ -873,7 +991,15 @@
                 total += lt;
                 msg += `${i + 1}. ${item.name} × ${item.qty} = Rs${lt.toLocaleString()}\n`;
             });
-            msg += `\n💰 *Total: Rs${total.toLocaleString()}.00*\n🚚 *Shipping: FREE*\n`;
+            if (activePromo) {
+                const sub  = getSubtotal();
+                const disc = getDiscountAmount(sub);
+                const finalT = getDiscountedTotal(sub);
+                msg += `\n🏷 *Promo Code:* ${activePromo.code} (-${formatPrice(disc)})\n`;
+                msg += `\n💰 *Total: ${formatPrice(finalT)}*\n🚚 *Shipping: FREE*\n`;
+            } else {
+                msg += `\n💰 *Total: Rs${total.toLocaleString()}.00*\n🚚 *Shipping: FREE*\n`;
+            }
             msg += `💳 *Payment:* ${payMethod === 'cod' ? 'Cash on Delivery' : 'WhatsApp Order'}\n`;
             if (info.notes) msg += `📝 *Notes:* ${info.notes}\n`;
             msg += `\nPlease confirm my order. Thank you! 🙏`;
@@ -889,6 +1015,93 @@
                 localStorage.removeItem('fc_cart');
             }, 1500);
         }
+    });
+
+    // ===== PROMO CODE LOGIC =====
+    async function fetchPromoCodes() {
+        const query = `*[_type == "promoCode" && isActive == true]{ code, discountType, discountValue, label }`;
+        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VER}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+        try {
+            const res  = await fetch(url);
+            const json = await res.json();
+            return json.result || [];
+        } catch (e) {
+            console.error('Failed to fetch promo codes', e);
+            return [];
+        }
+    }
+
+    let cachedPromoCodes = null;
+
+    document.getElementById('promoApplyBtn').addEventListener('click', async () => {
+        const input   = document.getElementById('promoInput');
+        const msgEl   = document.getElementById('promoMsg');
+        const badge   = document.getElementById('promoAppliedBadge');
+        const entered = input.value.trim().toUpperCase();
+        const btn     = document.getElementById('promoApplyBtn');
+
+        if (!entered) {
+            msgEl.className = 'promo-msg error';
+            msgEl.textContent = 'Please enter a promo code.';
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Checking...';
+        msgEl.className = 'promo-msg';
+        msgEl.textContent = '';
+
+        if (!cachedPromoCodes) cachedPromoCodes = await fetchPromoCodes();
+
+        const match = cachedPromoCodes.find(p => p.code.toUpperCase() === entered);
+
+        btn.disabled = false;
+        btn.textContent = 'Apply';
+
+        if (!match) {
+            msgEl.className = 'promo-msg error';
+            msgEl.textContent = '❌ Invalid or expired promo code.';
+            return;
+        }
+
+        // Apply promo
+        activePromo = {
+            code:  match.code.toUpperCase(),
+            type:  match.discountType,   // 'percent' or 'flat'
+            value: Number(match.discountValue),
+            label: match.label || match.code
+        };
+
+        const subtotal = getSubtotal();
+        const saving   = getDiscountAmount(subtotal);
+        const savingTxt = activePromo.type === 'percent'
+            ? `${activePromo.value}% off — saving ${formatPrice(saving)}`
+            : `${formatPrice(activePromo.value)} off`;
+
+        msgEl.className = 'promo-msg success';
+        msgEl.textContent = `✅ Promo applied!`;
+
+        document.getElementById('promoAppliedText').textContent = `🏷 "${activePromo.code}" — ${savingTxt}`;
+        badge.classList.add('show');
+        input.value = '';
+        input.disabled = true;
+        btn.style.display = 'none';
+
+        renderCart();
+    });
+
+    document.getElementById('promoRemoveBtn').addEventListener('click', () => {
+        activePromo = null;
+        const badge  = document.getElementById('promoAppliedBadge');
+        const msgEl  = document.getElementById('promoMsg');
+        const input  = document.getElementById('promoInput');
+        const btn    = document.getElementById('promoApplyBtn');
+        badge.classList.remove('show');
+        msgEl.className = 'promo-msg';
+        msgEl.textContent = '';
+        input.disabled = false;
+        btn.style.display = '';
+        renderCart();
     });
 
     // ===== INIT =====
