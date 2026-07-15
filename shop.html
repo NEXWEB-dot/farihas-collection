@@ -622,15 +622,9 @@
         const sortVal = document.getElementById('shSortSelect').value;
 
         // Filter
-        // 'tagged' is a special boolean filter (isTagged === true); all others match by category string.
-        let visible;
-        if (activeFilter === 'all') {
-            visible = [...allProducts];
-        } else if (activeFilter === 'tagged') {
-            visible = allProducts.filter(p => p.isTagged === true);
-        } else {
-            visible = allProducts.filter(p => (p.category || '').toLowerCase() === activeFilter);
-        }
+        let visible = activeFilter === 'all'
+            ? [...allProducts]
+            : allProducts.filter(p => (p.category || '').toLowerCase() === activeFilter);
 
         // Sort
         if (sortVal === 'price-asc')  visible.sort((a,b) => Number(a.price) - Number(b.price));
