@@ -315,6 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <a href="shop.html?filter=men" class="menu-link menu-sublink"><i class="ph ph-gender-male"></i> Men</a>
                         <a href="shop.html?filter=unisex" class="menu-link menu-sublink"><i class="ph ph-gender-intersex"></i> Unisex</a>
+                        <a href="shop.html?filter=tagged" class="menu-link menu-sublink"><i class="ph ph-tag"></i> Tagged</a>
                     </div>
                 </div>
                 <a href="reviews.html" class="menu-link"><i class="ph ph-star"></i> Reviews</a>
@@ -409,7 +410,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const shoesPath = isCollectionPage ? 'shop.html' : 'shop.html';
 
     // Menu buttons (hamburger icon)
+    // Skip buttons that have a page-specific ID and their own handlers (e.g. pdAddToCart on product-detail).
+    const PAGE_OWNED_BTN_IDS = ['pdAddToCart'];
     document.querySelectorAll('.icon-btn, button').forEach(btn => {
+        // Don't double-wire buttons that are fully managed by the page's own script
+        if (btn.id && PAGE_OWNED_BTN_IDS.includes(btn.id)) return;
+        // Skip already-wired buttons
+        if (btn._mainJsWired) return;
+        btn._mainJsWired = true;
+
         const icon = btn.querySelector('i');
         if (!icon) return;
         
@@ -436,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Also wire up explicit IDs on the home page
+    // Also wire up explicit IDs on the home/shop page
     const menuToggle = document.getElementById('menuToggle');
     const searchToggle = document.getElementById('searchToggle');
     const cartToggle = document.getElementById('cartToggle');

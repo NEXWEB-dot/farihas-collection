@@ -256,6 +256,7 @@
                     <a href="shop.html?filter=unisex">Unisex</a>
                     <a href="shop.html?filter=loafers">Loafers</a>
                     <a href="shop.html?filter=sandals">Sandals</a>
+                    <a href="shop.html?filter=tagged">Tagged</a>
                 </div>
             </div>
             <a href="reviews.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Reviews</a>
@@ -281,6 +282,7 @@
             <button class="filter-pill" data-filter="unisex">Unisex</button>
             <button class="filter-pill" data-filter="loafers">Loafers</button>
             <button class="filter-pill" data-filter="sandals">Sandals</button>
+            <button class="filter-pill" data-filter="tagged">Tagged</button>
         </div>
         <select class="sort-select" id="shSortSelect">
             <option value="default">Sort by: Featured</option>
@@ -590,7 +592,7 @@
     // Check URL for initial filter
     const urlParams = new URLSearchParams(window.location.search);
     const initialFilter = urlParams.get('filter');
-    if (initialFilter && ['men', 'women', 'heels', 'flats', 'slides', 'sneakers', 'pumps', 'unisex', 'loafers', 'sandals'].includes(initialFilter.toLowerCase())) {
+    if (initialFilter && ['men', 'women', 'heels', 'flats', 'slides', 'sneakers', 'pumps', 'unisex', 'loafers', 'sandals', 'tagged'].includes(initialFilter.toLowerCase())) {
         activeFilter = initialFilter.toLowerCase();
         document.querySelectorAll('.filter-pill').forEach(p => {
             p.classList.toggle('active', p.dataset.filter === activeFilter);
@@ -620,9 +622,15 @@
         const sortVal = document.getElementById('shSortSelect').value;
 
         // Filter
-        let visible = activeFilter === 'all'
-            ? [...allProducts]
-            : allProducts.filter(p => (p.category || '').toLowerCase() === activeFilter);
+        // 'tagged' is a special boolean filter (isTagged === true); all others match by category string.
+        let visible;
+        if (activeFilter === 'all') {
+            visible = [...allProducts];
+        } else if (activeFilter === 'tagged') {
+            visible = allProducts.filter(p => p.isTagged === true);
+        } else {
+            visible = allProducts.filter(p => (p.category || '').toLowerCase() === activeFilter);
+        }
 
         // Sort
         if (sortVal === 'price-asc')  visible.sort((a,b) => Number(a.price) - Number(b.price));
