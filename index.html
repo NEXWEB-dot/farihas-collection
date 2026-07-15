@@ -256,7 +256,8 @@
         const SANITY_API_VERSION = '2024-01-01';
 
         const query = `*[_type == "shoe"] | order(order asc) [0...8]{
-            _id, name, price, tag, soldOut, _createdAt,
+            _id, name, price, brand, tag, soldOut, _createdAt,
+            "sizes": sizes[]{size, stock},
             "image": image.asset->url
         }`;
 
@@ -279,7 +280,7 @@
                 const name  = p.name || 'Untitled';
                 const price = Number(p.price) || 0;
                 const image = p.image || '';
-                const tag   = p.tag || "Fariha's Collection";
+                const tag   = p.brand || p.tag || "Fariha's Collection";
                 const delay = i + 1;
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 
