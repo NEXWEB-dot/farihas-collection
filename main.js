@@ -469,8 +469,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ===== CONNECT CATEGORY CARDS TO SHOES PAGE =====
+    // Preserve any existing href (e.g. ?filter=men / ?filter=unisex) set in the HTML.
+    // Only fall back to the plain shop page if the card has no href at all.
     document.querySelectorAll('.category-card').forEach(card => {
-        card.setAttribute('href', shoesPath);
+        if (!card.getAttribute('href')) {
+            card.setAttribute('href', shoesPath);
+        }
     });
 
     // ===== SIZE BUTTONS -> SHOES PAGE =====
