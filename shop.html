@@ -419,6 +419,7 @@
             brand,
             tag,
             category,
+            subCategory,
             isSale,
             salePercentage,
             isRarePick,
@@ -621,10 +622,14 @@
         const grid = document.getElementById('productGrid');
         const sortVal = document.getElementById('shSortSelect').value;
 
-        // Filter
+        // Filter — checks both primary category and optional subCategory
         let visible = activeFilter === 'all'
             ? [...allProducts]
-            : allProducts.filter(p => (p.category || '').toLowerCase() === activeFilter);
+            : allProducts.filter(p => {
+                const primary = (p.category || '').toLowerCase();
+                const sub = (p.subCategory || '').toLowerCase();
+                return primary === activeFilter || sub === activeFilter;
+            });
 
         // Sort
         if (sortVal === 'price-asc')  visible.sort((a,b) => Number(a.price) - Number(b.price));
