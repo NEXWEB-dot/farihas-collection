@@ -970,7 +970,7 @@
         // IMPORTANT: Place your generated Sanity API Token here
         const SANITY_TOKEN = 'skLGjQYrmNugDWjV60Rt3OeiZqlZYLjexlEwL3Mu8jhVkxLsTMsxftsloKhZ9l9xw1QXwcCa367zu6xeOmccLRyW7GJScMDGKCLKJQ07Dp7fyDezdlfrEOBGEWJtByYXcsuEnDemqaw7CrYp6swZLVGhw3LuTTzXE6fN4aLrnUmYSOIIzr09';
         
-        if (SANITY_TOKEN === 'skLGjQYrmNugDWjV60Rt3OeiZqlZYLjexlEwL3Mu8jhVkxLsTMsxftsloKhZ9l9xw1QXwcCa367zu6xeOmccLRyW7GJScMDGKCLKJQ07Dp7fyDezdlfrEOBGEWJtByYXcsuEnDemqaw7CrYp6swZLVGhw3LuTTzXE6fN4aLrnUmYSOIIzr09') {
+        if (!SANITY_TOKEN || SANITY_TOKEN === 'YOUR_SANITY_API_TOKEN' || SANITY_TOKEN.trim() === '') {
             console.warn('Order not saved to Sanity because the API token is missing.');
             return;
         }
