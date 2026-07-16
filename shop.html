@@ -446,7 +446,7 @@
             isRarePick,
             isTagged,
             soldOut,
-            sizes,
+            "sizes": sizes[]{size, stock},
             "image": image.asset->url
         }
     }`;
@@ -724,6 +724,17 @@
                             <p class="text-sm font-bold text-gray-900">Rs${finalPrice.toLocaleString()}</p>
                             ${origPrice ? `<p class="text-xs text-gray-400 line-through">Rs${origPrice.toLocaleString()}</p>` : ''}
                         </div>
+                        ${(() => {
+                            if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                                const esc = s => String(s).replace(/"/g, '&quot;');
+                                const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
+                                if (available.length > 0) {
+                                    return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">' + esc(s.size) + '</span>').join('') + '</div>';
+                                }
+                                return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+                            }
+                            return '';
+                        })()}
                     </div>
                 </a>
                 `;
