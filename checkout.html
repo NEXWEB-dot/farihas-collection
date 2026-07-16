@@ -478,7 +478,7 @@
                 <div class="co-totals" id="coTotals" style="display:none;">
                     <div class="co-total-row"><span>Subtotal</span><span id="coSubtotal">Rs0</span></div>
                     <div class="co-total-row promo-row" id="coPromoRow" style="display:none;"><span id="coPromoLabel">Promo</span><span id="coPromoSaving"></span></div>
-                    <div class="co-total-row"><span>Shipping</span><span style="color:#25D366;font-weight:600;">FREE</span></div>
+                    <div class="co-total-row"><span>Shipping</span><span style="font-weight:600;">Rs350.00</span></div>
                     <div class="co-total-row grand"><span>Total</span><span id="coTotal">Rs0</span></div>
                 </div>
 
@@ -541,7 +541,7 @@
                 <div>
                     <div class="receipt-total-row"><span>Subtotal</span><span id="rSubtotal"></span></div>
                     <div class="receipt-total-row" id="rPromoRow" style="display:none;color:#16a34a;font-weight:600;"><span id="rPromoCode">Promo</span><span id="rPromoSave"></span></div>
-                    <div class="receipt-total-row"><span>Shipping</span><span style="color:#25D366;font-weight:700;">FREE</span></div>
+                    <div class="receipt-total-row"><span>Shipping</span><span style="font-weight:700;">Rs350.00</span></div>
                     <div class="receipt-grand"><span>Total</span><span id="rTotal"></span></div>
                 </div>
 
@@ -671,7 +671,7 @@
             promoRow.style.display = 'none';
         }
 
-        document.getElementById('coTotal').textContent = formatPrice(getDiscountedTotal(subtotal));
+        document.getElementById('coTotal').textContent = formatPrice(getDiscountedTotal(subtotal) + 350);
         totalsEl.style.display = 'block';
     }
 
@@ -799,7 +799,7 @@
         } else {
             if (rPromoRow) rPromoRow.style.display = 'none';
         }
-        document.getElementById('rTotal').textContent = formatPrice(getDiscountedTotal(subtotal));
+        document.getElementById('rTotal').textContent = formatPrice(getDiscountedTotal(subtotal) + 350);
 
         // Payment label
         const labels = { whatsapp: '✅ WhatsApp Order — Pay on Delivery', cod: '✅ Cash on Delivery', bank: '🏦 Bank Transfer — Pending Payment', easypaisa: '📱 EasyPaisa — Pending Payment', jazzcash: '📱 JazzCash — Pending Payment' };
@@ -965,12 +965,72 @@
         }, 600);
     });
 
+    // ===== SAVE ORDER TO SANITY =====
+    async function saveOrderToSanity(info, payMethod, finalTotal) {
+        // IMPORTANT: Place your generated Sanity API Token here
+        const SANITY_TOKEN = 'PASTE_YOUR_SANITY_API_TOKEN_HERE';
+        
+        if (SANITY_TOKEN === 'PASTE_YOUR_SANITY_API_TOKEN_HERE') {
+            console.warn('Order not saved to Sanity because the API token is missing.');
+            return;
+        }
+
+        const cart = getCart();
+        const items = cart.map(item => ({
+            _key: Math.random().toString(36).substring(2, 9),
+            name: item.name,
+            price: item.price,
+            qty: item.qty
+        }));
+
+        const orderId = 'ORD-' + Math.floor(Math.random() * 1000000);
+        
+        const doc = {
+            _type: 'order',
+            orderId: orderId,
+            status: 'pending',
+            customerName: info.first + ' ' + info.last,
+            customerPhone: info.phone,
+            customerEmail: info.email || '',
+            address: info.addr,
+            city: info.city,
+            province: info.province || '',
+            paymentMethod: payMethod,
+            totalAmount: finalTotal,
+            promoCode: activePromo ? activePromo.code : '',
+            items: items,
+            notes: info.notes || '',
+            createdAt: new Date().toISOString()
+        };
+
+        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VER}/data/mutate/${SANITY_DATASET}`;
+        try {
+            await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json',
+                    Authorization: `Bearer ${SANITY_TOKEN}`
+                },
+                body: JSON.stringify({ mutations: [{ create: doc }] })
+            });
+            console.log('Order successfully saved to Sanity Dashboard!');
+        } catch (err) {
+            console.error('Failed to save order to Sanity', err);
+        }
+    }
+
     // ===== PLACE ORDER (always via WhatsApp) =====
     document.getElementById('placeOrderBtn').addEventListener('click', () => {
         const info = validate();
         if (!info) return;
 
         const payMethod = document.querySelector('input[name="payment"]:checked').value;
+        const sub = getSubtotal();
+        const finalT = getDiscountedTotal(sub) + 350;
+
+        // Save order to Sanity Dashboard in the background
+        saveOrderToSanity(info, payMethod, finalT);
+
         setStep(2);
 
         if (payMethod === 'bank' || payMethod === 'easypaisa' || payMethod === 'jazzcash') {
@@ -994,11 +1054,10 @@
             if (activePromo) {
                 const sub  = getSubtotal();
                 const disc = getDiscountAmount(sub);
-                const finalT = getDiscountedTotal(sub);
                 msg += `\n🏷 *Promo Code:* ${activePromo.code} (-${formatPrice(disc)})\n`;
-                msg += `\n💰 *Total: ${formatPrice(finalT)}*\n🚚 *Shipping: FREE*\n`;
+                msg += `\n💰 *Total: ${formatPrice(finalT)}*\n🚚 *Shipping: Rs350.00*\n`;
             } else {
-                msg += `\n💰 *Total: Rs${total.toLocaleString()}.00*\n🚚 *Shipping: FREE*\n`;
+                msg += `\n💰 *Total: ${formatPrice(finalT)}*\n🚚 *Shipping: Rs350.00*\n`;
             }
             msg += `💳 *Payment:* ${payMethod === 'cod' ? 'Cash on Delivery' : 'WhatsApp Order'}\n`;
             if (info.notes) msg += `📝 *Notes:* ${info.notes}\n`;
@@ -1010,7 +1069,7 @@
                 setStep(3);
                 const methodLabel = payMethod === 'cod' ? 'Cash on Delivery' : 'WhatsApp Order';
                 document.getElementById('successMsg').textContent =
-                    `Order sent for ${info.first} ${info.last}! Payment: ${methodLabel}. Total: Rs${total.toLocaleString()}.00. We'll confirm via WhatsApp at ${info.phone}.`;
+                    `Order sent for ${info.first} ${info.last}! Payment: ${methodLabel}. Total: ${formatPrice(finalT)}. We'll confirm via WhatsApp at ${info.phone}.`;
                 document.getElementById('successOverlay').classList.add('show');
                 localStorage.removeItem('fc_cart');
             }, 1500);
