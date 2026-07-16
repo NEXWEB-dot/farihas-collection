@@ -627,6 +627,10 @@
     // Check URL for initial filter
     const urlParams = new URLSearchParams(window.location.search);
     const initialFilter = urlParams.get('filter');
+    let activeSizeFilter = urlParams.get('size') || '';      // e.g. '37'
+    let activeMaxPrice   = urlParams.get('maxprice') ? Number(urlParams.get('maxprice')) : null;
+    let activeMinPrice   = urlParams.get('minprice') ? Number(urlParams.get('minprice')) : null;
+
     if (initialFilter && ['men', 'women', 'heels', 'flats', 'slides', 'sneakers', 'pumps', 'unisex', 'loafers', 'sandals', 'tagged'].includes(initialFilter.toLowerCase())) {
         activeFilter = initialFilter.toLowerCase();
         document.querySelectorAll('.filter-pill').forEach(p => {
@@ -664,6 +668,23 @@
                 const sub = (p.subCategory || '').toLowerCase();
                 return primary === activeFilter || sub === activeFilter;
             });
+
+        // Shop By Size filter
+        if (activeSizeFilter) {
+            visible = visible.filter(p =>
+                Array.isArray(p.sizes) && p.sizes.some(s =>
+                    String(s.size).trim() === String(activeSizeFilter).trim() && (Number(s.stock) || 0) > 0
+                )
+            );
+        }
+
+        // Shop By Budget filter
+        if (activeMaxPrice !== null) {
+            visible = visible.filter(p => Number(p.price) <= activeMaxPrice);
+        }
+        if (activeMinPrice !== null) {
+            visible = visible.filter(p => Number(p.price) >= activeMinPrice);
+        }
 
         // Sort
         if (sortVal === 'price-asc')  visible.sort((a,b) => Number(a.price) - Number(b.price));

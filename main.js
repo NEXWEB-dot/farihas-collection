@@ -318,7 +318,39 @@ document.addEventListener('DOMContentLoaded', () => {
                         <a href="shop.html?filter=tagged" class="menu-link menu-sublink"><i class="ph ph-tag"></i> Tagged</a>
                     </div>
                 </div>
-                <a href="reviews.html" class="menu-link"><i class="ph ph-star"></i> Reviews</a>
+                <a href="reviews.html" class="menu-link"><i class="ph ph-smiley"></i> Happy Customers</a>
+                <a href="size-guide.html" class="menu-link"><i class="ph ph-ruler"></i> Size Guide</a>
+                <div class="menu-link-group" id="menuBudgetGroup">
+                    <button type="button" id="menuBudgetToggle" class="menu-link menu-shop-toggle">
+                        <span class="menu-shop-toggle-label"><i class="ph ph-shopping-bag"></i> Shop By Budget</span>
+                        <i class="ph ph-caret-down menu-shop-caret"></i>
+                    </button>
+                    <div class="menu-shop-submenu" id="menuBudgetSubmenu">
+                        <a href="shop.html?maxprice=1000" class="menu-link menu-sublink"><i class="ph ph-currency-circle-dollar"></i> Under Rs 1,000</a>
+                        <a href="shop.html?maxprice=2000" class="menu-link menu-sublink"><i class="ph ph-currency-circle-dollar"></i> Under Rs 2,000</a>
+                        <a href="shop.html?maxprice=3000" class="menu-link menu-sublink"><i class="ph ph-currency-circle-dollar"></i> Under Rs 3,000</a>
+                        <a href="shop.html?maxprice=5000" class="menu-link menu-sublink"><i class="ph ph-currency-circle-dollar"></i> Under Rs 5,000</a>
+                        <a href="shop.html?minprice=5000" class="menu-link menu-sublink"><i class="ph ph-currency-circle-dollar"></i> Rs 5,000+</a>
+                    </div>
+                </div>
+                <div class="menu-link-group" id="menuSizeGroup">
+                    <button type="button" id="menuSizeToggle" class="menu-link menu-shop-toggle">
+                        <span class="menu-shop-toggle-label"><i class="ph ph-ruler"></i> Shop By Size</span>
+                        <i class="ph ph-caret-down menu-shop-caret"></i>
+                    </button>
+                    <div class="menu-shop-submenu" id="menuSizeSubmenu">
+                        <a href="shop.html?size=35" class="menu-link menu-sublink">Size 35</a>
+                        <a href="shop.html?size=36" class="menu-link menu-sublink">Size 36</a>
+                        <a href="shop.html?size=37" class="menu-link menu-sublink">Size 37</a>
+                        <a href="shop.html?size=38" class="menu-link menu-sublink">Size 38</a>
+                        <a href="shop.html?size=39" class="menu-link menu-sublink">Size 39</a>
+                        <a href="shop.html?size=40" class="menu-link menu-sublink">Size 40</a>
+                        <a href="shop.html?size=41" class="menu-link menu-sublink">Size 41</a>
+                        <a href="shop.html?size=42" class="menu-link menu-sublink">Size 42</a>
+                        <a href="shop.html?size=43" class="menu-link menu-sublink">Size 43</a>
+                    </div>
+                </div>
+                <button type="button" id="menuTrackOrder" class="menu-link" style="background:none;border:none;width:100%;text-align:left;cursor:pointer;font:inherit;"><i class="ph ph-map-pin"></i> Track Your Order</button>
                 <a href="shipping-policy.html" class="menu-link"><i class="ph ph-truck"></i> Shipping Policy</a>
                 <a href="privacy-policy.html" class="menu-link"><i class="ph ph-shield-check"></i> Privacy Policy</a>
                 <a href="terms-conditions.html" class="menu-link"><i class="ph ph-file-text"></i> Terms & Conditions</a>
@@ -382,6 +414,139 @@ document.addEventListener('DOMContentLoaded', () => {
                 womenGroup.classList.toggle('open');
             });
         }
+
+        const budgetToggle = document.getElementById('menuBudgetToggle');
+        const budgetGroup = document.getElementById('menuBudgetGroup');
+        if (budgetToggle && budgetGroup) {
+            budgetToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                budgetGroup.classList.toggle('open');
+            });
+        }
+
+        const sizeToggle = document.getElementById('menuSizeToggle');
+        const sizeGroup = document.getElementById('menuSizeGroup');
+        if (sizeToggle && sizeGroup) {
+            sizeToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                sizeToggle.parentElement.classList.toggle('open');
+            });
+        }
+
+        const trackOrderBtn = document.getElementById('menuTrackOrder');
+        if (trackOrderBtn) {
+            trackOrderBtn.addEventListener('click', () => {
+                closeMenu();
+                openTrackOrderModal();
+            });
+        }
+    }
+
+    // ===== TRACK ORDER MODAL =====
+    function openTrackOrderModal() {
+        if (document.getElementById('trackOrderModal')) {
+            document.getElementById('trackOrderModal').classList.add('active');
+            return;
+        }
+
+        const modal = document.createElement('div');
+        modal.id = 'trackOrderModal';
+        modal.style.cssText = `
+            position:fixed;inset:0;z-index:9999;
+            display:flex;align-items:center;justify-content:center;
+            background:rgba(0,0,0,0.55);backdrop-filter:blur(4px);
+            padding:20px;box-sizing:border-box;
+        `;
+        modal.innerHTML = `
+            <div style="background:#fff;border-radius:16px;width:100%;max-width:420px;
+                        padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,0.2);
+                        font-family:'Poppins',sans-serif;position:relative;">
+                <button id="trackOrderClose" style="position:absolute;top:14px;right:16px;
+                    background:none;border:none;cursor:pointer;font-size:1.4rem;
+                    color:#888;line-height:1;">&#x2715;</button>
+                <div style="text-align:center;margin-bottom:20px;">
+                    <div style="width:48px;height:48px;background:#f0fdf4;border-radius:50%;
+                        display:flex;align-items:center;justify-content:center;
+                        margin:0 auto 10px;">
+                        <i class="ph ph-map-pin" style="font-size:1.5rem;color:#16a34a;"></i>
+                    </div>
+                    <h2 style="margin:0 0 4px;font-size:1.15rem;font-weight:700;color:#111;">Track Your Order</h2>
+                    <p style="margin:0;font-size:0.82rem;color:#888;">Enter your details and we'll connect you to WhatsApp</p>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div>
+                        <label style="font-size:0.75rem;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">Your Name</label>
+                        <input id="trackName" type="text" placeholder="e.g. Fariha Khan"
+                            style="width:100%;box-sizing:border-box;padding:11px 14px;
+                            border:1.5px solid #e5e7eb;border-radius:10px;font-size:0.9rem;
+                            font-family:inherit;outline:none;transition:border-color 0.2s;"
+                            onfocus="this.style.borderColor='#111'" onblur="this.style.borderColor='#e5e7eb'">
+                    </div>
+                    <div>
+                        <label style="font-size:0.75rem;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">Phone / WhatsApp Number</label>
+                        <input id="trackPhone" type="tel" placeholder="03XX-XXXXXXX"
+                            style="width:100%;box-sizing:border-box;padding:11px 14px;
+                            border:1.5px solid #e5e7eb;border-radius:10px;font-size:0.9rem;
+                            font-family:inherit;outline:none;transition:border-color 0.2s;"
+                            onfocus="this.style.borderColor='#111'" onblur="this.style.borderColor='#e5e7eb'">
+                    </div>
+                    <div>
+                        <label style="font-size:0.75rem;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:6px;">Order Details <span style="color:#aaa;font-weight:400;text-transform:none;">(optional)</span></label>
+                        <input id="trackOrder" type="text" placeholder="e.g. Order #123 or product name"
+                            style="width:100%;box-sizing:border-box;padding:11px 14px;
+                            border:1.5px solid #e5e7eb;border-radius:10px;font-size:0.9rem;
+                            font-family:inherit;outline:none;transition:border-color 0.2s;"
+                            onfocus="this.style.borderColor='#111'" onblur="this.style.borderColor='#e5e7eb'">
+                    </div>
+                    <button id="trackSubmitBtn"
+                        style="width:100%;padding:13px;background:#25D366;color:#fff;
+                        border:none;border-radius:10px;font-size:0.95rem;font-weight:600;
+                        font-family:inherit;cursor:pointer;display:flex;align-items:center;
+                        justify-content:center;gap:8px;transition:background 0.2s;"
+                        onmouseover="this.style.background='#1ebe5d'" onmouseout="this.style.background='#25D366'">
+                        <i class="ph-fill ph-whatsapp-logo" style="font-size:1.2rem;"></i>
+                        Track via WhatsApp
+                    </button>
+                    <p style="text-align:center;font-size:0.75rem;color:#aaa;margin:0;">
+                        You'll be redirected to WhatsApp to chat with us directly.
+                    </p>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+
+        document.getElementById('trackOrderClose').addEventListener('click', () => {
+            modal.classList.remove('active');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        });
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        });
+
+        document.getElementById('trackSubmitBtn').addEventListener('click', () => {
+            const name  = document.getElementById('trackName').value.trim();
+            const phone = document.getElementById('trackPhone').value.trim();
+            const order = document.getElementById('trackOrder').value.trim();
+
+            if (!name) { alert('Please enter your name.'); return; }
+            if (!phone) { alert('Please enter your phone number.'); return; }
+
+            let msg = `Hi! I'd like to track my order.\n\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}`;
+            if (order) msg += `\n📦 *Order Details:* ${order}`;
+            msg += `\n\nKindly provide an update on my order. Thank you! 🙏`;
+
+            const waUrl = `https://wa.me/923090625199?text=${encodeURIComponent(msg)}`;
+            window.open(waUrl, '_blank');
+        });
+
+        // Auto-focus name
+        setTimeout(() => document.getElementById('trackName').focus(), 100);
     }
 
     function openMenu() {
