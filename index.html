@@ -308,6 +308,16 @@
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
+                            ${(() => {
+                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
+                                    if (available.length > 0) {
+                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">' + esc(s.size) + '</span>').join('') + '</div>';
+                                    }
+                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+                                }
+                                return '';
+                            })()}
                         </div>
                     </a>
                 `;
@@ -391,6 +401,16 @@
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
+                            ${(() => {
+                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
+                                    if (available.length > 0) {
+                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">' + esc(s.size) + '</span>').join('') + '</div>';
+                                    }
+                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+                                }
+                                return '';
+                            })()}
                         </div>
                     </a>
                 `;
@@ -475,6 +495,16 @@
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
+                            ${(() => {
+                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
+                                    if (available.length > 0) {
+                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">' + esc(s.size) + '</span>').join('') + '</div>';
+                                    }
+                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+                                }
+                                return '';
+                            })()}
                         </div>
                     </a>
                 `;
@@ -558,6 +588,16 @@
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
+                            ${(() => {
+                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
+                                    if (available.length > 0) {
+                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">' + esc(s.size) + '</span>').join('') + '</div>';
+                                    }
+                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+                                }
+                                return '';
+                            })()}
                         </div>
                     </a>
                 `;
@@ -641,6 +681,16 @@
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
+                            ${(() => {
+                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
+                                    if (available.length > 0) {
+                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">' + esc(s.size) + '</span>').join('') + '</div>';
+                                    }
+                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+                                }
+                                return '';
+                            })()}
                         </div>
                     </a>
                 `;
@@ -724,6 +774,16 @@
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
+                            ${(() => {
+                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
+                                    if (available.length > 0) {
+                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">' + esc(s.size) + '</span>').join('') + '</div>';
+                                    }
+                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+                                }
+                                return '';
+                            })()}
                         </div>
                     </a>
                 `;

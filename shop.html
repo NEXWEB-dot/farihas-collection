@@ -481,6 +481,18 @@
         // Escape quotes so names/paths with " don't break the data attributes.
         const esc = (s) => String(s).replace(/"/g, '&quot;');
 
+        let sizesHtml = '';
+        if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+            const availableSizes = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
+            if (availableSizes.length > 0) {
+                sizesHtml = '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' +
+                    availableSizes.map(s => `<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">${esc(s.size)}</span>`).join('') +
+                    '</div>';
+            } else {
+                sizesHtml = '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+            }
+        }
+
         return `
             <div class="shoe-card product-card" data-id="${esc(id)}" data-name="${esc(name)}" data-price="${price}" data-image="${esc(image)}">
                 <div class="w-full aspect-square bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden relative mb-3">
@@ -490,6 +502,7 @@
                 <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">${esc(brand)}</p>
                 <h3 class="text-sm font-semibold text-gray-900 mb-1">${esc(name)}</h3>
                 <p class="text-sm font-bold text-gray-900">${formatPKR(price)}</p>
+                ${sizesHtml}
                 <button class="add-to-cart-full"><i class="ph ph-shopping-bag"></i> Add to Cart</button>
             </div>
         `;
