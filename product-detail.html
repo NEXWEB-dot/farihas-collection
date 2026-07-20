@@ -406,6 +406,17 @@
     </style>
 </head>
 <body>
+    <!-- Top Marquee Banner -->
+    <div id="marqueeContainer" style="background-color:#111; color:#fff; padding:10px 0; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300; overflow:hidden; white-space:nowrap; display:none;">
+        <div id="marqueeInner" style="display:inline-block; animation: marquee 30s linear infinite; padding-left:100%;">
+        </div>
+    </div>
+    <style>
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+    </style>
 
     <!-- Header -->
     <header class="pd-header">
@@ -698,7 +709,29 @@
                 const product = data.shoe;
                 if (!product) return; // product not found, keep fallback data
                 
-                product.settings = data.settings || {};
+                const settings = data.settings || {};
+                product.settings = settings;
+
+                // Render Marquee Banner
+                if (settings.marqueeActive !== false) {
+                    const marqueeMsgs = settings.marqueeMessages && settings.marqueeMessages.length > 0 
+                        ? settings.marqueeMessages 
+                        : [
+                            "📹 <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel.",
+                            "🏷️ Use code [WELCOME10] at checkout for a special discount!",
+                            "Premium <strong>Preloved Condition</strong> Shoes — Shipped Across Pakistan"
+                        ];
+                    const mc = document.getElementById('marqueeContainer');
+                    const mi = document.getElementById('marqueeInner');
+                    if (mc && mi) {
+                        const spanHtml = marqueeMsgs.map(msg => {
+                            let parsedMsg = msg.replace(/\[(.*?)\]/g, '<strong style="background:#fff;color:#111;padding:2px 8px;border-radius:4px;letter-spacing:1px;">$1</strong>');
+                            return `<span style="margin-right: 60px;">${parsedMsg}</span>`;
+                        }).join('');
+                        mi.innerHTML = spanHtml;
+                        mc.style.display = 'block';
+                    }
+                }
 
                 applyProduct(product);
             } catch (err) {

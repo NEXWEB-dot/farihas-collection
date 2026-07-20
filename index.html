@@ -128,10 +128,17 @@
     </style>
 </head>
 <body>
-    <!-- Top Pinned Banner -->
-    <div id="topPinnedBanner" style="background-color:#111; color:#fff; text-align:center; padding:10px 15px; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300;">
-        <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel. Claims for damage or exchange will only be accepted with an unboxing video.
+    <!-- Top Marquee Banner -->
+    <div id="marqueeContainer" style="background-color:#111; color:#fff; padding:10px 0; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300; overflow:hidden; white-space:nowrap; display:none;">
+        <div id="marqueeInner" style="display:inline-block; animation: marquee 30s linear infinite; padding-left:100%;">
+        </div>
     </div>
+    <style>
+        @keyframes marquee {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+    </style>
     <!-- Header with integrated nav -->
     <header class="header scrolled" style="flex-direction:column;padding:0.75rem 2rem 0;gap:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;width:100%;padding-bottom:0.65rem;">
@@ -172,8 +179,8 @@
 
 
     <!-- Hero Section -->
-    <section class="hero reveal">
-        <div class="hero-image">
+    <section class="hero reveal" id="heroSection">
+        <div class="hero-image" id="heroSlideContainer">
             <img src="images/9.jpg" alt="Fariha's Collection Timeless Pre-Loved Footwear">
             <div class="hero-overlay"></div>
             <div class="hero-content reveal-up delay-1">
@@ -183,6 +190,71 @@
             </div>
         </div>
     </section>
+
+    <script>
+    (async function loadHeroAndSettings() {
+        const SANITY_PROJECT_ID = 'kxnjofhp';
+        const SANITY_DATASET = 'production';
+        const SANITY_API_VERSION = '2024-01-01';
+
+        const query = `{
+            "slides": *[_type == "heroSlide" && active == true] | order(order asc) {
+                title, subtitle, linkText, linkUrl,
+                "image": image.asset->url
+            },
+            "settings": *[_type == "siteSettings"][0]
+        }`;
+        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+
+        try {
+            const res = await fetch(url);
+            const json = await res.json();
+            const data = json.result || {};
+            
+            // 1. Render Marquee
+            const siteSettings = data.settings || {};
+            if (siteSettings.marqueeActive !== false) {
+                const marqueeMsgs = siteSettings.marqueeMessages && siteSettings.marqueeMessages.length > 0 
+                    ? siteSettings.marqueeMessages 
+                    : [
+                        "📹 <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel.",
+                        "🏷️ Use code [WELCOME10] at checkout for a special discount!",
+                        "Premium <strong>Preloved Condition</strong> Shoes — Shipped Across Pakistan"
+                    ];
+                const mc = document.getElementById('marqueeContainer');
+                const mi = document.getElementById('marqueeInner');
+                if (mc && mi) {
+                    const spanHtml = marqueeMsgs.map(msg => {
+                        let parsedMsg = msg.replace(/\[(.*?)\]/g, '<strong style="background:#fff;color:#111;padding:2px 8px;border-radius:4px;letter-spacing:1px;">$1</strong>');
+                        return `<span style="margin-right: 60px;">${parsedMsg}</span>`;
+                    }).join('');
+                    mi.innerHTML = spanHtml;
+                    mc.style.display = 'block';
+                }
+            }
+
+            // 2. Render Hero Slide
+            const slides = data.slides || [];
+            if (slides.length > 0) {
+                const container = document.getElementById('heroSlideContainer');
+                const slide = slides[0];
+                const esc = s => String(s).replace(/"/g, '&quot;');
+                
+                container.innerHTML = \`
+                    <img src="\${esc(slide.image)}" alt="Promo Slide">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-content reveal-up delay-1 visible" style="opacity: 1; transform: translateY(0);">
+                        <h2 class="hero-heading">\${slide.title}</h2>
+                        \${slide.subtitle ? \`<p class="hero-subtext">\${esc(slide.subtitle)}</p>\` : ''}
+                        \${slide.linkText ? \`<a href="\${esc(slide.linkUrl || 'shop.html')}" class="hero-cta">\${esc(slide.linkText)} <i class="ph ph-arrow-right"></i></a>\` : ''}
+                    </div>
+                \`;
+            }
+        } catch (err) {
+            console.error('Failed to load hero slide and settings:', err);
+        }
+    })();
+    </script>
 
     <!-- Features Bar -->
     <div class="features-bar">

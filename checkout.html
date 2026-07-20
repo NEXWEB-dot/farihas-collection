@@ -478,7 +478,7 @@
                 <div class="co-totals" id="coTotals" style="display:none;">
                     <div class="co-total-row"><span>Subtotal</span><span id="coSubtotal">Rs0</span></div>
                     <div class="co-total-row promo-row" id="coPromoRow" style="display:none;"><span id="coPromoLabel">Promo</span><span id="coPromoSaving"></span></div>
-                    <div class="co-total-row"><span>Shipping</span><span style="font-weight:600;">Rs350.00</span></div>
+                    <div class="co-total-row"><span>Shipping</span><span id="coShippingFee" style="font-weight:600;">Rs350.00</span></div>
                     <div class="co-total-row grand"><span>Total</span><span id="coTotal">Rs0</span></div>
                 </div>
 
@@ -541,7 +541,7 @@
                 <div>
                     <div class="receipt-total-row"><span>Subtotal</span><span id="rSubtotal"></span></div>
                     <div class="receipt-total-row" id="rPromoRow" style="display:none;color:#16a34a;font-weight:600;"><span id="rPromoCode">Promo</span><span id="rPromoSave"></span></div>
-                    <div class="receipt-total-row"><span>Shipping</span><span style="font-weight:700;">Rs350.00</span></div>
+                    <div class="receipt-total-row"><span>Shipping</span><span id="rShippingFee" style="font-weight:700;">Rs350.00</span></div>
                     <div class="receipt-grand"><span>Total</span><span id="rTotal"></span></div>
                 </div>
 
@@ -663,15 +663,30 @@
         // Apply promo discount display
         const discount = getDiscountAmount(subtotal);
         const promoRow = document.getElementById('coPromoRow');
-        if (activePromo && discount > 0) {
-            promoRow.style.display = '';
-            document.getElementById('coPromoLabel').textContent = `🏷 Code: ${activePromo.code}`;
-            document.getElementById('coPromoSaving').textContent = `- ${formatPrice(discount)}`;
+        let shippingFee = 350;
+
+        if (activePromo) {
+            if (activePromo.freeDelivery) {
+                shippingFee = 0;
+            }
+            if (discount > 0) {
+                promoRow.style.display = '';
+                document.getElementById('coPromoLabel').textContent = `🏷 Code: ${activePromo.code}`;
+                document.getElementById('coPromoSaving').textContent = `- ${formatPrice(discount)}`;
+            } else {
+                promoRow.style.display = 'none';
+            }
         } else {
             promoRow.style.display = 'none';
         }
 
-        document.getElementById('coTotal').textContent = formatPrice(getDiscountedTotal(subtotal) + 350);
+        const coShippingFeeEl = document.getElementById('coShippingFee');
+        if (coShippingFeeEl) {
+            coShippingFeeEl.textContent = shippingFee === 0 ? 'Free' : formatPrice(shippingFee);
+            coShippingFeeEl.style.color = shippingFee === 0 ? '#16a34a' : '';
+        }
+
+        document.getElementById('coTotal').textContent = formatPrice(getDiscountedTotal(subtotal) + shippingFee);
         totalsEl.style.display = 'block';
     }
 
@@ -789,7 +804,12 @@
 
         // Promo on receipt
         const rPromoRow = document.getElementById('rPromoRow');
+        let shippingFee = 350;
+
         if (activePromo) {
+            if (activePromo.freeDelivery) {
+                shippingFee = 0;
+            }
             const disc = getDiscountAmount(subtotal);
             if (rPromoRow) {
                 rPromoRow.style.display = '';
@@ -799,7 +819,14 @@
         } else {
             if (rPromoRow) rPromoRow.style.display = 'none';
         }
-        document.getElementById('rTotal').textContent = formatPrice(getDiscountedTotal(subtotal) + 350);
+
+        const rShippingFeeEl = document.getElementById('rShippingFee');
+        if (rShippingFeeEl) {
+            rShippingFeeEl.textContent = shippingFee === 0 ? 'Free' : formatPrice(shippingFee);
+            rShippingFeeEl.style.color = shippingFee === 0 ? '#16a34a' : '';
+        }
+
+        document.getElementById('rTotal').textContent = formatPrice(getDiscountedTotal(subtotal) + shippingFee);
 
         // Payment label
         const labels = { whatsapp: '✅ WhatsApp Order — Pay on Delivery', cod: '✅ Cash on Delivery', bank: '🏦 Bank Transfer — Pending Payment', easypaisa: '📱 EasyPaisa — Pending Payment', jazzcash: '📱 JazzCash — Pending Payment' };
@@ -939,6 +966,9 @@
             const sub  = getSubtotal();
             const disc = getDiscountAmount(sub);
             msg += `\n🏷 *Promo Code:* ${activePromo.code} (-${formatPrice(disc)})`;
+            if (activePromo.freeDelivery) {
+                msg += `\n🚚 *Shipping:* Free`;
+            }
         }
         msg += `\n💰 *Total:* ${total}\n`
             + `💳 *Payment:* ${payment}\n\n`
@@ -1078,7 +1108,7 @@
 
     // ===== PROMO CODE LOGIC =====
     async function fetchPromoCodes() {
-        const query = `*[_type == "siteSettings"][0]{ promoCode, promoPercentage, promoActive }`;
+        const query = `*[_type == "siteSettings"][0]{ promoCode, promoPercentage, promoActive, promoFreeDelivery }`;
         const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VER}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
         try {
             const res  = await fetch(url);
@@ -1090,6 +1120,7 @@
                     code: settings.promoCode,
                     discountType: 'percent', // Based on site settings percentage
                     discountValue: settings.promoPercentage || 10,
+                    freeDelivery: settings.promoFreeDelivery === true,
                     label: 'Store Promo'
                 }];
             }
@@ -1138,6 +1169,7 @@
             code:  match.code.toUpperCase(),
             type:  match.discountType,   // 'percent' or 'flat'
             value: Number(match.discountValue),
+            freeDelivery: match.freeDelivery,
             label: match.label || match.code
         };
 
