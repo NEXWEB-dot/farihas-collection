@@ -669,10 +669,16 @@
             if (activePromo.freeDelivery) {
                 shippingFee = 0;
             }
-            if (discount > 0) {
+            if (discount > 0 || activePromo.freeDelivery) {
                 promoRow.style.display = '';
                 document.getElementById('coPromoLabel').textContent = `🏷 Code: ${activePromo.code}`;
-                document.getElementById('coPromoSaving').textContent = `- ${formatPrice(discount)}`;
+                if (discount > 0 && activePromo.freeDelivery) {
+                    document.getElementById('coPromoSaving').textContent = `- ${formatPrice(discount)} + Free Delivery`;
+                } else if (discount > 0) {
+                    document.getElementById('coPromoSaving').textContent = `- ${formatPrice(discount)}`;
+                } else {
+                    document.getElementById('coPromoSaving').textContent = `Free Delivery`;
+                }
             } else {
                 promoRow.style.display = 'none';
             }
@@ -1118,8 +1124,8 @@
             if (settings && settings.promoCode && settings.promoActive) {
                 return [{
                     code: settings.promoCode,
-                    discountType: 'percent', // Based on site settings percentage
-                    discountValue: settings.promoPercentage || 10,
+                    discountType: 'percent',
+                    discountValue: settings.promoPercentage != null ? settings.promoPercentage : 0,
                     freeDelivery: settings.promoFreeDelivery === true,
                     label: 'Store Promo'
                 }];
