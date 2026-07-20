@@ -1151,9 +1151,8 @@
         msgEl.className = 'promo-msg';
         msgEl.textContent = '';
 
-        if (!cachedPromoCodes) cachedPromoCodes = await fetchPromoCodes();
-
-        const match = cachedPromoCodes.find(p => p.code.toUpperCase() === entered);
+        const fetchedCodes = await fetchPromoCodes();
+        const match = fetchedCodes.find(p => p.code.toUpperCase() === entered);
 
         btn.disabled = false;
         btn.textContent = 'Apply';
