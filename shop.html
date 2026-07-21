@@ -306,7 +306,8 @@
     </div>
     <script>
     function copyPromo() {
-        navigator.clipboard.writeText('WELCOME10').then(() => {
+        const codeToCopy = document.getElementById('promoCodeText').innerText;
+        navigator.clipboard.writeText(codeToCopy).then(() => {
             const msg = document.getElementById('promoCopiedMsg');
             const btn = document.getElementById('copyPromoBtn');
             msg.style.display = 'inline';
