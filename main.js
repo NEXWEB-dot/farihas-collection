@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
             existing.qty++;
         } else {
             cart.push({ name, price, image, qty: 1 });
+        }
         saveCart();
         showNotification(`${name} added to cart!`);
         if (window.fcPixelAddToCart) window.fcPixelAddToCart(name, price, name, 1);
