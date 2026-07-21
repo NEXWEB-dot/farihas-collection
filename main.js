@@ -23,9 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
             existing.qty++;
         } else {
             cart.push({ name, price, image, qty: 1 });
-        }
         saveCart();
         showNotification(`${name} added to cart!`);
+        if (window.fcPixelAddToCart) window.fcPixelAddToCart(name, price, name, 1);
     }
 
     function removeFromCart(index) {
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>Total</span>
                 <span>Rs${total.toLocaleString('en-PK', {minimumFractionDigits: 0})}</span>
             </div>
-            <button class="cart-checkout-btn" id="proceedToCheckout" onclick="window.location.href='checkout.html'" style="background:#111;color:#fff;border:none;width:100%;padding:14px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:12px;letter-spacing:0.5px;">
+            <button class="cart-checkout-btn" id="proceedToCheckout" onclick="if(window.fcPixelInitiateCheckout) window.fcPixelInitiateCheckout(${total}, cart.length); window.location.href='checkout.html'" style="background:#111;color:#fff;border:none;width:100%;padding:14px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:12px;letter-spacing:0.5px;">
                 <i class="ph ph-shopping-bag"></i> Proceed to Checkout
             </button>
         `;

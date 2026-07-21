@@ -19,6 +19,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&display=swap" rel="stylesheet">
+    <!-- Meta Pixel -->
+    <script src="pixel.js" defer></script>
     <!-- Fonts loaded via Google Fonts above -->
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1070,6 +1072,11 @@
         // Save order to Sanity Dashboard in the background
         saveOrderToSanity(info, payMethod, finalT);
 
+        // PIXEL Purchase
+        if(window.fcPixelPurchase) {
+            window.fcPixelPurchase(finalT, 'ORD-' + Date.now(), getCart());
+        }
+
         setStep(2);
 
         if (payMethod === 'bank' || payMethod === 'easypaisa' || payMethod === 'jazzcash') {
@@ -1215,6 +1222,14 @@
 
     // ===== INIT =====
     renderCart();
+    
+    // PIXEL InitiateCheckout
+    const initialCart = getCart();
+    if (initialCart.length > 0 && window.fcPixelInitiateCheckout) {
+        const sub = initialCart.reduce((s, i) => s + i.price * i.qty, 0);
+        const qty = initialCart.reduce((s, i) => s + i.qty, 0);
+        window.fcPixelInitiateCheckout(sub, qty);
+    }
     </script>
 </body>
 </html>
