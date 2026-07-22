@@ -715,7 +715,7 @@
             ? [...allProducts]
             : allProducts.filter(p => {
                 if (activeFilter === 'clearance') {
-                    return p._type === 'clearanceSale' || p.isSale === true || (p.category || '').toLowerCase() === 'clearance' || (p.subCategory || '').toLowerCase() === 'clearance' || (p.tag || '').toLowerCase() === 'clearance sale';
+                    return p._type === 'clearanceSale';
                 }
                 const primary = (p.category || '').toLowerCase();
                 const sub = (p.subCategory || '').toLowerCase();
