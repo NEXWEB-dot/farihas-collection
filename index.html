@@ -127,6 +127,18 @@
             .nav-shop-dropdown.open .nav-shop-menu { display: block; }
             .nav-shop-menu a { padding: 8px 0; font-size: 0.7rem; }
         }
+
+        /* Clearance Sale Animation */
+        .nav-clearance-link {
+            color: #e53935 !important;
+            font-weight: 800 !important;
+            animation: colorPulse 2s infinite;
+        }
+        @keyframes colorPulse {
+            0% { color: #e53935; text-shadow: 0 0 5px rgba(229,57,53,0.2); }
+            50% { color: #b71c1c; text-shadow: 0 0 12px rgba(229,57,53,0.6); }
+            100% { color: #e53935; text-shadow: 0 0 5px rgba(229,57,53,0.2); }
+        }
     </style>
 </head>
 <body>
@@ -163,6 +175,7 @@
                 <a href="shop.html" class="nav-shop-toggle">Shop <i class="ph ph-caret-down caret"></i></a>
                 <div class="nav-shop-menu">
                     <a href="shop.html">Shop</a>
+                    <a href="shop.html?filter=clearance" class="nav-clearance-link">Clearance Sale</a>
                     <a href="shop.html?filter=women">Women</a>
                     <a href="shop.html?filter=heels">Heels</a>
                     <a href="shop.html?filter=flats">Flats</a>
@@ -175,6 +188,7 @@
                     <a href="shop.html?filter=sandals">Sandals</a>
                 </div>
             </div>
+            <a href="shop.html?filter=clearance" class="nav-clearance-link" style="font-size:0.75rem;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;">Clearance Sale</a>
             <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
         </nav>
     </header>
@@ -266,6 +280,22 @@
         <div class="feature-item"><i class="ph ph-check"></i> 100% authentic</div>
     </div>
 
+    <!-- Clearance Sale Banner -->
+    <section class="clearance-banner reveal-up" style="margin: 3rem auto; max-width: 1200px; padding: 0 1.5rem;">
+        <a href="shop.html?filter=clearance" style="display: block; text-decoration: none; position: relative; border-radius: 16px; overflow: hidden; background: linear-gradient(135deg, #a71d2a 0%, #742a2a 100%); color: white; box-shadow: 0 10px 25px rgba(167, 29, 42, 0.3); transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; background-image: repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 2px, transparent 8px);"></div>
+            <div style="padding: 2.5rem 2.5rem; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; flex-wrap: wrap; gap: 1.5rem;">
+                <div>
+                    <h3 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 800; margin: 0; letter-spacing: 2px; text-transform: uppercase;">Clearance Sale</h3>
+                    <p style="font-family: 'Poppins', sans-serif; font-size: 1.1rem; margin: 0.5rem 0 0; opacity: 0.9;">Grab your favorites before they're gone!</p>
+                </div>
+                <div style="background: white; color: #a71d2a; padding: 0.8rem 1.8rem; border-radius: 50px; font-weight: 700; font-family: 'Poppins', sans-serif; text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    Shop Now <i class="ph-bold ph-arrow-right"></i>
+                </div>
+            </div>
+        </a>
+    </section>
+
     <!-- Shop By Category -->
     <section class="section category-section reveal">
         <h3 class="section-title">Shop By Category</h3>
@@ -330,7 +360,7 @@
         const SANITY_DATASET = 'production';
         const SANITY_API_VERSION = '2024-01-01';
 
-        const query = `*[_type == "shoe"] | order(order asc) [0...8]{
+        const query = `*[_type in ["shoe", "clearanceSale"]] | order(order asc) [0...8]{
             _id, name, price, brand, tag, soldOut, _createdAt,
             "sizes": sizes[]{size, stock},
             "image": image.asset->url
@@ -429,7 +459,7 @@
         const SANITY_DATASET = 'production';
         const SANITY_API_VERSION = '2024-01-01';
 
-        const query = `*[_type == "shoe" && category == "heels"] | order(order asc) [0...8]{
+        const query = `*[_type in ["shoe", "clearanceSale"] && category == "heels"] | order(order asc) [0...8]{
             _id, name, price, tag, soldOut, _createdAt, brand, soldOut,
             "sizes": sizes[]{size, stock},
             "image": image.asset->url
@@ -523,7 +553,7 @@
         const SANITY_DATASET = 'production';
         const SANITY_API_VERSION = '2024-01-01';
 
-        const query = `*[_type == "shoe" && category == "flats"] | order(order asc) [0...8]{
+        const query = `*[_type in ["shoe", "clearanceSale"] && category == "flats"] | order(order asc) [0...8]{
             _id, name, price, tag, soldOut, _createdAt, brand, soldOut,
             "sizes": sizes[]{size, stock},
             "image": image.asset->url
@@ -616,7 +646,7 @@
         const SANITY_DATASET = 'production';
         const SANITY_API_VERSION = '2024-01-01';
 
-        const query = `*[_type == "shoe" && category == "slides"] | order(order asc) [0...8]{
+        const query = `*[_type in ["shoe", "clearanceSale"] && category == "slides"] | order(order asc) [0...8]{
             _id, name, price, tag, soldOut, _createdAt, brand, soldOut,
             "sizes": sizes[]{size, stock},
             "image": image.asset->url
@@ -709,7 +739,7 @@
         const SANITY_DATASET = 'production';
         const SANITY_API_VERSION = '2024-01-01';
 
-        const query = `*[_type == "shoe" && category == "sneakers"] | order(order asc) [0...8]{
+        const query = `*[_type in ["shoe", "clearanceSale"] && category == "sneakers"] | order(order asc) [0...8]{
             _id, name, price, tag, soldOut, _createdAt, brand, soldOut,
             "sizes": sizes[]{size, stock},
             "image": image.asset->url
@@ -802,7 +832,7 @@
         const SANITY_DATASET = 'production';
         const SANITY_API_VERSION = '2024-01-01';
 
-        const query = `*[_type == "shoe" && category == "pumps"] | order(order asc) [0...8]{
+        const query = `*[_type in ["shoe", "clearanceSale"] && category == "pumps"] | order(order asc) [0...8]{
             _id, name, price, tag, soldOut, _createdAt, brand, soldOut,
             "sizes": sizes[]{size, stock},
             "image": image.asset->url

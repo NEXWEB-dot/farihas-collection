@@ -298,6 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </button>
                     <div class="menu-shop-submenu" id="menuShopSubmenu">
                         <a href="shop.html" class="menu-link menu-sublink"><i class="ph ph-squares-four"></i> All</a>
+                        <a href="shop.html?filter=clearance" class="menu-link menu-sublink nav-clearance-link"><i class="ph ph-fire"></i> Clearance Sale</a>
                         <div class="menu-link-group menu-subgroup" id="menuWomenGroup">
                             <button type="button" id="menuWomenToggle" class="menu-link menu-sublink menu-shop-toggle">
                                 <span class="menu-shop-toggle-label"><i class="ph ph-gender-female"></i> Women</span>
@@ -391,6 +392,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 .menu-sublink:hover { opacity: 1; }
                 .menu-subgroup .menu-shop-toggle { padding-left: 34px !important; }
                 .menu-subsublink { padding-left: 58px !important; font-size: 0.8rem !important; }
+                .nav-clearance-link { color: #e53935 !important; font-weight: 800 !important; animation: colorPulse 2s infinite; opacity: 1 !important; }
+                @keyframes colorPulse {
+                    0% { color: #e53935; text-shadow: 0 0 5px rgba(229,57,53,0.2); }
+                    50% { color: #b71c1c; text-shadow: 0 0 12px rgba(229,57,53,0.6); }
+                    100% { color: #e53935; text-shadow: 0 0 5px rgba(229,57,53,0.2); }
+                }
             `;
             document.head.appendChild(style);
         }

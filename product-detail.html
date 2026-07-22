@@ -673,7 +673,7 @@
 
             const query = `{
                 "settings": *[_type == "siteSettings"][0],
-                "shoe": *[_type == "shoe" && _id == $id][0]{
+                "shoe": *[_type in ["shoe", "clearanceSale"] && _id == $id][0]{
                     name,
                     price,
                     tag,
@@ -1226,7 +1226,7 @@
             // Pull up to 8 other shoes in the same category (or unisex), excluding the
             // current product, then show 4 at random.
             const cat = PRODUCT.category || 'women';
-            const query = `*[_type == "shoe" && (category == $cat || category == "unisex") && _id != $id] | order(order asc) [0...8]{
+            const query = `*[_type in ["shoe", "clearanceSale"] && (category == $cat || category == "unisex") && _id != $id] | order(order asc) [0...8]{
                 _id, name, price, "image": image.asset->url
             }`;
 

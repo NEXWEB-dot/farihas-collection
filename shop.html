@@ -208,6 +208,18 @@
             .nav-shop-dropdown.open .nav-shop-menu { display: block; }
             .nav-shop-menu a { padding: 8px 0; font-size: 0.7rem; }
         }
+
+        /* Clearance Sale Animation */
+        .nav-clearance-link {
+            color: #e53935 !important;
+            font-weight: 800 !important;
+            animation: colorPulse 2s infinite;
+        }
+        @keyframes colorPulse {
+            0% { color: #e53935; text-shadow: 0 0 5px rgba(229,57,53,0.2); }
+            50% { color: #b71c1c; text-shadow: 0 0 12px rgba(229,57,53,0.6); }
+            100% { color: #e53935; text-shadow: 0 0 5px rgba(229,57,53,0.2); }
+        }
     </style>
 </head>
 <body class="bg-white text-gray-900">
@@ -246,6 +258,7 @@
                 <a href="shop.html" class="nav-shop-toggle active">Shop <i class="ph ph-caret-down caret"></i></a>
                 <div class="nav-shop-menu">
                     <a href="shop.html">Shop</a>
+                    <a href="shop.html?filter=clearance" class="nav-clearance-link">Clearance Sale</a>
                     <a href="shop.html?filter=women">Women</a>
                     <a href="shop.html?filter=heels">Heels</a>
                     <a href="shop.html?filter=flats">Flats</a>
@@ -259,6 +272,7 @@
                     <a href="shop.html?filter=tagged">Tagged</a>
                 </div>
             </div>
+            <a href="shop.html?filter=clearance" class="nav-clearance-link" style="font-size:0.75rem;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;">Clearance Sale</a>
             <a href="reviews.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Reviews</a>
             <a href="shipping-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Shipping Policy</a>
             <a href="privacy-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Privacy Policy</a>
@@ -272,6 +286,7 @@
     <div class="filter-bar">
         <div class="filter-pills">
             <button class="filter-pill active" data-filter="all">All</button>
+            <button class="filter-pill" style="color: #e53935; border-color: #e53935; font-weight: 800;" data-filter="clearance">Clearance Sale</button>
             <button class="filter-pill" data-filter="women">Women</button>
             <button class="filter-pill" data-filter="heels">Heels</button>
             <button class="filter-pill" data-filter="flats">Flats</button>
@@ -432,7 +447,8 @@
     // GROQ query: all "product" documents, newest first, with a flat image URL.
     const SANITY_QUERY = `{
         "settings": *[_type == "siteSettings"][0],
-        "shoes": *[_type == "shoe"] | order(order asc){
+        "shoes": *[_type in ["shoe", "clearanceSale"]] | order(order asc){
+            _type,
             _id,
             name,
             price,
@@ -665,7 +681,7 @@
     let activeMaxPrice   = urlParams.get('maxprice') ? Number(urlParams.get('maxprice')) : null;
     let activeMinPrice   = urlParams.get('minprice') ? Number(urlParams.get('minprice')) : null;
 
-    if (initialFilter && ['men', 'women', 'heels', 'flats', 'slides', 'sneakers', 'pumps', 'unisex', 'loafers', 'sandals', 'tagged'].includes(initialFilter.toLowerCase())) {
+    if (initialFilter && ['men', 'women', 'heels', 'flats', 'slides', 'sneakers', 'pumps', 'unisex', 'loafers', 'sandals', 'tagged', 'clearance'].includes(initialFilter.toLowerCase())) {
         activeFilter = initialFilter.toLowerCase();
         document.querySelectorAll('.filter-pill').forEach(p => {
             p.classList.toggle('active', p.dataset.filter === activeFilter);
@@ -698,6 +714,9 @@
         let visible = activeFilter === 'all'
             ? [...allProducts]
             : allProducts.filter(p => {
+                if (activeFilter === 'clearance') {
+                    return p._type === 'clearanceSale' || p.isSale === true || (p.category || '').toLowerCase() === 'clearance' || (p.subCategory || '').toLowerCase() === 'clearance' || (p.tag || '').toLowerCase() === 'clearance sale';
+                }
                 const primary = (p.category || '').toLowerCase();
                 const sub = (p.subCategory || '').toLowerCase();
                 return primary === activeFilter || sub === activeFilter;
