@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Shop premium preloved and new condition shoes at Fariha's Collection. Nationwide shipping available in Pakistan.">
+    <meta property="og:title" content="Fariha's Collection - Premium Preloved Shoes">
+    <meta property="og:description" content="Shop premium preloved and new condition shoes at Fariha's Collection. Nationwide shipping available in Pakistan.">
+    <meta property="og:image" content="images/hero_closet.jpg">
+    <meta property="og:url" content="https://farihascollection.com">
+    <link rel="icon" type="image/jpeg" href="images/favicon.jpg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <title>Size Guide - Fariha's Collection</title>
+    <link rel="stylesheet" href="style.css?v=1784216451715">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #fafafa; color: #333; line-height: 1.6; }
+        .sg-container { max-width: 800px; margin: 3rem auto 5rem; padding: 0 1.5rem; }
+        .sg-container h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: #111; margin-bottom: 0.5rem; text-align: center; }
+        .sg-subtitle { text-align: center; color: #777; font-size: 0.95rem; margin-bottom: 2.5rem; }
+
+        .sg-tabs { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap; }
+        .sg-tab {
+            border: 1px solid #ddd; background: #fff; color: #555;
+            padding: 0.6rem 1.4rem; border-radius: 999px; font-size: 0.8rem;
+            font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .sg-tab:hover { border-color: #111; color: #111; }
+        .sg-tab.active { background: #111; color: #fff; border-color: #111; }
+
+        .sg-panel { display: none; background: #fff; border-radius: 14px; padding: 1.75rem; box-shadow: 0 2px 16px rgba(0,0,0,0.05); }
+        .sg-panel.active { display: block; }
+
+        .sg-table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 1.5rem; }
+        .sg-table { width: 100%; min-width: 420px; border-collapse: collapse; margin-bottom: 0; }
+        .sg-table th, .sg-table td {
+            padding: 0.7rem 0.5rem; text-align: center; font-size: 0.88rem;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+        }
+        .sg-table th { color: #111; font-weight: 700; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.5px; }
+        .sg-table td { color: #444; }
+        .sg-table tr:last-child td { border-bottom: none; }
+
+        @media (max-width: 600px) {
+            .sg-container { margin: 2rem auto 3rem; padding: 0 1rem; }
+            .sg-container h1 { font-size: 1.7rem; }
+            .sg-tab { padding: 0.5rem 1rem; font-size: 0.72rem; }
+            .sg-panel { padding: 1.1rem; }
+            .sg-table th, .sg-table td { padding: 0.55rem 0.4rem; font-size: 0.8rem; }
+        }
+
+        .sg-note { font-size: 0.85rem; color: #777; background: #f7f7f7; border-radius: 10px; padding: 1rem 1.2rem; margin-top: 1rem; }
+        .sg-note strong { color: #333; }
+
+        .sg-howto { margin-top: 2.5rem; }
+        .sg-howto h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: #111; margin-bottom: 0.75rem; }
+        .sg-howto ol { padding-left: 1.3rem; color: #555; font-size: 0.92rem; }
+        .sg-howto li { margin-bottom: 0.5rem; }
+    </style>
+
+    <style>
+        /* ===== NAV SHOP DROPDOWN ===== */
+        .nav-shop-dropdown { position: relative; display: inline-block; }
+        .nav-shop-toggle {
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+            color: #888; text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s; cursor: pointer; background: none;
+            display: inline-flex; align-items: center; gap: 4px; font-family: inherit;
+        }
+        .nav-shop-toggle .caret { font-size: 0.6rem; transition: transform 0.2s; }
+        .nav-shop-toggle:hover, .nav-shop-dropdown.open .nav-shop-toggle { color: #111; border-bottom-color: #111; }
+        .nav-shop-toggle.active { color: #111; border-bottom-color: #111; }
+        .nav-shop-dropdown.open .nav-shop-toggle .caret { transform: rotate(180deg); }
+        .nav-shop-menu {
+            display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12); padding: 8px 0; min-width: 170px;
+            z-index: 500; margin-top: 10px;
+        }
+        .nav-shop-dropdown.open .nav-shop-menu,
+        .nav-shop-dropdown:hover .nav-shop-menu { display: block; }
+        .nav-shop-menu a {
+            display: block; padding: 9px 20px; font-size: 0.72rem; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase; color: #666; text-decoration: none;
+            transition: background 0.15s, color 0.15s; font-family: 'Poppins', sans-serif;
+        }
+        .nav-shop-menu a:hover { background: #f7f7f7; color: #111; }
+
+        /* Hamburger / mobile menu: expand inline instead of floating overlay */
+        @media (max-width: 768px) {
+            .nav-shop-dropdown { display: block; width: 100%; }
+            .nav-shop-toggle { width: 100%; justify-content: center; }
+            .nav-shop-dropdown:hover .nav-shop-menu { display: none; }
+            .nav-shop-menu {
+                display: none; position: static; transform: none;
+                box-shadow: none; border: none; background: transparent;
+                margin-top: 6px; padding: 4px 0 0; min-width: 0; text-align: center;
+            }
+            .nav-shop-dropdown.open .nav-shop-menu { display: block; }
+            .nav-shop-menu a { padding: 8px 0; font-size: 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Pinned Banner -->
+    <div id="topPinnedBanner" style="background-color:#111; color:#fff; text-align:center; padding:10px 15px; font-size:0.85rem; position:relative; z-index:1000; letter-spacing:0.5px; font-weight:300;">
+        <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel. Claims for damage or exchange will only be accepted with an unboxing video.
+    </div>
+    <!-- Header with integrated nav -->
+    <header class="header scrolled" style="flex-direction:column;padding:0.75rem 2rem 0;gap:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;width:100%;padding-bottom:0.65rem;">
+            <div class="header-left" style="flex:1; display:flex; gap:12px;">
+                <button class="icon-btn" id="menuToggle"><i class="ph ph-list"></i></button>
+                <button class="icon-btn" id="searchToggle"><i class="ph ph-magnifying-glass"></i></button>
+            </div>
+            <div class="header-center" style="flex:2; text-align:center;">
+                <a href="index.html" style="text-decoration:none;color:inherit;">
+                    <h1 class="logo" style="font-family:'Poppins', sans-serif; font-weight:300; font-size:1.15rem; line-height:1.2; margin:0; letter-spacing:4px;">FARIHA'S<br>COLLECTION</h1>
+                </a>
+            </div>
+            <div class="header-right" style="flex:1; display:flex; justify-content:flex-end;">
+                <button class="icon-btn" id="cartToggle" style="position:relative;"><i class="ph ph-shopping-bag"></i><span class="cart-badge">0</span></button>
+            </div>
+        </div>
+        <nav style="font-family:'Poppins', serif; display:flex;gap:1.75rem;flex-wrap:wrap;border-top:1px solid rgba(0,0,0,0.07);padding:0.5rem 0;width:100%;justify-content:center;">
+            <a href="index.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Home</a>
+            <div class="nav-shop-dropdown">
+                <a href="shop.html" class="nav-shop-toggle">Shop <i class="ph ph-caret-down caret"></i></a>
+                <div class="nav-shop-menu">
+                    <a href="shop.html">Shop</a>
+                    <a href="shop.html?filter=clearance" class="nav-clearance-link">Clearance Sale</a>
+                    <a href="shop.html?filter=women">Women</a>
+                    <a href="shop.html?filter=heels">Heels</a>
+                    <a href="shop.html?filter=flats">Flats</a>
+                    <a href="shop.html?filter=slides">Slides</a>
+                    <a href="shop.html?filter=sneakers">Sneakers</a>
+                    <a href="shop.html?filter=pumps">Pumps</a>
+                    <a href="shop.html?filter=men">Men</a>
+                    <a href="shop.html?filter=unisex">Unisex</a>
+                    <a href="shop.html?filter=loafers">Loafers</a>
+                    <a href="shop.html?filter=sandals">Sandals</a>
+                </div>
+            </div>
+            <a href="reviews.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Reviews</a>
+            <a href="shipping-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Shipping Policy</a>
+            <a href="privacy-policy.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Privacy Policy</a>
+            <a href="terms-conditions.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Terms & Conditions</a>
+            <a href="checkout.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">Cart</a>
+            <a href="about-us.html" style="font-size:0.75rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;text-decoration:none;padding:2px 0;border-bottom:2px solid transparent;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#111';this.style.borderColor='#111'" onmouseout="this.style.color='#888';this.style.borderColor='transparent'">About Us</a>
+        </nav>
+    </header>
+
+    <div class="sg-container">
+        <h1>Size Guide</h1>
+        <p class="sg-subtitle">Find your perfect fit with our UK / EU / US size conversion chart.</p>
+
+        <div class="sg-tabs">
+            <button class="sg-tab" data-tab="women">Women's</button>
+            <button class="sg-tab" data-tab="men">Men's</button>
+            <button class="sg-tab" data-tab="unisex">Unisex</button>
+        </div>
+
+        <!-- Women's Sizes -->
+        <div class="sg-panel" id="panel-women">
+            <div class="sg-table-wrap">
+<table class="sg-table">
+                <thead>
+                    <tr><th>UK</th><th>EU</th><th>US</th><th>Inches</th><th>CM</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>2</td><td>34</td><td>4</td><td>8 1/4</td><td>21.0</td></tr>
+                    <tr><td>2.5</td><td>34.5</td><td>4.5</td><td>8 1/2</td><td>21.6</td></tr>
+                    <tr><td>3</td><td>35</td><td>5</td><td>8 5/8</td><td>21.9</td></tr>
+                    <tr><td>3.5</td><td>35.5</td><td>5.5</td><td>8 3/4</td><td>22.2</td></tr>
+                    <tr><td>4</td><td>36</td><td>6</td><td>9</td><td>22.9</td></tr>
+                    <tr><td>4.5</td><td>36.5</td><td>6.5</td><td>9 1/8</td><td>23.2</td></tr>
+                    <tr><td>5</td><td>37</td><td>7</td><td>9 1/4</td><td>23.5</td></tr>
+                    <tr><td>5.5</td><td>37.5</td><td>7.5</td><td>9 1/2</td><td>24.1</td></tr>
+                    <tr><td>6</td><td>38</td><td>8</td><td>9 5/8</td><td>24.4</td></tr>
+                    <tr><td>6.5</td><td>38.5</td><td>8.5</td><td>9 3/4</td><td>24.8</td></tr>
+                    <tr><td>7</td><td>39</td><td>9</td><td>10</td><td>25.4</td></tr>
+                    <tr><td>7.5</td><td>39.5</td><td>9.5</td><td>10 1/8</td><td>25.7</td></tr>
+                    <tr><td>8</td><td>40</td><td>10</td><td>10 1/4</td><td>26.0</td></tr>
+                    <tr><td>8.5</td><td>40.5</td><td>10.5</td><td>10 1/2</td><td>26.7</td></tr>
+                    <tr><td>9</td><td>41</td><td>11</td><td>10 5/8</td><td>27.0</td></tr>
+                    <tr><td>9.5</td><td>41.5</td><td>11.5</td><td>10 3/4</td><td>27.3</td></tr>
+                    <tr><td>10</td><td>42</td><td>12</td><td>11</td><td>27.9</td></tr>
+                    <tr><td>11</td><td>43</td><td>13</td><td>11 1/4</td><td>28.6</td></tr>
+                    <tr><td>12</td><td>44</td><td>14</td><td>11 5/8</td><td>29.8</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <div class="sg-note"><strong>Note:</strong> Sizing can vary slightly by style &mdash; if you're between sizes, we recommend sizing up.</div>
+        </div>
+
+        <!-- Men's Sizes -->
+        <div class="sg-panel" id="panel-men">
+            <div class="sg-table-wrap">
+<table class="sg-table">
+                <thead>
+                    <tr><th>UK</th><th>EU</th><th>US</th><th>Inches</th><th>CM</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>5.5</td><td>39</td><td>6</td><td>9.25</td><td>23.5</td></tr>
+                    <tr><td>6</td><td>39</td><td>6.5</td><td>9.5</td><td>24.1</td></tr>
+                    <tr><td>6.5</td><td>40</td><td>7</td><td>9.625</td><td>24.4</td></tr>
+                    <tr><td>7</td><td>40&ndash;41</td><td>7.5</td><td>9.75</td><td>24.8</td></tr>
+                    <tr><td>7.5</td><td>41</td><td>8</td><td>9.9375</td><td>25.2</td></tr>
+                    <tr><td>8</td><td>41&ndash;42</td><td>8.5</td><td>10.125</td><td>25.7</td></tr>
+                    <tr><td>8.5</td><td>42</td><td>9</td><td>10.25</td><td>26</td></tr>
+                    <tr><td>9</td><td>42&ndash;43</td><td>9.5</td><td>10.4375</td><td>26.7</td></tr>
+                    <tr><td>9.5</td><td>43</td><td>10</td><td>10.5625</td><td>27</td></tr>
+                    <tr><td>10</td><td>43&ndash;44</td><td>10.5</td><td>10.75</td><td>27.3</td></tr>
+                    <tr><td>10.5</td><td>44</td><td>11</td><td>10.9375</td><td>27.9</td></tr>
+                    <tr><td>11</td><td>44&ndash;45</td><td>11.5</td><td>11.125</td><td>28.3</td></tr>
+                    <tr><td>11.5</td><td>45</td><td>12</td><td>11.25</td><td>28.6</td></tr>
+                    <tr><td>12.5</td><td>46</td><td>13</td><td>11.5625</td><td>29.4</td></tr>
+                    <tr><td>13.5</td><td>47</td><td>14</td><td>11.875</td><td>30.2</td></tr>
+                    <tr><td>14.5</td><td>48</td><td>15</td><td>12.1875</td><td>31.0</td></tr>
+                    <tr><td>15.5</td><td>49</td><td>16</td><td>12.5</td><td>31.8</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <div class="sg-note"><strong>Note:</strong> Sizing can vary slightly by style &mdash; if you're between sizes, we recommend sizing up.</div>
+        </div>
+
+        <!-- Unisex Sizes -->
+        <div class="sg-panel" id="panel-unisex">
+            <div class="sg-table-wrap">
+<table class="sg-table">
+                <thead>
+                    <tr><th>UK</th><th>EU</th><th>US (Men's)</th><th>US (Women's)</th><th>CM</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>5.5</td><td>39</td><td>6</td><td>7.5</td><td>23.5</td></tr>
+                    <tr><td>6</td><td>39</td><td>6.5</td><td>8</td><td>24.1</td></tr>
+                    <tr><td>6.5</td><td>40</td><td>7</td><td>8.5</td><td>24.4</td></tr>
+                    <tr><td>7</td><td>40&ndash;41</td><td>7.5</td><td>9</td><td>24.8</td></tr>
+                    <tr><td>7.5</td><td>41</td><td>8</td><td>9.5</td><td>25.2</td></tr>
+                    <tr><td>8</td><td>41&ndash;42</td><td>8.5</td><td>10</td><td>25.7</td></tr>
+                    <tr><td>8.5</td><td>42</td><td>9</td><td>10.5</td><td>26</td></tr>
+                    <tr><td>9</td><td>42&ndash;43</td><td>9.5</td><td>11</td><td>26.7</td></tr>
+                    <tr><td>9.5</td><td>43</td><td>10</td><td>11.5</td><td>27</td></tr>
+                    <tr><td>10</td><td>43&ndash;44</td><td>10.5</td><td>12</td><td>27.3</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <div class="sg-note"><strong>Note:</strong> Unisex styles are cut to a single standard (men's) sizing &mdash; the Women's US column shows the commonly used equivalent if you normally shop women's sizes.</div>
+        </div>
+
+        <div class="sg-howto">
+            <h2>How to Measure Your Foot</h2>
+            <ol>
+                <li>Place a sheet of paper on a hard floor, against a wall.</li>
+                <li>Stand on the paper with your heel touching the wall.</li>
+                <li>Mark the tip of your longest toe on the paper.</li>
+                <li>Measure the distance from the wall edge to the mark in centimeters.</li>
+                <li>Match your measurement to the "Foot Length (cm)" column above for your best size.</li>
+            </ol>
+        </div>
+    </div>
+
+    <script src="main.js?v=1784216451715"></script>
+    <script>
+        const tabs = document.querySelectorAll('.sg-tab');
+        const panels = document.querySelectorAll('.sg-panel');
+
+        function activateTab(key) {
+            tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === key));
+            panels.forEach(p => p.classList.toggle('active', p.id === `panel-${key}`));
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => activateTab(tab.dataset.tab));
+        });
+
+        // Pre-select tab based on ?category= param (set automatically when arriving
+        // from a product page), defaulting to Women's if none/unknown is provided.
+        const params = new URLSearchParams(window.location.search);
+        const initialCategory = (params.get('category') || 'women').toLowerCase();
+        const validCategories = ['men', 'women', 'unisex'];
+        activateTab(validCategories.includes(initialCategory) ? initialCategory : 'women');
+    </script>
+
+    <script>
+    // ===== NAV SHOP DROPDOWN =====
+    document.querySelectorAll('.nav-shop-dropdown').forEach(function (dd) {
+        var toggle = dd.querySelector('.nav-shop-toggle');
+        if (!toggle) return;
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            var isOpen = dd.classList.contains('open');
+            document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (o) {
+                if (o !== dd) o.classList.remove('open');
+            });
+            dd.classList.toggle('open', !isOpen);
+        });
+    });
+    document.addEventListener('click', function (e) {
+        document.querySelectorAll('.nav-shop-dropdown.open').forEach(function (dd) {
+            if (!dd.contains(e.target)) dd.classList.remove('open');
+        });
+    });
+    </script>
+</body>
+</html>
+
+
