@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Search Sanity where name or tag matches the query (case insensitive)
             const sanityQuery = `*[_type == "shoe" && name match "*${query}*"]{
-                _id, name, price, tag, "image": image.asset->url
+                _id, name, price, tag, brand, "image": image.asset->url
             }`;
             const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(sanityQuery)}`;
             
@@ -248,10 +248,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let html = '';
             matches.forEach(m => {
-                const name = m.name || 'Untitled';
+                const name = m.name || '';
                 const price = Number(m.price) || 0;
                 const image = m.image || '';
-                const brand = m.tag || 'Fariha\'s Collection';
+                const brand = m.brand || m.tag || '';
                 const params = new URLSearchParams({ id: m._id, name, price, image });
                 
                 html += `
