@@ -49,7 +49,7 @@ function item(p) {
       <g:id>${p.id}</g:id>
       <g:title><![CDATA[${p.title}]]></g:title>
       <g:description><![CDATA[${p.desc}]]></g:description>
-      <g:link>${link}</g:link>
+      <g:link>${esc(link)}</g:link>
       <g:image_link>${p.img}</g:image_link>
       <g:price>${p.price} PKR</g:price>
       <g:availability>in stock</g:availability>
