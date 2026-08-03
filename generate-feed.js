@@ -10,7 +10,7 @@ const SANITY_DATASET = 'production';
 const SANITY_API_VERSION = '2024-01-01';
 
 // We fetch all items of type "shoe"
-const query = encodeURIComponent(`*[_type == "shoe"]{
+const query = encodeURIComponent(`*[_type == "shoe" && inStock != false]{
   _id, name, price, tag, description, "image": image.asset->url, sizes, brand, category, inStock
 }`);
 
