@@ -231,8 +231,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const SANITY_DATASET = 'production';
             const SANITY_API_VERSION = '2024-01-01';
             
-            // Search Sanity where name or tag matches the query (case insensitive)
-            const sanityQuery = `*[_type == "shoe" && name match "*${query}*"]{
+            // Search Sanity where name, brand, or tag matches the query (case insensitive)
+            const sanityQuery = `*[_type in ["shoe", "clearanceSale"] && (name match "*${query}*" || brand match "*${query}*" || tag match "*${query}*")]{
                 _id, name, price, tag, brand, "image": image.asset->url
             }`;
             const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(sanityQuery)}`;
