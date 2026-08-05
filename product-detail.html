@@ -746,15 +746,24 @@
                     }
                 }
 
-                updateUI(PRODUCT);
+                // applyProduct() renders the page (title, price, gallery, description...).
+                // It's wrapped separately so that if it throws on any unusual product data,
+                // that failure can NEVER silently take the ViewContent pixel down with it.
+                try {
+                    applyProduct(product);
+                } catch (renderErr) {
+                    console.error('Failed to render product details:', renderErr);
+                }
 
-                applyProduct(product);
-
-                // Fires after applyProduct() so name/price are the final Sanity-resolved
-                // values, and PRODUCT._id matches the Catalog feed's content_id (the
-                // Sanity document _id), not the product title.
-                if (window.fcPixelViewContent) {
-                    window.fcPixelViewContent(PRODUCT.name, PRODUCT.price, PRODUCT._id);
+                // Fires unconditionally (own try/catch) so a UI rendering bug never blocks
+                // tracking. PRODUCT._id is set from productId at declaration time, so it's
+                // always correct here regardless of whether applyProduct() succeeded.
+                try {
+                    if (window.fcPixelViewContent) {
+                        window.fcPixelViewContent(PRODUCT.name, PRODUCT.price, PRODUCT._id);
+                    }
+                } catch (pixelErr) {
+                    console.error('Failed to fire ViewContent pixel:', pixelErr);
                 }
             } catch (err) {
                 console.error('Failed to load product from Sanity:', err);
@@ -1145,7 +1154,11 @@
             }
             saveCart(cart);
             showNotif('✓ Added to cart' + (selectedSize ? ' — ' + selectedSize : ''));
-            if (window.fcPixelAddToCart) window.fcPixelAddToCart(PRODUCT.name, PRODUCT.price, PRODUCT._id, 1);
+            try {
+                if (window.fcPixelAddToCart) window.fcPixelAddToCart(PRODUCT.name, PRODUCT.price, PRODUCT._id, 1);
+            } catch (pixelErr) {
+                console.error('Failed to fire AddToCart pixel:', pixelErr);
+            }
         }
 
         function showNotif(msg) {
