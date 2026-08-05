@@ -736,13 +736,11 @@
                     }
                 }
 
-                updateUI(PRODUCT);
+                applyProduct(product);
                 
                 if (window.fcPixelViewContent) {
                     window.fcPixelViewContent(PRODUCT.name, PRODUCT.price, PRODUCT._id);
                 }
-
-                applyProduct(product);
             } catch (err) {
                 console.error('Failed to load product from Sanity:', err);
                 // Fallback URL-param data stays on screen; page remains usable.
