@@ -1226,6 +1226,18 @@
 
     // ===== INIT =====
     renderCart();
+
+    // Fire InitiateCheckout once per page load, using the same `id` (Sanity _id /
+    // Catalog content_id) stored on each cart item — keeps it consistent with the
+    // ViewContent / AddToCart / Purchase events.
+    (function () {
+        const cart = getCart();
+        if (cart.length && typeof fcPixelInitiateCheckout === 'function') {
+            const value = getSubtotal();
+            const numItems = cart.reduce((s, i) => s + i.qty, 0);
+            fcPixelInitiateCheckout(value, numItems, cart);
+        }
+    })();
     </script>
 </body>
 </html>

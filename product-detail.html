@@ -622,6 +622,7 @@
         const productId = urlParams.get('id');
 
         const PRODUCT = {
+            _id: productId || '',            // Sanity document _id == Catalog content_id — needed so Pixel content_ids match the Catalog feed
             name: urlParams.get('name') || 'Loading...',
             price: parseInt(urlParams.get('price')) || 0,
             image: urlParams.get('image') || '',
@@ -669,12 +670,16 @@
 
         // ===== FETCH FULL PRODUCT FROM SANITY (description, gallery, sizes) =====
         async function loadProductFromSanity() {
-            if (!productId) return; // no id passed, fallback data above is all we have
+            if (!productId) {
+                // no id passed, fallback data above is all we have —
+                // still need to take the button out of its initial "Loading..." state
+                updateStockDisplay(0, false, false);
+                return;
+            }
 
             const query = `{
                 "settings": *[_type == "siteSettings"][0],
                 "shoe": *[_type in ["shoe", "clearanceSale"] && _id == $id][0]{
-                    _id,
                     name,
                     price,
                     tag,
@@ -711,7 +716,11 @@
                 const json = await res.json();
                 const data = json.result || {};
                 const product = data.shoe;
-                if (!product) return; // product not found, keep fallback data
+                if (!product) {
+                    // product not found, keep fallback data but stop the button spinning forever
+                    updateStockDisplay(0, false, false);
+                    return;
+                }
                 
                 const settings = data.settings || {};
                 product.settings = settings;
@@ -737,14 +746,21 @@
                     }
                 }
 
+                updateUI(PRODUCT);
+
                 applyProduct(product);
-                
+
+                // Fires after applyProduct() so name/price are the final Sanity-resolved
+                // values, and PRODUCT._id matches the Catalog feed's content_id (the
+                // Sanity document _id), not the product title.
                 if (window.fcPixelViewContent) {
                     window.fcPixelViewContent(PRODUCT.name, PRODUCT.price, PRODUCT._id);
                 }
             } catch (err) {
                 console.error('Failed to load product from Sanity:', err);
                 // Fallback URL-param data stays on screen; page remains usable.
+                // Without this, the button is stuck on its initial "Loading..." state forever.
+                updateStockDisplay(0, false, false);
             }
         }
 
