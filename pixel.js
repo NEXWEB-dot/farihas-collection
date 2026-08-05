@@ -98,12 +98,25 @@ window.fcPixelAddToCart = function (name, price, id, qty) {
  * @param {number} value    Cart total (PKR)
  * @param {number} numItems Number of items in the cart
  */
-window.fcPixelInitiateCheckout = function (value, numItems) {
+window.fcPixelInitiateCheckout = function (value, numItems, cartItems) {
     if (typeof fbq === 'undefined') return;
+    
+    var contents = (cartItems || []).map(function (item) {
+        return {
+            id        : item.id || item.name || '',
+            quantity  : Number(item.qty) || 1,
+            item_price: Number(item.price) || 0
+        };
+    });
+    var contentIds = (cartItems || []).map(function (item) { return item.id || item.name || ''; });
+
     fbq('track', 'InitiateCheckout', {
-        value     : Number(value)    || 0,
-        currency  : 'PKR',
-        num_items : Number(numItems) || 0
+        value         : Number(value)    || 0,
+        currency      : 'PKR',
+        num_items     : Number(numItems) || 0,
+        content_ids   : contentIds,
+        contents      : contents,
+        content_type  : 'product'
     });
 };
 
@@ -124,13 +137,13 @@ window.fcPixelPurchase = function (value, eventId, orderId, cartItems) {
 
     var contents = (cartItems || []).map(function (item) {
         return {
-            id        : item.name || '',
+            id        : item.id || item.name || '',
             quantity  : Number(item.qty) || 1,
             item_price: Number(item.price) || 0
         };
     });
 
-    var contentIds = (cartItems || []).map(function (item) { return item.name || ''; });
+    var contentIds = (cartItems || []).map(function (item) { return item.id || item.name || ''; });
 
     // The eventID here must match the eventID sent via Conversions API (CAPI)
     // so Meta can deduplicate browser + server events automatically.

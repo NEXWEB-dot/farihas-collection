@@ -12,6 +12,8 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
     <title id="pageTitle">Product Details | Fariha's Collection</title>
+    <!-- Meta Pixel -->
+    <script src="pixel.js"></script>
     <meta name="description" content="Shop quality preloved shoes at Fariha's Collection &mdash; authentic details, real photos.">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -734,6 +736,12 @@
                     }
                 }
 
+                updateUI(PRODUCT);
+                
+                if (window.fcPixelViewContent) {
+                    window.fcPixelViewContent(PRODUCT.name, PRODUCT.price, PRODUCT._id);
+                }
+
                 applyProduct(product);
             } catch (err) {
                 console.error('Failed to load product from Sanity:', err);
@@ -1112,11 +1120,17 @@
         function addToCart() {
             const cart = getCart();
             const key = PRODUCT.name + (selectedSize ? ' · ' + selectedSize : '');
-            const ex = cart.find(i => i.name === key);
-            if (ex) ex.qty++;
-            else cart.push({ name: key, price: PRODUCT.price, image: PRODUCT.image, qty: 1 });
+            const id = PRODUCT._id;
+            const ex = cart.find(i => i.id === id || (i.name === key && !i.id));
+            if (ex) {
+                ex.qty++;
+                if (!ex.id) ex.id = id;
+            } else {
+                cart.push({ id, name: key, price: PRODUCT.price, image: PRODUCT.image, qty: 1 });
+            }
             saveCart(cart);
             showNotif('✓ Added to cart' + (selectedSize ? ' — ' + selectedSize : ''));
+            if (window.fcPixelAddToCart) window.fcPixelAddToCart(PRODUCT.name, PRODUCT.price, PRODUCT._id, 1);
         }
 
         function showNotif(msg) {

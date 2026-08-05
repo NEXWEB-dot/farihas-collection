@@ -12,6 +12,8 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
     <title>FARIHA'S COLLECTION - Shoes</title>
+    <!-- Meta Pixel -->
+    <script src="pixel.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -574,14 +576,19 @@
         });
     }
 
-    function addToCart(name, price, image) {
+    function addToCart(id, name, price, image) {
         const cart = getCart();
-        const ex = cart.find(i => i.name === name);
-        if (ex) ex.qty++;
-        else cart.push({ name, price: Number(price), image, qty: 1 });
+        const ex = cart.find(i => i.id === id || (i.name === name && !i.id));
+        if (ex) {
+            ex.qty++;
+            if (!ex.id) ex.id = id;
+        } else {
+            cart.push({ id, name, price: Number(price), image, qty: 1 });
+        }
         saveCart(cart);
         showNotif(`✔ ${name} added to cart!`);
         updateBadge();
+        if (window.fcPixelAddToCart) window.fcPixelAddToCart(name, price, id, 1);
     }
 
     function showNotif(msg) {
@@ -606,7 +613,7 @@
             const price = card.dataset.price;
             const image = card.dataset.image;
             card.querySelectorAll('.atc-btn, .add-to-cart-full').forEach(btn => {
-                btn.addEventListener('click', e => { e.stopPropagation(); addToCart(name, price, image); });
+                btn.addEventListener('click', e => { e.stopPropagation(); addToCart(id, name, price, image); });
             });
             // Clicking the card opens the product detail page
             card.addEventListener('click', () => {

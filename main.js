@@ -17,16 +17,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function addToCart(name, price, image) {
-        const existing = cart.find(item => item.name === name);
+    function addToCart(id, name, price, image) {
+        const existing = cart.find(item => item.id === id || (item.name === name && !item.id));
         if (existing) {
             existing.qty++;
+            if (!existing.id) existing.id = id;
         } else {
-            cart.push({ name, price, image, qty: 1 });
+            cart.push({ id, name, price, image, qty: 1 });
         }
         saveCart();
         showNotification(`${name} added to cart!`);
-        if (window.fcPixelAddToCart) window.fcPixelAddToCart(name, price, name, 1);
+        if (window.fcPixelAddToCart) window.fcPixelAddToCart(name, price, id, 1);
     }
 
     function removeFromCart(index) {
@@ -145,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>Total</span>
                 <span>Rs${total.toLocaleString('en-PK', {minimumFractionDigits: 0})}</span>
             </div>
-            <button class="cart-checkout-btn" id="proceedToCheckout" onclick="if(window.fcPixelInitiateCheckout) window.fcPixelInitiateCheckout(${total}, cart.length); window.location.href='checkout.html'" style="background:#111;color:#fff;border:none;width:100%;padding:14px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:12px;letter-spacing:0.5px;">
+            <button class="cart-checkout-btn" id="proceedToCheckout" onclick="if(window.fcPixelInitiateCheckout) window.fcPixelInitiateCheckout(${total}, JSON.parse(localStorage.getItem('fc_cart')||'[]').length, JSON.parse(localStorage.getItem('fc_cart')||'[]')); window.location.href='checkout.html'" style="background:#111;color:#fff;border:none;width:100%;padding:14px;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:12px;letter-spacing:0.5px;">
                 <i class="ph ph-shopping-bag"></i> Proceed to Checkout
             </button>
         `;
@@ -633,6 +634,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const priceNum = parseFloat(priceText.replace(/[^0-9.]/g, '')) || 0;
         const img = card.querySelector('img')?.getAttribute('src') || '';
 
+        const id = card.dataset.id || card.getAttribute('data-id') || name;
+        
         // Create add-to-cart button
         const addBtn = document.createElement('button');
         addBtn.className = 'add-to-cart-btn';
@@ -640,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
         addBtn.title = 'Add to Cart';
         addBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            addToCart(name, priceNum, img);
+            addToCart(id, name, priceNum, img);
         });
 
         const imgWrap = card.querySelector('.product-img-wrap');

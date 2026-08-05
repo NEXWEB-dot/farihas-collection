@@ -1064,6 +1064,7 @@
 
         // Capture cart BEFORE it is cleared (needed for pixel event)
         const cartSnapshot = getCart().map(item => ({
+            id: item.id,
             name: item.name,
             price: item.price,
             qty: item.qty
