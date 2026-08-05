@@ -674,6 +674,7 @@
             const query = `{
                 "settings": *[_type == "siteSettings"][0],
                 "shoe": *[_type in ["shoe", "clearanceSale"] && _id == $id][0]{
+                    _id,
                     name,
                     price,
                     tag,
