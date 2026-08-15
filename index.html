@@ -195,6 +195,21 @@
     </section>
 
     <script>
+    // ===== SANITY IMAGE OPTIMISATION HELPER =====
+    // Appends Sanity CDN transform params to any raw asset URL.
+    // w  = max render width in CSS pixels (Sanity serves the exact size)
+    // q  = quality 1-100 (80 is the sweet-spot: ~40% smaller than default)
+    // fm = output format; webp cuts JPEG/PNG weight by 25-50%
+    // fit=max — scale down proportionally, never upscale
+    // auto=format — additionally lets Sanity pick avif when the browser supports it
+    function sanityImg(url, { w = 800, q = 80 } = {}) {
+        if (!url) return '';
+        // Avoid double-appending if already optimised
+        if (url.includes('?')) return url;
+        return `${url}?w=${w}&q=${q}&fm=webp&fit=max&auto=format`;
+    }
+    // ============================================
+
     (async function loadHeroAndSettings() {
         const SANITY_PROJECT_ID = 'kxnjofhp';
         const SANITY_DATASET = 'production';
@@ -243,13 +258,13 @@
                 const slide = slides[0];
                 const esc = s => String(s).replace(/"/g, '&quot;');
                 
-                container.innerHTML = \`
-                    <img src="\${esc(slide.image)}" alt="Promo Slide">
+                container.innerHTML = `
+                    <img src="${sanityImg(slide.image, { w: 1600, q: 85 })}" alt="Promo Slide">
                     <div class="hero-overlay"></div>
                     <div class="hero-content reveal-up delay-1 visible" style="opacity: 1; transform: translateY(0);">
-                        <h2 class="hero-heading">\${slide.title}</h2>
-                        \${slide.subtitle ? \`<p class="hero-subtext">\${esc(slide.subtitle)}</p>\` : ''}
-                        \${slide.linkText ? \`<a href="\${esc(slide.linkUrl || 'shop.html')}" class="hero-cta">\${esc(slide.linkText)} <i class="ph ph-arrow-right"></i></a>\` : ''}
+                        <h2 class="hero-heading">${slide.title}</h2>
+                        ${slide.subtitle ? `<p class="hero-subtext">${esc(slide.subtitle)}</p>` : ''}
+                        ${slide.linkText ? `<a href="${esc(slide.linkUrl || 'shop.html')}" class="hero-cta">${esc(slide.linkText)} <i class="ph ph-arrow-right"></i></a>` : ''}
                     </div>
                 \`;
             }
@@ -393,7 +408,7 @@
                        style="position:relative;text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         ${badgeHtml}
                         <div class="product-img-wrap" style="border-radius:0;margin-bottom:0;position:relative;">
-                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
@@ -486,7 +501,7 @@
                        data-id="${id}"
                        style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         <div class="product-img-wrap" style="position:relative;border-radius:0;margin-bottom:0;">
-                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
                             ${soldOutOverlay}
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">
@@ -581,7 +596,7 @@
                        data-id="${id}"
                        style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         <div class="product-img-wrap" style="position:relative;border-radius:0;margin-bottom:0;">
-                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
                             ${soldOutOverlay}
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">
@@ -675,7 +690,7 @@
                        data-id="${id}"
                        style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         <div class="product-img-wrap" style="position:relative;border-radius:0;margin-bottom:0;">
-                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
                             ${soldOutOverlay}
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">
@@ -769,7 +784,7 @@
                        data-id="${id}"
                        style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         <div class="product-img-wrap" style="position:relative;border-radius:0;margin-bottom:0;">
-                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
                             ${soldOutOverlay}
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">
@@ -863,7 +878,7 @@
                        data-id="${id}"
                        style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         <div class="product-img-wrap" style="position:relative;border-radius:0;margin-bottom:0;">
-                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
                             ${soldOutOverlay}
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">

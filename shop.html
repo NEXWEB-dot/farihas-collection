@@ -428,6 +428,14 @@
     // ===== SANITY CONFIG =====
     // Project ID from sanity.io/manage. Change SANITY_DATASET below if yours
     // isn't the default "production" dataset.
+    // ===== SANITY IMAGE OPTIMISATION HELPER =====
+    function sanityImg(url, { w = 800, q = 80 } = {}) {
+        if (!url) return '';
+        if (url.includes('?')) return url;
+        return `${url}?w=${w}&q=${q}&fm=webp&fit=max&auto=format`;
+    }
+    // ============================================
+
     const SANITY_PROJECT_ID = 'kxnjofhp';
     const SANITY_DATASET = 'production';
     const SANITY_API_VERSION = '2024-01-01';
@@ -498,7 +506,7 @@
         return `
             <div class="shoe-card product-card" data-id="${esc(id)}" data-name="${esc(name)}" data-price="${price}" data-image="${esc(image)}">
                 <div class="w-full aspect-square bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden relative mb-3">
-                    <img src="${esc(image)}" alt="${esc(name)}" class="w-full h-full object-cover transition duration-300" loading="lazy">
+                    <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" class="w-full h-full object-cover transition duration-300" loading="lazy">
                     <button class="atc-btn"><i class="ph ph-shopping-bag"></i></button>
                 </div>
                 <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">${esc(brand)}</p>

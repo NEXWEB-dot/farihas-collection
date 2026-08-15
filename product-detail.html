@@ -604,7 +604,15 @@
 
     <script>
         // ===== SANITY CONFIG =====
-        const SANITY_PROJECT_ID = 'kxnjofhp';
+        // ===== SANITY IMAGE OPTIMISATION HELPER =====
+    function sanityImg(url, { w = 800, q = 80 } = {}) {
+        if (!url) return '';
+        if (url.includes('?')) return url;
+        return `${url}?w=${w}&q=${q}&fm=webp&fit=max&auto=format`;
+    }
+    // ============================================
+
+    const SANITY_PROJECT_ID = 'kxnjofhp';
         const SANITY_DATASET = 'production';
         const SANITY_API_VERSION = '2024-01-01';
 
@@ -884,14 +892,14 @@
 
             // ----- Gallery: main image + thumbnails -----
             const mainImg = document.getElementById('mainImg');
-            mainImg.src = allImages[0] || '';
+            mainImg.src = sanityImg(allImages[0] || '', { w: 1200, q: 85 });
             mainImg.alt = name;
 
             const thumbStrip = document.getElementById('thumbStrip');
             if (allImages.length > 1) {
                 thumbStrip.innerHTML = allImages.map((url, i) => `
-                    <div class="pd-thumb${i === 0 ? ' active' : ''}" data-img="${url}" data-alt="${name} view ${i + 1}">
-                        <img src="${url}" alt="${name} view ${i + 1}" loading="lazy">
+                    <div class="pd-thumb${i === 0 ? ' active' : ''}" data-img="${sanityImg(url, { w: 1200, q: 85 })}" data-alt="${name} view ${i + 1}">
+                        <img src="${sanityImg(url, { w: 200 })}" alt="${name} view ${i + 1}" loading="lazy">
                     </div>
                 `).join('');
                 thumbStrip.style.display = 'flex';
@@ -1297,8 +1305,8 @@
                     const image = p.image || '';
                     const params = new URLSearchParams({ id: p._id, name, price, image });
                     return `
-                        <div class="sug-card" onclick="window.location='product-detail.html?${params.toString()}'">
-                            <div class="sug-img-wrap"><img src="${image}" alt="${name}" loading="lazy"></div>
+                    <div class="sug-card" onclick="window.location='product-detail.html?${params.toString()}'">
+                            <div class="sug-img-wrap"><img src="${sanityImg(image, { w: 500 })}" alt="${name}" loading="lazy"></div>
                             <div class="sug-info">
                                 <p class="sug-brand">Fariha's Collection</p>
                                 <h3 class="sug-name">${name}</h3>

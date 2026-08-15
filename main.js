@@ -1,5 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // ===== SANITY IMAGE OPTIMISATION HELPER =====
+    function sanityImg(url, { w = 800, q = 80 } = {}) {
+        if (!url) return '';
+        if (url.includes('?')) return url;
+        return `${url}?w=${w}&q=${q}&fm=webp&fit=max&auto=format`;
+    }
+    // ============================================
+
     // ===== CART SYSTEM =====
     let cart = JSON.parse(localStorage.getItem('fc_cart') || '[]');
 
@@ -257,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 html += `
                     <a href="product-detail.html?${params.toString()}" class="search-result-item" style="text-decoration:none; color:inherit;">
-                        <img src="${image}" alt="${name.replace(/"/g, '&quot;')}">
+                        <img src="${sanityImg(image, { w: 160 })}" alt="${name.replace(/"/g, '&quot;')}">
                         <div class="sr-info" style="display:flex; flex-direction:column;">
                             <span class="search-result-brand">${brand}</span>
                             <span class="search-result-name">${name}</span>
