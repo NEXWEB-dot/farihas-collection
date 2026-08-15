@@ -728,7 +728,7 @@
                     subCategory: productRaw.subCategory,
                     soldOut: productRaw.soldOut,
                     sizes: productRaw.size ? [{size: productRaw.size, stock: 1}] : [],
-                    image: productRaw.images && productRaw.images.length ? productRaw.images[0] : 'https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg',
+                    image: productRaw.images && productRaw.images.length ? productRaw.images[0] : 'images/placeholder.jpg',
                     images: productRaw.images || [],
                     isSale: false,
                     isRarePick: false,
@@ -899,7 +899,7 @@
 
             // ----- Gallery: main image + thumbnails -----
             const mainImg = document.getElementById('mainImg');
-            mainImg.onerror = function() { this.onerror=null; this.src='https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg'; };
+            mainImg.onerror = function() { this.onerror=null; this.src='images/placeholder.jpg'; };
             mainImg.src = sanityImg(allImages[0] || '', { w: 1200, q: 85 });
             mainImg.alt = name;
 
@@ -907,7 +907,7 @@
             if (allImages.length > 1) {
                 thumbStrip.innerHTML = allImages.map((url, i) => `
                     <div class="pd-thumb${i === 0 ? ' active' : ''}" data-img="${sanityImg(url, { w: 1200, q: 85 })}" data-alt="${name} view ${i + 1}">
-                        <img src="${sanityImg(url, { w: 200 })}" alt="${name} view ${i + 1}" loading="lazy" onerror="this.onerror=null;this.src='https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg'">
+                        <img src="${sanityImg(url, { w: 200 })}" alt="${name} view ${i + 1}" loading="lazy" onerror="this.onerror=null;this.src='images/placeholder.jpg'">
                     </div>
                 `).join('');
                 thumbStrip.style.display = 'flex';
@@ -1310,11 +1310,11 @@
                 grid.innerHTML = products.map(p => {
                     const name = p.name || 'Untitled Product';
                     const price = Number(p.price) || 0;
-                    const image = p.images && p.images[0] ? p.images[0] : 'https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg';
+                    const image = p.images && p.images[0] ? p.images[0] : 'images/placeholder.jpg';
                     const params = new URLSearchParams({ id: p.id, name, price, image });
                     return `
                     <div class="sug-card" onclick="window.location='product-detail.html?${params.toString()}'">
-                            <div class="sug-img-wrap"><img src="${sanityImg(image)}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg'"></div>
+                            <div class="sug-img-wrap"><img src="${sanityImg(image)}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='images/placeholder.jpg'"></div>
                             <div class="sug-info">
                                 <p class="sug-brand">Fariha's Collection</p>
                                 <h3 class="sug-name">${name}</h3>
