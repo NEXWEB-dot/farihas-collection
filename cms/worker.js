@@ -200,9 +200,11 @@ async function handleCreateProduct(request, env) {
         subCategory: body.subCategory || '',
         brand:       body.brand       || '',
         size:        body.size        || '',
+        condition:   body.condition   || '',
         description: body.description || '',
         images:      Array.isArray(body.images) ? body.images : [],
         soldOut:     body.soldOut === true,
+        salePercent: Number(body.salePercent) || 0,
         createdAt:   body.createdAt   || new Date().toISOString(),
         updatedAt:   new Date().toISOString(),
     };
