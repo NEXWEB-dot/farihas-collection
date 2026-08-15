@@ -731,9 +731,11 @@
                     sizes: productRaw.size ? [{size: productRaw.size, stock: 1}] : [],
                     image: productRaw.images && productRaw.images.length ? productRaw.images[0] : 'images/placeholder.jpg',
                     images: productRaw.images || [],
-                    isSale: false,
+                    isSale: (productRaw.salePercent > 0),
+                    salePercentage: productRaw.salePercent || 0,
                     isRarePick: false,
                     isTagged: productRaw.subCategory === 'tagged',
+                    conditionText: productRaw.condition || 'Excellent (10/10)',
                     settings: settings
                 };
 
@@ -791,7 +793,6 @@
 
         function applyProduct(p) {
             const name = p.name || PRODUCT.name;
-            // price in Sanity = the actual selling price (what customer pays)
             const salePrice = Number(p.price) || PRODUCT.price;
             
             let finalPrice = salePrice;
@@ -799,26 +800,24 @@
             let discountPercent = 0;
             const settings = p.settings || {};
 
-            if (settings.globalSaleActive && settings.globalSalePercentage > 0) {
-                discountPercent = settings.globalSalePercentage;
-            } else if (p.isSale && p.salePercentage > 0) {
+            // Check product-level sale first, then global sale
+            if (p.isSale && p.salePercentage > 0) {
                 discountPercent = p.salePercentage;
+            } else if (settings.globalSaleActive && settings.globalSalePercentage > 0) {
+                discountPercent = settings.globalSalePercentage;
             }
 
             if (discountPercent > 0) {
-                // finalPrice stays as price entered (what customer pays)
-                // origPrice is inflated to show a fake higher "was" price
                 origPrice = Math.ceil(salePrice / (1 - discountPercent / 100) / 100) * 100;
             }
 
-            const mainImage = p.image || PRODUCT.image;
-            const gallery = Array.isArray(p.gallery) ? p.gallery : [];
-            const allImages = [mainImage, ...gallery].filter(Boolean);
+            // Use images array from worker for gallery
+            const allImages = (p.images && p.images.length > 0) ? p.images : (p.image ? [p.image] : ['images/placeholder.jpg']);
             const category = (p.category || 'women').toLowerCase();
 
             PRODUCT.name = name;
             PRODUCT.price = finalPrice;
-            PRODUCT.image = mainImage;
+            PRODUCT.image = allImages[0] || 'images/placeholder.jpg';
             PRODUCT.category = category;
 
             document.getElementById('pageTitle').textContent = name + " | Fariha's Collection";
@@ -1073,14 +1072,27 @@
                 delete accordion._lastInserted;
 
             } else {
-                // Legacy fallback for older products (no structured fields)
+                // Simple description from Worker (no structured Sanity fields)
                 const targetDesc = p.richDescription || p.description;
                 if (targetDesc) {
-                    descContent.innerHTML = renderDesc(targetDesc);
-                    if (descItem) descItem.style.display = '';
+                    descContent.innerHTML = `<p style="line-height:1.7;color:#444;">${String(targetDesc).replace(/\n/g,'<br>')}</p>`;
+                    if (descItem) { descItem.style.display = ''; descItem.classList.add('open'); }
                 } else if (descItem) {
                     descItem.style.display = 'none';
                 }
+
+                // Always insert shipping & returns
+                const insertShipping = () => {
+                    const el = makeAccItem('Shipping &amp; Returns', `<p>
+                        🚚 Nationwide Shipping Available<br>
+                        💳 Cash on Delivery: Karachi Only<br>
+                        💰 Advance Payment Required: Outside Karachi<br>
+                        📦 Orders are processed within 1–2 working days.
+                    </p>`);
+                    el.classList.add('pd-dynamic-section');
+                    accordion.after(el);
+                };
+                insertShipping();
             }
 
 
