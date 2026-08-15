@@ -675,7 +675,7 @@
             }
         }
 
-        // ===== FETCH FULL PRODUCT FROM SANITY (description, gallery, sizes) =====
+        // ===== FETCH FULL PRODUCT FROM WORKER =====
         async function loadProductFromSanity() {
             if (!productId) {
                 // no id passed, fallback data above is all we have —
@@ -684,29 +684,6 @@
                 return;
             }
 
-            const query = `{
-                "settings": *[_type == "siteSettings"][0],
-                "shoe": *[_type in ["shoe", "clearanceSale"] && _id == $id][0]{
-                    name,
-                    price,
-                    tag,
-                    category,
-                    description,
-                    richDescription,
-                    descIntro,
-                    descIntroRich,
-                    descProductDetails,
-                    conditionText,
-                    descCondition,
-                    descConditionRich,
-                    descFitComfort,
-                    descFitComfortRich,
-                    descPerfectFor,
-                    descPerfectForRich,
-                    descExchangePolicy,
-                    descExchangePolicyRich,
-                    soldOut,
-                    isSale,
             try {
                 const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
                 const [productRes, settingsRes] = await Promise.all([
