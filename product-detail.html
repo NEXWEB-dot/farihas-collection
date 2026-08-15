@@ -606,7 +606,8 @@
         // ===== SANITY CONFIG =====
         // ===== SANITY IMAGE OPTIMISATION HELPER =====
     function sanityImg(url, options = {}) {
-        return url || '';
+        if (!url || url.includes('cdn.sanity.io')) return 'images/placeholder.jpg';
+        return url;
     }
     // ============================================
 

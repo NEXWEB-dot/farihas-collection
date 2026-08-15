@@ -432,9 +432,8 @@
 
     // Keep image optimisation helper — images still live on Sanity CDN
     function sanityImg(url, options = {}) {
-        // Sanity Image API is returning 402 Payment Required on query parameters
-        // Returning the raw URL bypasses the image API and serves the raw image successfully.
-        return url || '';
+        if (!url || url.includes('cdn.sanity.io')) return 'images/placeholder.jpg';
+        return url;
     }
 
     async function fetchWorkerProducts() {
