@@ -425,54 +425,39 @@
     </footer>
 
     <script>
-    // ===== SANITY CONFIG =====
-    // Project ID from sanity.io/manage. Change SANITY_DATASET below if yours
-    // isn't the default "production" dataset.
-    // ===== SANITY IMAGE OPTIMISATION HELPER =====
-    function sanityImg(url, { w = 800, q = 80 } = {}) {
-        if (!url) return '';
-        if (url.includes('?')) return url;
-        return `${url}?w=${w}&q=${q}&fm=webp&fit=max&auto=format`;
-    }
-    // ============================================
+    // ============================================================
+    // WORKER API CONFIG — update this URL after you deploy worker.js
+    // ============================================================
+    const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
 
-    const SANITY_PROJECT_ID = 'kxnjofhp';
-    const SANITY_DATASET = 'production';
-    const SANITY_API_VERSION = '2024-01-01';
-
-    // GROQ query: all "product" documents, newest first, with a flat image URL.
-    const SANITY_QUERY = `{
-        "settings": *[_type == "siteSettings"][0],
-        "shoes": *[_type in ["shoe", "clearanceSale"]] | order(order asc){
-            _id,
-            name,
-            price,
-            brand,
-            tag,
-            category,
-            subCategory,
-            isSale,
-            salePercentage,
-            isRarePick,
-            isTagged,
-            soldOut,
-            "sizes": sizes[]{size, stock},
-            "image": image.asset->url
-        }
-    }`;
-
-    function sanityQueryUrl(query) {
-        const base = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
-        return `${base}?query=${encodeURIComponent(query)}`;
+    // Keep image optimisation helper — images still live on Sanity CDN
+    function sanityImg(url, options = {}) {
+        // Sanity Image API is returning 402 Payment Required on query parameters
+        // Returning the raw URL bypasses the image API and serves the raw image successfully.
+        return url || '';
     }
 
-    async function fetchSanityProducts() {
-        const res = await fetch(sanityQueryUrl(SANITY_QUERY));
-        if (!res.ok) {
-            throw new Error(`Sanity request failed: ${res.status} ${res.statusText}`);
-        }
+    async function fetchWorkerProducts() {
+        const res = await fetch(`${WORKER_URL}/api/products`);
+        if (!res.ok) throw new Error(`Worker request failed: ${res.status} ${res.statusText}`);
         const json = await res.json();
-        return json.result || { settings: {}, shoes: [] };
+        const products = (json.products || []).map(p => ({
+            _id:         p.id,
+            name:        p.name,
+            price:       p.price,
+            brand:       p.brand,
+            tag:         p.subCategory || p.category,
+            category:    p.category,
+            subCategory: p.subCategory,
+            soldOut:     p.soldOut,
+            image:       p.images && p.images[0] ? p.images[0] : '',
+            images:      p.images || [],
+            sizes:       [],
+            isSale:      false,
+            isRarePick:  false,
+            isTagged:    p.subCategory === 'tagged',
+        }));
+        return { settings: {}, shoes: products };
     }
 
     let siteSettings = {}; // to store global settings
@@ -506,7 +491,7 @@
         return `
             <div class="shoe-card product-card" data-id="${esc(id)}" data-name="${esc(name)}" data-price="${price}" data-image="${esc(image)}">
                 <div class="w-full aspect-square bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden relative mb-3">
-                    <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" class="w-full h-full object-cover transition duration-300" loading="lazy">
+                    <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" class="w-full h-full object-cover transition duration-300" loading="lazy" onerror="this.onerror=null;this.src='https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg'">
                     <button class="atc-btn"><i class="ph ph-shopping-bag"></i></button>
                 </div>
                 <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">${esc(brand)}</p>
@@ -521,7 +506,7 @@
     async function loadProducts() {
         const grid = document.getElementById('productGrid');
         try {
-            const data = await fetchSanityProducts();
+            const data = await fetchWorkerProducts();
             const products = data.shoes || [];
             siteSettings = data.settings || {};
 
@@ -557,15 +542,15 @@
             }
 
             if (!products.length) {
-                grid.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-10">No products found yet. Add some in Sanity Studio.</p>';
+                grid.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-10">No products found. Add some in the Admin Dashboard.</p>';
                 return;
             }
 
             allProducts = products; // store for filter/sort
             applyFilterAndSort(); // respect any filter already set from the URL (e.g. ?filter=men) or user selection
         } catch (err) {
-            console.error('Failed to load products from Sanity:', err);
-            grid.innerHTML = '<p class="col-span-full text-center text-sm text-red-500 py-10">Couldn\'t load products. Check your Sanity project ID / dataset / CORS settings.</p>';
+            console.error('Failed to load products from Worker:', err);
+            grid.innerHTML = '<p class="col-span-full text-center text-sm text-red-500 py-10">Couldn\'t load products. Check your Worker URL and try again.</p>';
         }
     }
 

@@ -605,10 +605,8 @@
     <script>
         // ===== SANITY CONFIG =====
         // ===== SANITY IMAGE OPTIMISATION HELPER =====
-    function sanityImg(url, { w = 800, q = 80 } = {}) {
-        if (!url) return '';
-        if (url.includes('?')) return url;
-        return `${url}?w=${w}&q=${q}&fm=webp&fit=max&auto=format`;
+    function sanityImg(url, options = {}) {
+        return url || '';
     }
     // ============================================
 
@@ -708,39 +706,48 @@
                     descExchangePolicyRich,
                     soldOut,
                     isSale,
-                    salePercentage,
-                    isRarePick,
-                    isTagged,
-                    brand,
-                    "image": image.asset->url,
-                    "gallery": gallery[].asset->url,
-                    sizes
-                }
-            }`;
-
             try {
-                const res = await fetch(sanityQueryUrl(query, { id: productId }));
-                if (!res.ok) throw new Error(`Sanity request failed: ${res.status}`);
-                const json = await res.json();
-                const data = json.result || {};
-                const product = data.shoe;
-                if (!product) {
-                    // product not found, keep fallback data but stop the button spinning forever
+                const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+                const [productRes, settingsRes] = await Promise.all([
+                    fetch(`${WORKER_URL}/api/products/${productId}`),
+                    fetch(`${WORKER_URL}/api/settings`)
+                ]);
+                
+                if (!productRes.ok) throw new Error(`Worker request failed: ${productRes.status}`);
+                const productRaw = await productRes.json();
+                const settings = await settingsRes.json();
+                
+                // Normalise to what the page expects
+                const product = {
+                    _id: productRaw.id,
+                    name: productRaw.name,
+                    price: productRaw.price,
+                    brand: productRaw.brand,
+                    description: productRaw.description,
+                    category: productRaw.category,
+                    subCategory: productRaw.subCategory,
+                    soldOut: productRaw.soldOut,
+                    sizes: productRaw.size ? [{size: productRaw.size, stock: 1}] : [],
+                    image: productRaw.images && productRaw.images.length ? productRaw.images[0] : '',
+                    images: productRaw.images || [],
+                    isSale: false,
+                    isRarePick: false,
+                    isTagged: productRaw.subCategory === 'tagged',
+                    settings: settings
+                };
+
+                if (!productRaw.id) {
                     updateStockDisplay(0, false, false);
                     return;
                 }
                 
-                const settings = data.settings || {};
-                product.settings = settings;
-
                 // Render Marquee Banner
                 if (settings.marqueeActive !== false) {
                     const marqueeMsgs = settings.marqueeMessages && settings.marqueeMessages.length > 0 
                         ? settings.marqueeMessages 
                         : [
                             "📹 <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel.",
-                            "🏷️ Use code [WELCOME10] at checkout for a special discount!",
-                            "Premium <strong>Preloved Condition</strong> Shoes — Shipped Across Pakistan"
+                            "🏷️ Premium <strong>Preloved Condition</strong> Shoes — Shipped Across Pakistan"
                         ];
                     const mc = document.getElementById('marqueeContainer');
                     const mi = document.getElementById('marqueeInner');
@@ -892,6 +899,7 @@
 
             // ----- Gallery: main image + thumbnails -----
             const mainImg = document.getElementById('mainImg');
+            mainImg.onerror = function() { this.onerror=null; this.src='https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg'; };
             mainImg.src = sanityImg(allImages[0] || '', { w: 1200, q: 85 });
             mainImg.alt = name;
 
@@ -899,7 +907,7 @@
             if (allImages.length > 1) {
                 thumbStrip.innerHTML = allImages.map((url, i) => `
                     <div class="pd-thumb${i === 0 ? ' active' : ''}" data-img="${sanityImg(url, { w: 1200, q: 85 })}" data-alt="${name} view ${i + 1}">
-                        <img src="${sanityImg(url, { w: 200 })}" alt="${name} view ${i + 1}" loading="lazy">
+                        <img src="${sanityImg(url, { w: 200 })}" alt="${name} view ${i + 1}" loading="lazy" onerror="this.onerror=null;this.src='https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg'">
                     </div>
                 `).join('');
                 thumbStrip.style.display = 'flex';
@@ -1278,35 +1286,35 @@
             const grid = document.getElementById('suggestedGrid');
             if (!grid) return;
 
-            // Pull up to 8 other shoes in the same category (or unisex), excluding the
-            // current product, then show 4 at random.
             const cat = PRODUCT.category || 'women';
-            const query = `*[_type in ["shoe", "clearanceSale"] && (category == $cat || category == "unisex") && _id != $id] | order(order asc) [0...8]{
-                _id, name, price, "image": image.asset->url
-            }`;
-
             try {
-                const res = await fetch(sanityQueryUrl(query, { id: productId || '', cat }));
-                if (!res.ok) throw new Error(`Sanity request failed: ${res.status}`);
+                const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+                const res = await fetch(`${WORKER_URL}/api/products`);
+                if (!res.ok) throw new Error(`Worker request failed: ${res.status}`);
                 const json = await res.json();
-                let products = json.result || [];
+                let products = json.products || [];
+
+                if (cat) {
+                    products = products.filter(p => p.category === cat || p.subCategory === cat);
+                }
+                products = products.filter(p => p.id !== productId);
 
                 if (products.length === 0) {
                     grid.closest('.pd-suggested').style.display = 'none';
                     return;
                 }
 
-                // Shuffle then take 4, so it feels fresh across visits
+                // Shuffle then take 4
                 products = products.sort(() => Math.random() - 0.5).slice(0, 4);
 
                 grid.innerHTML = products.map(p => {
                     const name = p.name || 'Untitled Product';
                     const price = Number(p.price) || 0;
-                    const image = p.image || '';
-                    const params = new URLSearchParams({ id: p._id, name, price, image });
+                    const image = p.images && p.images[0] ? p.images[0] : '';
+                    const params = new URLSearchParams({ id: p.id, name, price, image });
                     return `
                     <div class="sug-card" onclick="window.location='product-detail.html?${params.toString()}'">
-                            <div class="sug-img-wrap"><img src="${sanityImg(image, { w: 500 })}" alt="${name}" loading="lazy"></div>
+                            <div class="sug-img-wrap"><img src="${sanityImg(image)}" alt="${name}" loading="lazy" onerror="this.onerror=null;this.src='https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg'"></div>
                             <div class="sug-info">
                                 <p class="sug-brand">Fariha's Collection</p>
                                 <h3 class="sug-name">${name}</h3>

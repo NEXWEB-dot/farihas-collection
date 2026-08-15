@@ -1,10 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // ===== SANITY IMAGE OPTIMISATION HELPER =====
-    function sanityImg(url, { w = 800, q = 80 } = {}) {
-        if (!url) return '';
-        if (url.includes('?')) return url;
-        return `${url}?w=${w}&q=${q}&fm=webp&fit=max&auto=format`;
+    // Return raw URL because Sanity Image API throws 402 Payment Required for this account
+    function sanityImg(url, options = {}) {
+        return url || '';
     }
     // ============================================
 
@@ -236,19 +234,12 @@ document.addEventListener('DOMContentLoaded', () => {
         resultsContainer.innerHTML = '<p class="search-hint">Searching...</p>';
 
         try {
-            const SANITY_PROJECT_ID = 'kxnjofhp';
-            const SANITY_DATASET = 'production';
-            const SANITY_API_VERSION = '2024-01-01';
-            
-            // Search Sanity where name, brand, or tag matches the query (case insensitive)
-            const sanityQuery = `*[_type in ["shoe", "clearanceSale"] && (name match "*${query}*" || brand match "*${query}*" || tag match "*${query}*")]{
-                _id, name, price, tag, brand, "image": image.asset->url
-            }`;
-            const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(sanityQuery)}`;
-            
+            // ── Worker search ──────────────────────────────────────────
+            const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+            const url = `${WORKER_URL}/api/products?search=${encodeURIComponent(query)}`;
             const res = await fetch(url);
             const json = await res.json();
-            const matches = json.result || [];
+            const matches = json.products || [];
 
             if (matches.length === 0) {
                 resultsContainer.innerHTML = `<p class="search-hint">No products found for "${query}"</p>`;
@@ -257,11 +248,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let html = '';
             matches.forEach(m => {
-                const name = m.name || '';
+                const name  = m.name  || '';
                 const price = Number(m.price) || 0;
-                const image = m.image || '';
-                const brand = m.brand || m.tag || '';
-                const params = new URLSearchParams({ id: m._id, name, price, image });
+                const image = (m.images && m.images[0]) ? m.images[0] : '';
+                const brand = m.brand || m.subCategory || '';
+                const params = new URLSearchParams({ id: m.id, name, price, image });
                 
                 html += `
                     <a href="product-detail.html?${params.toString()}" class="search-result-item" style="text-decoration:none; color:inherit;">
@@ -798,53 +789,35 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===== INIT =====
     updateCartBadge();
 
-    // ===== SANITY POWERED BANNER =====
+    // ===== WORKER-POWERED BANNER =====
     async function loadGlobalBanner() {
         try {
-            const SANITY_PROJECT_ID = 'kxnjofhp';
-            const SANITY_DATASET = 'production';
-            const SANITY_API_VERSION = '2024-01-01';
-            const query = `*[_type == "siteSettings"][0]{
-                announcementText, 
-                isAnnouncementActive,
-                clearanceSaleActive,
-                "promoBanner1": promoBanner1.asset->url,
-                "promoBanner2": promoBanner2.asset->url
-            }`;
-            const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
-            
-            const res = await fetch(url);
-            const json = await res.json();
-            const settings = json.result;
+            const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+            const res      = await fetch(`${WORKER_URL}/api/settings`);
+            const settings = await res.json();
             
             const banner = document.getElementById('topPinnedBanner');
             if (banner && settings) {
-                // If it's explicitly active and has text, replace the default text
                 if (settings.isAnnouncementActive && settings.announcementText) {
                     banner.innerHTML = settings.announcementText;
                     banner.style.display = 'block';
-                } 
-                // If it's explicitly set to not active, hide the banner entirely
-                else if (settings.isAnnouncementActive === false) {
+                } else if (settings.isAnnouncementActive === false) {
                     banner.style.display = 'none';
                 }
             }
 
-            // Also update the promotional image banners on index.html if they exist
             if (settings) {
                 const img1 = document.getElementById('promoBannerImg1');
                 if (img1 && settings.promoBanner1) img1.src = settings.promoBanner1;
-                
                 const img2 = document.getElementById('promoBannerImg2');
                 if (img2 && settings.promoBanner2) img2.src = settings.promoBanner2;
-                
-                // Toggle clearance sale globally
+
                 if (settings.clearanceSaleActive === false) {
                     document.querySelectorAll('.nav-clearance-link, .filter-pill[data-filter="clearance"], .clearance-banner').forEach(el => el.style.display = 'none');
                 }
             }
         } catch (e) {
-            console.error('Error loading Sanity banner:', e);
+            console.error('Error loading Worker settings:', e);
         }
     }
     loadGlobalBanner();

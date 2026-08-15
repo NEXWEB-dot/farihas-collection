@@ -202,38 +202,21 @@
     // fm = output format; webp cuts JPEG/PNG weight by 25-50%
     // fit=max — scale down proportionally, never upscale
     // auto=format — additionally lets Sanity pick avif when the browser supports it
-    function sanityImg(url, { w = 800, q = 80 } = {}) {
-        if (!url) return '';
-        // Avoid double-appending if already optimised
-        if (url.includes('?')) return url;
-        return `${url}?w=${w}&q=${q}&fm=webp&fit=max&auto=format`;
+    function sanityImg(url, options = {}) {
+        return url || '';
     }
     // ============================================
 
     (async function loadHeroAndSettings() {
-        const SANITY_PROJECT_ID = 'kxnjofhp';
-        const SANITY_DATASET = 'production';
-        const SANITY_API_VERSION = '2024-01-01';
-
-        const query = `{
-            "slides": *[_type == "heroSlide" && active == true] | order(order asc) {
-                title, subtitle, linkText, linkUrl,
-                "image": image.asset->url
-            },
-            "settings": *[_type == "siteSettings"][0]
-        }`;
-        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
-
+        const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
         try {
-            const res = await fetch(url);
-            const json = await res.json();
-            const data = json.result || {};
+            const res = await fetch(`${WORKER_URL}/api/settings`);
+            const settings = await res.json();
             
             // 1. Render Marquee
-            const siteSettings = data.settings || {};
-            if (siteSettings.marqueeActive !== false) {
-                const marqueeMsgs = siteSettings.marqueeMessages && siteSettings.marqueeMessages.length > 0 
-                    ? siteSettings.marqueeMessages 
+            if (settings.marqueeActive !== false) {
+                const marqueeMsgs = settings.marqueeMessages && settings.marqueeMessages.length > 0 
+                    ? settings.marqueeMessages 
                     : [
                         "📹 <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel.",
                         "🏷️ Use code [WELCOME10] at checkout for a special discount!",
@@ -251,23 +234,17 @@
                 }
             }
 
-            // 2. Render Hero Slide
-            const slides = data.slides || [];
-            if (slides.length > 0) {
-                const container = document.getElementById('heroSlideContainer');
-                const slide = slides[0];
-                const esc = s => String(s).replace(/"/g, '&quot;');
-                
-                container.innerHTML = `
-                    <img src="${sanityImg(slide.image, { w: 1600, q: 85 })}" alt="Promo Slide">
-                    <div class="hero-overlay"></div>
-                    <div class="hero-content reveal-up delay-1 visible" style="opacity: 1; transform: translateY(0);">
-                        <h2 class="hero-heading">${slide.title}</h2>
-                        ${slide.subtitle ? `<p class="hero-subtext">${esc(slide.subtitle)}</p>` : ''}
-                        ${slide.linkText ? `<a href="${esc(slide.linkUrl || 'shop.html')}" class="hero-cta">${esc(slide.linkText)} <i class="ph ph-arrow-right"></i></a>` : ''}
-                    </div>
-                \`;
-            }
+            // 2. Render Static Hero Slide (Sanity blocked)
+            const container = document.getElementById('heroSlideContainer');
+            container.innerHTML = `
+                <img src="images/4.jpg" alt="Promo Slide" style="object-position: center 30%;">
+                <div class="hero-overlay"></div>
+                <div class="hero-content reveal-up delay-1 visible" style="opacity: 1; transform: translateY(0);">
+                    <h2 class="hero-heading">Welcome to Fariha's Collection</h2>
+                    <p class="hero-subtext">Premium Preloved Condition Shoes</p>
+                    <a href="shop.html" class="hero-cta">Shop Now <i class="ph ph-arrow-right"></i></a>
+                </div>
+            `;
         } catch (err) {
             console.error('Failed to load hero slide and settings:', err);
         }
@@ -358,48 +335,32 @@
     <script>
     // ===== SANITY DYNAMIC PRODUCTS ON HOME PAGE =====
     (async function loadHomeProducts() {
-        const SANITY_PROJECT_ID = 'kxnjofhp';
-        const SANITY_DATASET = 'production';
-        const SANITY_API_VERSION = '2024-01-01';
-
-        const query = `*[_type in ["shoe", "clearanceSale"]] | order(order asc) [0...8]{
-            _id, name, price, brand, tag, soldOut, _createdAt,
-            "sizes": sizes[]{size, stock},
-            "image": image.asset->url
-        }`;
-
-        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
-
+        const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+        const PLACEHOLDER = 'https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg';
         const grid = document.getElementById('productGrid');
-
         try {
-            const res = await fetch(url);
+            const res = await fetch(`${WORKER_URL}/api/products?limit=8`);
             const json = await res.json();
-            const products = json.result || [];
+            const products = json.products || [];
 
             if (!products.length) {
                 grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No products yet.</p>';
                 return;
             }
 
-            grid.innerHTML = products.map((p, i) => {
-                const id    = p._id || '';
+            grid.innerHTML = products.slice(0, 8).map((p, i) => {
+                const id    = p.id || '';
                 const name  = p.name || 'Untitled';
                 const price = Number(p.price) || 0;
-                const image = p.image || '';
-                const tag   = p.brand || p.tag || "Fariha's Collection";
+                const image = (p.images && p.images[0]) ? p.images[0] : '';
+                const tag   = p.brand || p.subCategory || "Fariha's Collection";
                 const delay = i + 1;
                 const params = new URLSearchParams({ id, name, price, image, tag });
-                
                 const esc = s => String(s).replace(/"/g, '&quot;');
-                
-                // Badges
-                let badgeHtml = '';
-                
-                
-                if (p.soldOut) {
-                    badgeHtml = '<div style="position:absolute;top:10px;left:10px;background:#e53935;color:#fff;font-size:0.65rem;font-weight:700;padding:4px 8px;border-radius:4px;z-index:2;text-transform:uppercase;letter-spacing:1px;">Sold Out</div>';
-                }
+
+                // Sold out check
+                const isOutOfStock = p.soldOut === true || (p.size && false); // Placeholder logic
+                const badgeHtml = isOutOfStock ? '<div style="position:absolute;top:10px;left:10px;background:#e53935;color:#fff;font-size:0.65rem;font-weight:700;padding:4px 8px;border-radius:4px;z-index:2;text-transform:uppercase;letter-spacing:1px;">Sold Out</div>' : '';
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -408,22 +369,12 @@
                        style="position:relative;text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         ${badgeHtml}
                         <div class="product-img-wrap" style="border-radius:0;margin-bottom:0;position:relative;">
-                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
-                            ${(() => {
-                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
-                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
-                                    if (available.length > 0) {
-                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">Size ' + esc(s.size) + '</span>').join('') + '</div>';
-                                    }
-                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
-                                }
-                                return '';
-                            })()}
                         </div>
                     </a>
                 `;
@@ -458,42 +409,31 @@
 
     <script>
     (async function loadHeels() {
-        const SANITY_PROJECT_ID = 'kxnjofhp';
-        const SANITY_DATASET = 'production';
-        const SANITY_API_VERSION = '2024-01-01';
-
-        const query = `*[_type in ["shoe", "clearanceSale"] && category == "heels"] | order(order asc) [0...8]{
-            _id, name, price, tag, soldOut, _createdAt, brand, soldOut,
-            "sizes": sizes[]{size, stock},
-            "image": image.asset->url
-        }`;
-
-        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+        const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+        const PLACEHOLDER = 'https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg';
         const grid = document.getElementById('heelsGrid');
 
         try {
-            const res = await fetch(url);
+            const res = await fetch(`${WORKER_URL}/api/products`);
             const json = await res.json();
-            const products = json.result || [];
+            const products = (json.products || []).filter(p => p.category === 'heels' || p.subCategory === 'heels');
 
             if (!products.length) {
                 grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No heels available right now.</p>';
                 return;
             }
 
-            grid.innerHTML = products.map((p, i) => {
-                const id    = p._id || '';
+            grid.innerHTML = products.slice(0, 8).map((p, i) => {
+                const id    = p.id || '';
                 const name  = p.name || 'Untitled';
                 const price = Number(p.price) || 0;
-                const image = p.image || '';
-                const tag   = p.brand || p.tag || "Fariha's Collection";
+                const image = (p.images && p.images[0]) ? p.images[0] : '';
+                const tag   = p.brand || p.subCategory || "Fariha's Collection";
                 const delay = i + 1;
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 const esc = s => String(s).replace(/"/g, '&quot;');
 
-                // Sold out check: only flag if explicitly soldOut, or if sizes exist and ALL have 0 stock
-                const isOutOfStock = p.soldOut === true || (Array.isArray(p.sizes) && p.sizes.length > 0 && !p.sizes.some(s => s.stock > 0));
-                const soldOutOverlay = isOutOfStock ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
+                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -501,29 +441,18 @@
                        data-id="${id}"
                        style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         <div class="product-img-wrap" style="position:relative;border-radius:0;margin-bottom:0;">
-                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
                             ${soldOutOverlay}
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
-                            ${(() => {
-                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
-                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
-                                    if (available.length > 0) {
-                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">Size ' + esc(s.size) + '</span>').join('') + '</div>';
-                                    }
-                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
-                                }
-                                return '';
-                            })()}
                         </div>
                     </a>
                 `;
             }).join('');
 
-            // Trigger scroll reveal for heels cards
             document.querySelectorAll('#heelsGrid .reveal-up').forEach(el => {
                 if (typeof scrollObserver !== 'undefined') scrollObserver.observe(el);
                 else el.classList.add('visible');
@@ -553,42 +482,31 @@
 
     <script>
     (async function loadFlats() {
-        const SANITY_PROJECT_ID = 'kxnjofhp';
-        const SANITY_DATASET = 'production';
-        const SANITY_API_VERSION = '2024-01-01';
-
-        const query = `*[_type in ["shoe", "clearanceSale"] && category == "flats"] | order(order asc) [0...8]{
-            _id, name, price, tag, soldOut, _createdAt, brand, soldOut,
-            "sizes": sizes[]{size, stock},
-            "image": image.asset->url
-        }`;
-
-        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+        const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+        const PLACEHOLDER = 'https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg';
         const grid = document.getElementById('flatsGrid');
 
         try {
-            const res = await fetch(url);
+            const res = await fetch(`${WORKER_URL}/api/products`);
             const json = await res.json();
-            const products = json.result || [];
+            const products = (json.products || []).filter(p => p.category === 'flats' || p.subCategory === 'flats');
 
             if (!products.length) {
                 grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No flats available right now.</p>';
                 return;
             }
 
-            grid.innerHTML = products.map((p, i) => {
-                const id    = p._id || '';
+            grid.innerHTML = products.slice(0, 8).map((p, i) => {
+                const id    = p.id || '';
                 const name  = p.name || 'Untitled';
                 const price = Number(p.price) || 0;
-                const image = p.image || '';
-                const tag   = p.brand || p.tag || "Fariha's Collection";
+                const image = (p.images && p.images[0]) ? p.images[0] : '';
+                const tag   = p.brand || p.subCategory || "Fariha's Collection";
                 const delay = i + 1;
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 const esc = s => String(s).replace(/"/g, '&quot;');
 
-                // Sold out check
-                const isOutOfStock = p.soldOut === true || (Array.isArray(p.sizes) && p.sizes.length > 0 && !p.sizes.some(s => s.stock > 0));
-                const soldOutOverlay = isOutOfStock ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
+                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -596,29 +514,18 @@
                        data-id="${id}"
                        style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         <div class="product-img-wrap" style="position:relative;border-radius:0;margin-bottom:0;">
-                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
                             ${soldOutOverlay}
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
-                            ${(() => {
-                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
-                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
-                                    if (available.length > 0) {
-                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">Size ' + esc(s.size) + '</span>').join('') + '</div>';
-                                    }
-                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
-                                }
-                                return '';
-                            })()}
                         </div>
                     </a>
                 `;
             }).join('');
 
-            // Trigger scroll reveal
             document.querySelectorAll('#flatsGrid .reveal-up').forEach(el => {
                 if (typeof scrollObserver !== 'undefined') scrollObserver.observe(el);
                 else el.classList.add('visible');
@@ -647,42 +554,31 @@
 
     <script>
     (async function loadSlides() {
-        const SANITY_PROJECT_ID = 'kxnjofhp';
-        const SANITY_DATASET = 'production';
-        const SANITY_API_VERSION = '2024-01-01';
-
-        const query = `*[_type in ["shoe", "clearanceSale"] && category == "slides"] | order(order asc) [0...8]{
-            _id, name, price, tag, soldOut, _createdAt, brand, soldOut,
-            "sizes": sizes[]{size, stock},
-            "image": image.asset->url
-        }`;
-
-        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+        const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+        const PLACEHOLDER = 'https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg';
         const grid = document.getElementById('slidesGrid');
 
         try {
-            const res = await fetch(url);
+            const res = await fetch(`${WORKER_URL}/api/products`);
             const json = await res.json();
-            const products = json.result || [];
+            const products = (json.products || []).filter(p => p.category === 'slides' || p.subCategory === 'slides');
 
             if (!products.length) {
                 grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No slides available right now.</p>';
                 return;
             }
 
-            grid.innerHTML = products.map((p, i) => {
-                const id    = p._id || '';
+            grid.innerHTML = products.slice(0, 8).map((p, i) => {
+                const id    = p.id || '';
                 const name  = p.name || 'Untitled';
                 const price = Number(p.price) || 0;
-                const image = p.image || '';
-                const tag   = p.brand || p.tag || "Fariha's Collection";
+                const image = (p.images && p.images[0]) ? p.images[0] : '';
+                const tag   = p.brand || p.subCategory || "Fariha's Collection";
                 const delay = i + 1;
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 const esc = s => String(s).replace(/"/g, '&quot;');
 
-                // Sold out check
-                const isOutOfStock = p.soldOut === true || (Array.isArray(p.sizes) && p.sizes.length > 0 && !p.sizes.some(s => s.stock > 0));
-                const soldOutOverlay = isOutOfStock ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
+                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -690,29 +586,18 @@
                        data-id="${id}"
                        style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         <div class="product-img-wrap" style="position:relative;border-radius:0;margin-bottom:0;">
-                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
                             ${soldOutOverlay}
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
-                            ${(() => {
-                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
-                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
-                                    if (available.length > 0) {
-                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">Size ' + esc(s.size) + '</span>').join('') + '</div>';
-                                    }
-                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
-                                }
-                                return '';
-                            })()}
                         </div>
                     </a>
                 `;
             }).join('');
 
-            // Trigger scroll reveal
             document.querySelectorAll('#slidesGrid .reveal-up').forEach(el => {
                 if (typeof scrollObserver !== 'undefined') scrollObserver.observe(el);
                 else el.classList.add('visible');
@@ -741,42 +626,31 @@
 
     <script>
     (async function loadSneakers() {
-        const SANITY_PROJECT_ID = 'kxnjofhp';
-        const SANITY_DATASET = 'production';
-        const SANITY_API_VERSION = '2024-01-01';
-
-        const query = `*[_type in ["shoe", "clearanceSale"] && category == "sneakers"] | order(order asc) [0...8]{
-            _id, name, price, tag, soldOut, _createdAt, brand, soldOut,
-            "sizes": sizes[]{size, stock},
-            "image": image.asset->url
-        }`;
-
-        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+        const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+        const PLACEHOLDER = 'https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg';
         const grid = document.getElementById('sneakersGrid');
 
         try {
-            const res = await fetch(url);
+            const res = await fetch(`${WORKER_URL}/api/products`);
             const json = await res.json();
-            const products = json.result || [];
+            const products = (json.products || []).filter(p => p.category === 'sneakers' || p.subCategory === 'sneakers');
 
             if (!products.length) {
                 grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No sneakers available right now.</p>';
                 return;
             }
 
-            grid.innerHTML = products.map((p, i) => {
-                const id    = p._id || '';
+            grid.innerHTML = products.slice(0, 8).map((p, i) => {
+                const id    = p.id || '';
                 const name  = p.name || 'Untitled';
                 const price = Number(p.price) || 0;
-                const image = p.image || '';
-                const tag   = p.brand || p.tag || "Fariha's Collection";
+                const image = (p.images && p.images[0]) ? p.images[0] : '';
+                const tag   = p.brand || p.subCategory || "Fariha's Collection";
                 const delay = i + 1;
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 const esc = s => String(s).replace(/"/g, '&quot;');
 
-                // Sold out check
-                const isOutOfStock = p.soldOut === true || (Array.isArray(p.sizes) && p.sizes.length > 0 && !p.sizes.some(s => s.stock > 0));
-                const soldOutOverlay = isOutOfStock ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
+                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -784,29 +658,18 @@
                        data-id="${id}"
                        style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         <div class="product-img-wrap" style="position:relative;border-radius:0;margin-bottom:0;">
-                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
                             ${soldOutOverlay}
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
-                            ${(() => {
-                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
-                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
-                                    if (available.length > 0) {
-                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">Size ' + esc(s.size) + '</span>').join('') + '</div>';
-                                    }
-                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
-                                }
-                                return '';
-                            })()}
                         </div>
                     </a>
                 `;
             }).join('');
 
-            // Trigger scroll reveal
             document.querySelectorAll('#sneakersGrid .reveal-up').forEach(el => {
                 if (typeof scrollObserver !== 'undefined') scrollObserver.observe(el);
                 else el.classList.add('visible');
@@ -835,42 +698,31 @@
 
     <script>
     (async function loadPumps() {
-        const SANITY_PROJECT_ID = 'kxnjofhp';
-        const SANITY_DATASET = 'production';
-        const SANITY_API_VERSION = '2024-01-01';
-
-        const query = `*[_type in ["shoe", "clearanceSale"] && category == "pumps"] | order(order asc) [0...8]{
-            _id, name, price, tag, soldOut, _createdAt, brand, soldOut,
-            "sizes": sizes[]{size, stock},
-            "image": image.asset->url
-        }`;
-
-        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${encodeURIComponent(query)}`;
+        const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+        const PLACEHOLDER = 'https://res.cloudinary.com/z0vndntn/image/upload/v1786805741/qi5uf8nghyk4onwzp7nv.jpg';
         const grid = document.getElementById('pumpsGrid');
 
         try {
-            const res = await fetch(url);
+            const res = await fetch(`${WORKER_URL}/api/products`);
             const json = await res.json();
-            const products = json.result || [];
+            const products = (json.products || []).filter(p => p.category === 'pumps' || p.subCategory === 'pumps');
 
             if (!products.length) {
                 grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No pumps available right now.</p>';
                 return;
             }
 
-            grid.innerHTML = products.map((p, i) => {
-                const id    = p._id || '';
+            grid.innerHTML = products.slice(0, 8).map((p, i) => {
+                const id    = p.id || '';
                 const name  = p.name || 'Untitled';
                 const price = Number(p.price) || 0;
-                const image = p.image || '';
-                const tag   = p.brand || p.tag || "Fariha's Collection";
+                const image = (p.images && p.images[0]) ? p.images[0] : '';
+                const tag   = p.brand || p.subCategory || "Fariha's Collection";
                 const delay = i + 1;
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 const esc = s => String(s).replace(/"/g, '&quot;');
 
-                // Sold out check
-                const isOutOfStock = p.soldOut === true || (Array.isArray(p.sizes) && p.sizes.length > 0 && !p.sizes.some(s => s.stock > 0));
-                const soldOutOverlay = isOutOfStock ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
+                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -878,29 +730,18 @@
                        data-id="${id}"
                        style="text-decoration:none;color:inherit;display:block;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);background:#fff;transition:transform 0.3s ease,box-shadow 0.3s ease;">
                         <div class="product-img-wrap" style="position:relative;border-radius:0;margin-bottom:0;">
-                            <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+                            <img src="${esc(image)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" onerror="this.onerror=null;this.src='${PLACEHOLDER}'">
                             ${soldOutOverlay}
                         </div>
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
                             <p class="price">Rs${price.toLocaleString()}</p>
-                            ${(() => {
-                                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
-                                    const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
-                                    if (available.length > 0) {
-                                        return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">Size ' + esc(s.size) + '</span>').join('') + '</div>';
-                                    }
-                                    return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
-                                }
-                                return '';
-                            })()}
                         </div>
                     </a>
                 `;
             }).join('');
 
-            // Trigger scroll reveal
             document.querySelectorAll('#pumpsGrid .reveal-up').forEach(el => {
                 if (typeof scrollObserver !== 'undefined') scrollObserver.observe(el);
                 else el.classList.add('visible');

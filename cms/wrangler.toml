@@ -1,0 +1,29 @@
+# ============================================================
+# Fariha's Collection — Cloudflare Worker Config (wrangler.toml)
+# ============================================================
+# Place this file in your cms/ folder and run:
+#   npx wrangler deploy
+#
+# SETUP STEPS:
+# 1. Install wrangler:   npm install -g wrangler
+# 2. Login:             npx wrangler login
+# 3. Create KV:         npx wrangler kv:namespace create PRODUCTS
+#    Copy the ID shown and paste it below in kv_namespaces.
+# 4. Deploy worker:     npx wrangler deploy
+# 5. Set secret token:  npx wrangler secret put ADMIN_TOKEN
+#    (type your secret when prompted)
+# ============================================================
+
+name = "fc-cms"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# KV namespace binding
+# Replace the id below with the one from: npx wrangler kv:namespace create PRODUCTS
+[[kv_namespaces]]
+binding = "PRODUCTS"
+id      = "575736337c754c85a8ea70ea6d2389ec"
+
+# Routes — your worker will be available at:
+#   https://fc-cms.farihas-collection.workers.dev
+# You can also add a custom domain if you want.
