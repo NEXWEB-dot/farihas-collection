@@ -685,7 +685,7 @@
             }
 
             try {
-                const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+                const WORKER_URL = 'https://fc-cms.sheezarazzak.workers.dev';
                 const [productRes, settingsRes] = await Promise.all([
                     fetch(`${WORKER_URL}/api/products/${productId}`),
                     fetch(`${WORKER_URL}/api/settings`)
@@ -1265,7 +1265,7 @@
 
             const cat = PRODUCT.category || 'women';
             try {
-                const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+                const WORKER_URL = 'https://fc-cms.sheezarazzak.workers.dev';
                 const res = await fetch(`${WORKER_URL}/api/products`);
                 if (!res.ok) throw new Error(`Worker request failed: ${res.status}`);
                 const json = await res.json();

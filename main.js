@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // ── Worker search ──────────────────────────────────────────
-            const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+            const WORKER_URL = 'https://fc-cms.sheezarazzak.workers.dev';
             const url = `${WORKER_URL}/api/products?search=${encodeURIComponent(query)}`;
             const res = await fetch(url);
             const json = await res.json();
@@ -792,7 +792,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===== WORKER-POWERED BANNER =====
     async function loadGlobalBanner() {
         try {
-            const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+            const WORKER_URL = 'https://fc-cms.sheezarazzak.workers.dev';
             const res      = await fetch(`${WORKER_URL}/api/settings`);
             const settings = await res.json();
             

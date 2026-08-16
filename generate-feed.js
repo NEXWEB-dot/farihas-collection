@@ -6,7 +6,7 @@ const fs = require('fs');
 const https = require('https');
 
 const BASE_URL = 'https://farihascollection.com';
-const WORKER_URL = 'fc-cms.faisalshayan444.workers.dev';
+const WORKER_URL = 'fc-cms.sheezarazzak.workers.dev';
 
 const apiUrl = `https://${WORKER_URL}/api/products`;
 

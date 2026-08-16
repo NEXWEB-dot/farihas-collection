@@ -17,12 +17,13 @@
 name = "fc-cms"
 main = "worker.js"
 compatibility_date = "2024-01-01"
+account_id = "29c2ba1c70c9b18a4a04ad0aa930f4d8"
 
 # KV namespace binding
 # Replace the id below with the one from: npx wrangler kv:namespace create PRODUCTS
 [[kv_namespaces]]
 binding = "PRODUCTS"
-id      = "575736337c754c85a8ea70ea6d2389ec"
+id      = "b3af41cd4f654edea4e18399790134d3"
 
 # Routes — your worker will be available at:
 #   https://fc-cms.farihas-collection.workers.dev
