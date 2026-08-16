@@ -994,6 +994,16 @@
             notes:         info.notes || '',
         };
 
+        // Save customer info for Meta Pixel Advanced Matching on future page visits
+        try {
+            localStorage.setItem('fc_last_customer', JSON.stringify({
+                name:  orderPayload.customerName,
+                email: orderPayload.customerEmail,
+                phone: orderPayload.customerPhone,
+                city:  orderPayload.city,
+            }));
+        } catch(e) {}
+
         try {
             const res = await fetch(`${WORKER_URL}/api/orders`, {
                 method: 'POST',
