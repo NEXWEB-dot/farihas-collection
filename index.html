@@ -209,8 +209,11 @@
 
     (async function loadHeroAndSettings() {
         const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
+        // Hero already has static content in HTML — no need to rewrite it.
+        // Just load settings (marquee, banners, etc.) from Worker.
         try {
             const res = await fetch(`${WORKER_URL}/api/settings`);
+            if (!res.ok) return; // silently skip if Worker is down
             const settings = await res.json();
             
             // 1. Render Marquee
@@ -234,19 +237,14 @@
                 }
             }
 
-            // 2. Render Static Hero Slide (Sanity blocked)
-            const container = document.getElementById('heroSlideContainer');
-            container.innerHTML = `
-                <img src="images/9.jpg" alt="Promo Slide" style="object-position: center 30%;">
-                <div class="hero-overlay"></div>
-                <div class="hero-content reveal-up delay-1 visible" style="opacity: 1; transform: translateY(0);">
-                    <h2 class="hero-heading">Welcome to Fariha's Collection</h2>
-                    <p class="hero-subtext">Premium Preloved Condition Shoes</p>
-                    <a href="shop.html" class="hero-cta">Shop Now <i class="ph ph-arrow-right"></i></a>
-                </div>
-            `;
+            // 2. Clearance sale visibility
+            if (settings.clearanceSaleActive === false) {
+                document.querySelectorAll('.nav-clearance-link, .clearance-banner').forEach(el => el.style.display = 'none');
+            }
+
         } catch (err) {
-            console.error('Failed to load hero slide and settings:', err);
+            // Worker unavailable — static page content already loaded, no action needed
+            console.warn('Worker settings unavailable, using static defaults.');
         }
     })();
     </script>

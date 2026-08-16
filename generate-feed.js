@@ -1,20 +1,14 @@
 // Meta/Facebook Commerce Catalog Feed Generator
 // Run: node generate-feed.js
 // Output: catalog-feed.xml
+// Feed URL for Meta Catalog: https://farihascollection.com/catalog-feed.xml
 const fs = require('fs');
 const https = require('https');
 
 const BASE_URL = 'https://farihascollection.com';
-const SANITY_PROJECT_ID = 'kxnjofhp';
-const SANITY_DATASET = 'production';
-const SANITY_API_VERSION = '2024-01-01';
+const WORKER_URL = 'fc-cms.faisalshayan444.workers.dev';
 
-// We fetch all items of type "shoe"
-const query = encodeURIComponent(`*[_type in ["shoe", "clearanceSale"] && inStock != false]{
-  _id, name, price, tag, description, "image": image.asset->url, sizes, brand, category, inStock, _type
-}`);
-
-const apiUrl = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${query}`;
+const apiUrl = `https://${WORKER_URL}/api/products`;
 
 function esc(str) {
   return String(str || '')
@@ -91,22 +85,38 @@ ${items}
   console.log(`SUCCESS: catalog-feed.xml written with ${products.length} products.`);
 }
 
-console.log('Fetching live products from Sanity...');
+console.log('Fetching live products from Worker API...');
 https.get(apiUrl, (res) => {
   let data = '';
   res.on('data', chunk => data += chunk);
   res.on('end', () => {
     try {
       const json = JSON.parse(data);
-      if (json.result && Array.isArray(json.result)) {
-        generateXML(json.result);
+      // Worker API returns { products: [...] }
+      const rawProducts = json.products || json.result || [];
+      if (Array.isArray(rawProducts) && rawProducts.length > 0) {
+        // Normalise Worker product shape to match generateXML expectations
+        const products = rawProducts.map(p => ({
+          _id:         p.id || p._id || '',
+          name:        p.name || '',
+          price:       p.price || 0,
+          tag:         p.subCategory || p.category || '',
+          description: p.description || p.name || '',
+          image:       (p.images && p.images[0]) ? p.images[0] : '',
+          sizes:       (p.sizes || []).map(s => ({ size: s.size || s, stock: s.stock || 1 })),
+          brand:       p.brand || "Fariha's Collection",
+          category:    p.category || '',
+          inStock:     !p.soldOut,
+          _type:       p.category === 'clearance' ? 'clearanceSale' : 'shoe',
+        }));
+        generateXML(products);
       } else {
-        console.error('Invalid response from Sanity:', json);
+        console.error('No products returned from Worker API. Response:', JSON.stringify(json).slice(0, 300));
       }
     } catch (e) {
-      console.error('Error parsing Sanity data:', e.message);
+      console.error('Error parsing Worker API data:', e.message);
     }
   });
 }).on('error', (e) => {
-  console.error('Network error fetching Sanity data:', e.message);
+  console.error('Network error fetching Worker API data:', e.message);
 });

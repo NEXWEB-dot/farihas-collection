@@ -495,8 +495,8 @@
                 </div>
                 <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">${esc(brand)}</p>
                 <h3 class="text-sm font-semibold text-gray-900 mb-1">${esc(name)}</h3>
-                <p class="text-sm font-bold text-gray-900">${formatPKR(price)}</p>
                 ${sizesHtml}
+                <p class="text-sm font-bold text-gray-900 mt-1">${formatPKR(price)}</p>
                 <button class="add-to-cart-full"><i class="ph ph-shopping-bag"></i> Add to Cart</button>
             </div>
         `;
@@ -549,7 +549,23 @@
             applyFilterAndSort(); // respect any filter already set from the URL (e.g. ?filter=men) or user selection
         } catch (err) {
             console.error('Failed to load products from Worker:', err);
-            grid.innerHTML = '<p class="col-span-full text-center text-sm text-red-500 py-10">Couldn\'t load products. Check your Worker URL and try again.</p>';
+            // Auto-retry once after 2.5 seconds before showing error to customer
+            grid.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-10">Loading products...</p>';
+            setTimeout(async () => {
+                try {
+                    const data = await fetchWorkerProducts();
+                    allProducts = data.shoes || [];
+                    siteSettings = data.settings || {};
+                    if (allProducts.length) {
+                        applyFilterAndSort();
+                    } else {
+                        grid.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-10">No products found.</p>';
+                    }
+                } catch (retryErr) {
+                    console.error('Retry failed:', retryErr);
+                    grid.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-10">Please refresh the page to load products.</p>';
+                }
+            }, 2500);
         }
     }
 
@@ -774,21 +790,21 @@
                     <div>
                         <p class="text-[0.65rem] text-gray-400 font-bold tracking-[0.15em] uppercase mb-1">${p.brand || p.tag || 'FARIHA\'S COLLECTION'}</p>
                         <h3 class="text-sm font-semibold text-gray-900 mb-2 leading-tight">${p.name || 'Classic Shoe'}</h3>
-                        <div class="flex items-center gap-2">
-                            <p class="text-sm font-bold text-gray-900">Rs${finalPrice.toLocaleString()}</p>
-                            ${origPrice ? `<p class="text-xs text-gray-400 line-through">Rs${origPrice.toLocaleString()}</p>` : ''}
-                        </div>
                         ${(() => {
                             if (Array.isArray(p.sizes) && p.sizes.length > 0) {
                                 const esc = s => String(s).replace(/"/g, '&quot;');
                                 const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
                                 if (available.length > 0) {
-                                    return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">Size ' + esc(s.size) + '</span>').join('') + '</div>';
+                                    return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">Size ' + esc(s.size) + '</span>').join('') + '</div>';
                                 }
-                                return '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+                                return '<div style="margin-bottom:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
                             }
                             return '';
                         })()}
+                        <div class="flex items-center gap-2">
+                            <p class="text-sm font-bold text-gray-900">Rs${finalPrice.toLocaleString()}</p>
+                            ${origPrice ? `<p class="text-xs text-gray-400 line-through">Rs${origPrice.toLocaleString()}</p>` : ''}
+                        </div>
                     </div>
                 </a>
                 `;
