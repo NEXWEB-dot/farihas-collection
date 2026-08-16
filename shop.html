@@ -755,8 +755,8 @@
 
                 if (siteSettings.globalSaleActive && siteSettings.globalSalePercentage > 0) {
                     discountPercent = siteSettings.globalSalePercentage;
-                } else if (p.isSale && p.salePercentage > 0) {
-                    discountPercent = p.salePercentage;
+                } else if ( Number(p.salePercent) > 0) {
+                    discountPercent = Number(p.salePercent);
                 }
 
                 if (discountPercent > 0) {

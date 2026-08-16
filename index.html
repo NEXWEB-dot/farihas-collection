@@ -359,7 +359,8 @@
 
                 // Sold out check
                 const isOutOfStock = p.soldOut === true || (p.size && false); // Placeholder logic
-                const badgeHtml = isOutOfStock ? '<div style="position:absolute;top:10px;left:10px;background:#e53935;color:#fff;font-size:0.65rem;font-weight:700;padding:4px 8px;border-radius:4px;z-index:2;text-transform:uppercase;letter-spacing:1px;">Sold Out</div>' : '';
+                const saleBadge = (p.salePercent && Number(p.salePercent) > 0) ? '<div style="position:absolute;top:10px;left:10px;background:#111827;color:#fff;font-size:0.65rem;font-weight:700;padding:4px 8px;border-radius:4px;z-index:2;text-transform:uppercase;letter-spacing:1px;">SAVE ' + p.salePercent + '%</div>' : '';
+                const badgeHtml = isOutOfStock ? '<div style="position:absolute;top:10px;left:10px;background:#e53935;color:#fff;font-size:0.65rem;font-weight:700;padding:4px 8px;border-radius:4px;z-index:2;text-transform:uppercase;letter-spacing:1px;">Sold Out</div>' : saleBadge;
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -373,7 +374,11 @@
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
-                            <p class="price">Rs${price.toLocaleString()}</p>
+                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                <p class="price" style="margin:0;">Rs${price.toLocaleString()}</p>
+                                ${(p.salePercent && Number(p.salePercent) > 0) ? `<p style="font-size:0.75rem;color:#9ca3af;text-decoration:line-through;margin:0;">Rs${(Math.ceil(price / (1 - Number(p.salePercent)/100)/100)*100).toLocaleString()}</p>` : ''}
+                            </div>
+                            ${p.size ? `<span style="display:inline-block;background:#f3f4f6;color:#111827;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:12px;">Size ${esc(p.size)}</span>` : ''}
                         </div>
                     </a>
                 `;
@@ -433,7 +438,8 @@
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 const esc = s => String(s).replace(/"/g, '&quot;');
 
-                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
+                const saleBadge = (p.salePercent && Number(p.salePercent) > 0) ? `<div style="position:absolute;top:8px;left:8px;background:#111827;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">SAVE ${p.salePercent}%</div>` : '';
+                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : saleBadge;
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -447,7 +453,11 @@
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
-                            <p class="price">Rs${price.toLocaleString()}</p>
+                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                <p class="price" style="margin:0;">Rs${price.toLocaleString()}</p>
+                                ${(p.salePercent && Number(p.salePercent) > 0) ? `<p style="font-size:0.75rem;color:#9ca3af;text-decoration:line-through;margin:0;">Rs${(Math.ceil(price / (1 - Number(p.salePercent)/100)/100)*100).toLocaleString()}</p>` : ''}
+                            </div>
+                            ${p.size ? `<span style="display:inline-block;background:#f3f4f6;color:#111827;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:12px;">Size ${esc(p.size)}</span>` : ''}
                         </div>
                     </a>
                 `;
@@ -507,7 +517,8 @@
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 const esc = s => String(s).replace(/"/g, '&quot;');
 
-                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
+                const saleBadge = (p.salePercent && Number(p.salePercent) > 0) ? `<div style="position:absolute;top:8px;left:8px;background:#111827;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">SAVE ${p.salePercent}%</div>` : '';
+                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : saleBadge;
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -521,7 +532,11 @@
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
-                            <p class="price">Rs${price.toLocaleString()}</p>
+                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                <p class="price" style="margin:0;">Rs${price.toLocaleString()}</p>
+                                ${(p.salePercent && Number(p.salePercent) > 0) ? `<p style="font-size:0.75rem;color:#9ca3af;text-decoration:line-through;margin:0;">Rs${(Math.ceil(price / (1 - Number(p.salePercent)/100)/100)*100).toLocaleString()}</p>` : ''}
+                            </div>
+                            ${p.size ? `<span style="display:inline-block;background:#f3f4f6;color:#111827;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:12px;">Size ${esc(p.size)}</span>` : ''}
                         </div>
                     </a>
                 `;
@@ -580,7 +595,8 @@
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 const esc = s => String(s).replace(/"/g, '&quot;');
 
-                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
+                const saleBadge = (p.salePercent && Number(p.salePercent) > 0) ? `<div style="position:absolute;top:8px;left:8px;background:#111827;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">SAVE ${p.salePercent}%</div>` : '';
+                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : saleBadge;
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -594,7 +610,11 @@
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
-                            <p class="price">Rs${price.toLocaleString()}</p>
+                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                <p class="price" style="margin:0;">Rs${price.toLocaleString()}</p>
+                                ${(p.salePercent && Number(p.salePercent) > 0) ? `<p style="font-size:0.75rem;color:#9ca3af;text-decoration:line-through;margin:0;">Rs${(Math.ceil(price / (1 - Number(p.salePercent)/100)/100)*100).toLocaleString()}</p>` : ''}
+                            </div>
+                            ${p.size ? `<span style="display:inline-block;background:#f3f4f6;color:#111827;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:12px;">Size ${esc(p.size)}</span>` : ''}
                         </div>
                     </a>
                 `;
@@ -653,7 +673,8 @@
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 const esc = s => String(s).replace(/"/g, '&quot;');
 
-                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
+                const saleBadge = (p.salePercent && Number(p.salePercent) > 0) ? `<div style="position:absolute;top:8px;left:8px;background:#111827;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">SAVE ${p.salePercent}%</div>` : '';
+                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : saleBadge;
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -667,7 +688,11 @@
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
-                            <p class="price">Rs${price.toLocaleString()}</p>
+                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                <p class="price" style="margin:0;">Rs${price.toLocaleString()}</p>
+                                ${(p.salePercent && Number(p.salePercent) > 0) ? `<p style="font-size:0.75rem;color:#9ca3af;text-decoration:line-through;margin:0;">Rs${(Math.ceil(price / (1 - Number(p.salePercent)/100)/100)*100).toLocaleString()}</p>` : ''}
+                            </div>
+                            ${p.size ? `<span style="display:inline-block;background:#f3f4f6;color:#111827;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:12px;">Size ${esc(p.size)}</span>` : ''}
                         </div>
                     </a>
                 `;
@@ -726,7 +751,8 @@
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 const esc = s => String(s).replace(/"/g, '&quot;');
 
-                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : '';
+                const saleBadge = (p.salePercent && Number(p.salePercent) > 0) ? `<div style="position:absolute;top:8px;left:8px;background:#111827;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">SAVE ${p.salePercent}%</div>` : '';
+                const soldOutOverlay = p.soldOut ? `<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>` : saleBadge;
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -740,7 +766,11 @@
                         <div class="product-info" style="padding:12px 14px 14px;">
                             <p class="brand">${esc(tag)}</p>
                             <h4>${esc(name)}</h4>
-                            <p class="price">Rs${price.toLocaleString()}</p>
+                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+                                <p class="price" style="margin:0;">Rs${price.toLocaleString()}</p>
+                                ${(p.salePercent && Number(p.salePercent) > 0) ? `<p style="font-size:0.75rem;color:#9ca3af;text-decoration:line-through;margin:0;">Rs${(Math.ceil(price / (1 - Number(p.salePercent)/100)/100)*100).toLocaleString()}</p>` : ''}
+                            </div>
+                            ${p.size ? `<span style="display:inline-block;background:#f3f4f6;color:#111827;font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:12px;">Size ${esc(p.size)}</span>` : ''}
                         </div>
                     </a>
                 `;
