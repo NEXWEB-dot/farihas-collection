@@ -144,6 +144,11 @@ export default {
             }
         }
 
+        // ── Route: /api/catalog.xml ──
+        if (path === '/api/catalog.xml' && method === 'GET') {
+            return handleGetCatalog(env);
+        }
+
         // ── Route: /api/orders ──
         if (path === '/api/orders') {
             if (method === 'POST') return handleCreateOrder(request, env);  // PUBLIC
@@ -317,6 +322,68 @@ async function handleUpdateSettings(request, env) {
 
     await env.PRODUCTS.put(SETTINGS_KEY, JSON.stringify(updated));
     return ok(updated);
+}
+
+// ─── GET /api/catalog.xml ────────────────────────────────────
+// Generates a live Meta Commerce XML feed from the current KV state
+async function handleGetCatalog(env) {
+    try {
+        const index = await getIndex(env.PRODUCTS);
+        let products = [];
+        if (index.length > 0) {
+            const fetched = await Promise.all(index.map(id => env.PRODUCTS.get(productKey(id))));
+            products = fetched.filter(Boolean).map(raw => JSON.parse(raw)).filter(p => p.soldOut !== true); // Only export in-stock products
+        }
+
+        const esc = (str) => String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+        const SITE_URL = 'https://farihascollection.com';
+
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">\n  <channel>\n    <title>Fariha's Collection</title>\n    <link>${SITE_URL}</link>\n    <description>Fariha's Collection Product Feed</description>\n`;
+
+        for (const p of products) {
+            const id = p.id || '';
+            const name = p.name || 'Untitled';
+            const desc = p.description || name;
+            const price = Number(p.price) || 0;
+            const brand = p.brand || "Fariha's Collection";
+            const category = p.category === 'clearance' ? 'clearanceSale' : 'shoe';
+            const image = (p.images && p.images[0]) ? p.images[0] : `${SITE_URL}/images/placeholder.jpg`;
+            const params = new URLSearchParams({ id, name, price, image, tag: p.subCategory || p.category || '' });
+            const link = `${SITE_URL}/product-detail.html?${params.toString()}`;
+
+            xml += `    <item>\n`;
+            xml += `      <g:id>${esc(id)}</g:id>\n`;
+            xml += `      <g:title>${esc(name)}</g:title>\n`;
+            xml += `      <g:description>${esc(desc)}</g:description>\n`;
+            xml += `      <g:link>${esc(link)}</g:link>\n`;
+            xml += `      <g:image_link>${esc(image)}</g:image_link>\n`;
+            xml += `      <g:brand>${esc(brand)}</g:brand>\n`;
+            xml += `      <g:condition>new</g:condition>\n`;
+            xml += `      <g:availability>in stock</g:availability>\n`;
+            xml += `      <g:price>${price}.00 PKR</g:price>\n`;
+            
+            // Additional images
+            if (p.images && p.images.length > 1) {
+                for (let i = 1; i < Math.min(p.images.length, 10); i++) {
+                    xml += `      <g:additional_image_link>${esc(p.images[i])}</g:additional_image_link>\n`;
+                }
+            }
+            xml += `    </item>\n`;
+        }
+
+        xml += `  </channel>\n</rss>`;
+        
+        return new Response(xml, { 
+            status: 200, 
+            headers: { 
+                ...CORS,
+                'Content-Type': 'application/xml',
+                'Cache-Control': 'no-cache, no-store, must-revalidate'
+            } 
+        });
+    } catch (e) {
+        return new Response(`<?xml version="1.0" encoding="UTF-8"?><error>${e.message}</error>`, { status: 500, headers: { 'Content-Type': 'application/xml' }});
+    }
 }
 
 // ─── POST /api/orders ────────────────────────────────────────
