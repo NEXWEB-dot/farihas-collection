@@ -967,62 +967,49 @@
         }, 600);
     });
 
-    // ===== SAVE ORDER TO SANITY =====
-    // Returns orderId on success, null on failure (but still considered placed)
-    async function saveOrderToSanity(info, payMethod, finalTotal) {
-        const SANITY_TOKEN = 'skLGjQYrmNugDWjV60Rt3OeiZqlZYLjexlEwL3Mu8jhVkxLsTMsxftsloKhZ9l9xw1QXwcCa367zu6xeOmccLRyW7GJScMDGKCLKJQ07Dp7fyDezdlfrEOBGEWJtByYXcsuEnDemqaw7CrYp6swZLVGhw3LuTTzXE6fN4aLrnUmYSOIIzr09';
+    // ===== SAVE ORDER TO WORKER API =====
+    const WORKER_URL = 'https://fc-cms.faisalshayan444.workers.dev';
 
-        if (!SANITY_TOKEN || SANITY_TOKEN === 'YOUR_SANITY_API_TOKEN' || SANITY_TOKEN.trim() === '') {
-            console.warn('Order not saved to Sanity because the API token is missing.');
-            return null;
-        }
-
+    async function saveOrderToWorker(info, payMethod, finalTotal) {
         const cart = getCart();
         const items = cart.map(item => ({
-            _key: Math.random().toString(36).substring(2, 9),
-            name: item.name,
-            price: item.price,
-            qty: item.qty
+            productId: item.id  || '',
+            name:      item.name  || '',
+            price:     Number(item.price) || 0,
+            qty:       Number(item.qty)   || 1,
+            image:     item.image || '',
         }));
 
-        const orderId = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
-
-        const doc = {
-            _type: 'order',
-            orderId: orderId,
-            status: 'pending',
-            customerName: info.first + ' ' + info.last,
-            customerPhone: info.phone,
-            customerEmail: info.email || '',
-            address: info.addr,
-            city: info.city,
-            province: info.province || '',
+        const orderPayload = {
+            customerName:  (info.first + ' ' + info.last).trim(),
+            customerPhone: info.phone  || '',
+            customerEmail: info.email  || '',
+            address:       info.addr   || '',
+            city:          info.city   || '',
+            province:      info.province || '',
             paymentMethod: payMethod,
-            totalAmount: finalTotal,
-            promoCode: activePromo ? activePromo.code : '',
-            items: items,
-            notes: info.notes || '',
-            createdAt: new Date().toISOString()
+            totalAmount:   finalTotal,
+            promoCode:     activePromo ? activePromo.code : '',
+            items:         items,
+            notes:         info.notes || '',
         };
 
-        const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VER}/data/mutate/${SANITY_DATASET}`;
         try {
-            const res = await fetch(url, {
+            const res = await fetch(`${WORKER_URL}/api/orders`, {
                 method: 'POST',
-                headers: {
-                    'Content-type': 'application/json',
-                    Authorization: `Bearer ${SANITY_TOKEN}`
-                },
-                body: JSON.stringify({ mutations: [{ create: doc }] })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderPayload),
             });
-            if (!res.ok) throw new Error('Sanity returned ' + res.status);
-            console.log('Order successfully saved to Sanity Dashboard! ID:', orderId);
-            return orderId;
+            if (!res.ok) throw new Error('Worker returned ' + res.status);
+            const data = await res.json();
+            console.log('✅ Order saved to dashboard! ID:', data.id);
+            return data.id;
         } catch (err) {
-            console.error('Failed to save order to Sanity', err);
-            return null;  // Still return null so Purchase event still fires
+            console.error('Failed to save order to Worker:', err);
+            return null; // Order still proceeds via WhatsApp even if save fails
         }
     }
+
 
     // ===== FIRE META PIXEL PURCHASE EVENT =====
     // Fires ONCE per order using a unique event_id for browser+server deduplication
@@ -1070,8 +1057,8 @@
             qty: item.qty
         }));
 
-        // Save order to Sanity and get orderId back
-        const orderId = await saveOrderToSanity(info, payMethod, finalT);
+        // Save order to Worker API and get orderId back
+        const orderId = await saveOrderToWorker(info, payMethod, finalT);
 
         // ✅ Fire Purchase pixel RIGHT AFTER order is confirmed in Sanity
         //    This is the ONLY place the Purchase event fires — after real order creation

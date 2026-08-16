@@ -1,15 +1,10 @@
 /**
  * ============================================================
- * Fariha's Collection — Cloudflare Worker API (Step 2)
+ * Fariha's Collection — Cloudflare Worker API
  * ============================================================
- * Deploy this file as your Cloudflare Worker.
  * KV Namespace binding name: PRODUCTS
  *
- * Environment variables to set in Cloudflare Dashboard:
- *   ADMIN_TOKEN  →  your secret token for write operations
- *                   (generate any long random string)
- *
- * Routes handled:
+ * Routes:
  *   GET    /api/products           → list all products
  *   GET    /api/products/:id       → single product
  *   POST   /api/products           → create product  [AUTH]
@@ -17,6 +12,10 @@
  *   DELETE /api/products/:id       → delete product  [AUTH]
  *   GET    /api/settings           → site settings
  *   PUT    /api/settings           → update settings [AUTH]
+ *   POST   /api/orders             → place order     [PUBLIC - from checkout]
+ *   GET    /api/orders             → list orders     [AUTH]
+ *   PUT    /api/orders/:id         → update order    [AUTH]
+ *   DELETE /api/orders/:id         → delete order    [AUTH]
  * ============================================================
  */
 
@@ -48,17 +47,19 @@ function isAuthorized(request, env) {
 }
 
 // ─── KV Key helpers ──────────────────────────────────────────
-const INDEX_KEY    = 'products:index';   // stores array of all product IDs
-const SETTINGS_KEY = 'site:settings';
+const INDEX_KEY        = 'products:index';
+const SETTINGS_KEY     = 'site:settings';
+const ORDERS_INDEX_KEY = 'orders:index';
 
 function productKey(id) { return `product:${id}`; }
+function orderKey(id)   { return `order:${id}`; }
 
 // ─── ID generator ────────────────────────────────────────────
 function generateId() {
     return crypto.randomUUID();
 }
 
-// ─── Index management ────────────────────────────────────────
+// ─── Products index management ───────────────────────────────
 async function getIndex(kv) {
     const raw = await kv.get(INDEX_KEY);
     return raw ? JSON.parse(raw) : [];
@@ -67,7 +68,7 @@ async function getIndex(kv) {
 async function addToIndex(kv, id) {
     const index = await getIndex(kv);
     if (!index.includes(id)) {
-        index.unshift(id); // newest first
+        index.unshift(id);
         await kv.put(INDEX_KEY, JSON.stringify(index));
     }
 }
@@ -76,6 +77,26 @@ async function removeFromIndex(kv, id) {
     const index = await getIndex(kv);
     const updated = index.filter(i => i !== id);
     await kv.put(INDEX_KEY, JSON.stringify(updated));
+}
+
+// ─── Orders index management ─────────────────────────────────
+async function getOrdersIndex(kv) {
+    const raw = await kv.get(ORDERS_INDEX_KEY);
+    return raw ? JSON.parse(raw) : [];
+}
+
+async function addToOrdersIndex(kv, id) {
+    const index = await getOrdersIndex(kv);
+    if (!index.includes(id)) {
+        index.unshift(id); // newest first
+        await kv.put(ORDERS_INDEX_KEY, JSON.stringify(index));
+    }
+}
+
+async function removeFromOrdersIndex(kv, id) {
+    const index = await getOrdersIndex(kv);
+    const updated = index.filter(i => i !== id);
+    await kv.put(ORDERS_INDEX_KEY, JSON.stringify(updated));
 }
 
 // ─── Main fetch handler ──────────────────────────────────────
@@ -123,18 +144,39 @@ export default {
             }
         }
 
+        // ── Route: /api/orders ──
+        if (path === '/api/orders') {
+            if (method === 'POST') return handleCreateOrder(request, env);  // PUBLIC
+            if (method === 'GET') {
+                if (!isAuthorized(request, env)) return err('Unauthorized', 401);
+                return handleListOrders(env);
+            }
+        }
+
+        // ── Route: /api/orders/:id ──
+        const orderMatch = path.match(/^\/api\/orders\/([^/]+)$/);
+        if (orderMatch) {
+            const id = orderMatch[1];
+            if (method === 'PUT') {
+                if (!isAuthorized(request, env)) return err('Unauthorized', 401);
+                return handleUpdateOrder(id, request, env);
+            }
+            if (method === 'DELETE') {
+                if (!isAuthorized(request, env)) return err('Unauthorized', 401);
+                return handleDeleteOrder(id, env);
+            }
+        }
+
         return err('Not found', 404);
     }
 };
 
 // ─── GET /api/products ───────────────────────────────────────
-// Query params: ?category=heels  ?soldOut=true  ?search=boot  ?limit=50  ?offset=0
 async function handleListProducts(url, env) {
     try {
         const index = await getIndex(env.PRODUCTS);
-        if (index.length === 0) return ok([]);
+        if (index.length === 0) return ok({ total: 0, products: [] });
 
-        // Fetch all products in parallel
         const fetched = await Promise.all(
             index.map(id => env.PRODUCTS.get(productKey(id)))
         );
@@ -142,7 +184,6 @@ async function handleListProducts(url, env) {
             .filter(Boolean)
             .map(raw => JSON.parse(raw));
 
-        // ── Filters ──
         const category = url.searchParams.get('category');
         const soldOut  = url.searchParams.get('soldOut');
         const search   = url.searchParams.get('search');
@@ -166,8 +207,7 @@ async function handleListProducts(url, env) {
             );
         }
 
-        // ── Pagination ──
-        const total    = products.length;
+        const total     = products.length;
         const paginated = (limit > 0)
             ? products.slice(offset, offset + limit)
             : products;
@@ -230,7 +270,7 @@ async function handleUpdateProduct(id, request, env) {
     const updated = {
         ...old,
         ...body,
-        id,                                  // id is immutable
+        id,
         updatedAt: new Date().toISOString(),
     };
 
@@ -277,4 +317,103 @@ async function handleUpdateSettings(request, env) {
 
     await env.PRODUCTS.put(SETTINGS_KEY, JSON.stringify(updated));
     return ok(updated);
+}
+
+// ─── POST /api/orders ────────────────────────────────────────
+// PUBLIC: called by checkout page when customer places an order
+async function handleCreateOrder(request, env) {
+    let body;
+    try { body = await request.json(); }
+    catch { return err('Invalid JSON body'); }
+
+    if (!body.customerName) return err('Customer name is required');
+    if (!body.customerPhone) return err('Customer phone is required');
+
+    const now       = new Date();
+    const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // +24 hours
+
+    const id = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 9000 + 1000);
+
+    const order = {
+        id,
+        status:         'pending',
+        customerName:   body.customerName   || '',
+        customerPhone:  body.customerPhone  || '',
+        customerEmail:  body.customerEmail  || '',
+        address:        body.address        || '',
+        city:           body.city           || '',
+        province:       body.province       || '',
+        paymentMethod:  body.paymentMethod  || 'cod',
+        totalAmount:    Number(body.totalAmount) || 0,
+        promoCode:      body.promoCode      || '',
+        items:          Array.isArray(body.items) ? body.items : [],
+        notes:          body.notes          || '',
+        createdAt:      now.toISOString(),
+        expiresAt:      expiresAt.toISOString(),
+        confirmedAt:    null,
+        cancelledAt:    null,
+    };
+
+    await env.PRODUCTS.put(orderKey(id), JSON.stringify(order));
+    await addToOrdersIndex(env.PRODUCTS, id);
+
+    return ok(order, 201);
+}
+
+// ─── GET /api/orders ─────────────────────────────────────────
+// AUTH: dashboard only
+async function handleListOrders(env) {
+    try {
+        const index = await getOrdersIndex(env.PRODUCTS);
+        if (index.length === 0) return ok({ total: 0, orders: [] });
+
+        const fetched = await Promise.all(
+            index.map(id => env.PRODUCTS.get(orderKey(id)))
+        );
+        const orders = fetched
+            .filter(Boolean)
+            .map(raw => JSON.parse(raw));
+
+        return ok({ total: orders.length, orders });
+    } catch (e) {
+        return err('Failed to fetch orders: ' + e.message, 500);
+    }
+}
+
+// ─── PUT /api/orders/:id ─────────────────────────────────────
+// AUTH: confirm / cancel / update status
+async function handleUpdateOrder(id, request, env) {
+    const existing = await env.PRODUCTS.get(orderKey(id));
+    if (!existing) return err('Order not found', 404);
+
+    let body;
+    try { body = await request.json(); }
+    catch { return err('Invalid JSON body'); }
+
+    const old     = JSON.parse(existing);
+    const now     = new Date().toISOString();
+    const updated = {
+        ...old,
+        ...body,
+        id,
+        updatedAt: now,
+    };
+
+    // Stamp timestamps for status changes
+    if (body.status === 'confirmed' && !old.confirmedAt) updated.confirmedAt = now;
+    if (body.status === 'cancelled' && !old.cancelledAt) updated.cancelledAt = now;
+
+    await env.PRODUCTS.put(orderKey(id), JSON.stringify(updated));
+    return ok(updated);
+}
+
+// ─── DELETE /api/orders/:id ──────────────────────────────────
+async function handleDeleteOrder(id, env) {
+    const existing = await env.PRODUCTS.get(orderKey(id));
+    if (!existing) return err('Order not found', 404);
+
+    await env.PRODUCTS.delete(orderKey(id));
+    await removeFromOrdersIndex(env.PRODUCTS, id);
+
+    return ok({ success: true, id });
 }
