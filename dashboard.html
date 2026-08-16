@@ -913,7 +913,7 @@ function loadDrafts(){
     return;
   }
   tbody.innerHTML = drafts.map(d=>`
-    <tr>
+    <tr onclick="editDraft('${d._draftId}')" style="cursor:pointer">
       <td><div class="prod-name">${escHtml(d.name||'')}</div><div class="prod-brand" style="color:#f59e0b;font-size:.7rem;">DRAFT &mdash; ${new Date(d._savedAt).toLocaleDateString()}</div></td>
       <td style="font-weight:700">Rs ${Number(d.price||0).toLocaleString()}</td>
       <td>${escHtml([d.category,d.subCategory].filter(Boolean).join(' > '))}</td>
