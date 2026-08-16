@@ -957,8 +957,6 @@
             link.click();
         } catch (err) {
             console.error("Screenshot failed", err);
-        }
-
         // Use location.href instead of window.open to bypass aggressive iOS Safari popup blockers
         setTimeout(() => {
             window.location.href = waUrl;
@@ -970,7 +968,7 @@
     // ===== SAVE ORDER TO WORKER API =====
     const WORKER_URL = 'https://fc-cms.sheezarazzak.workers.dev';
 
-    async function saveOrderToWorker(info, payMethod, finalTotal) {
+    async function saveOrderToWorker(info, payMethod, finalTotal, eventId) {
         const cart = getCart();
         const items = cart.map(item => ({
             productId: item.id  || '',
@@ -979,6 +977,12 @@
             qty:       Number(item.qty)   || 1,
             image:     item.image || '',
         }));
+
+        // Read Meta's browser cookies — sent to CAPI for higher Event Match Quality
+        function _fbCookie(name) {
+            const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+            return m ? decodeURIComponent(m[1]) : '';
+        }
 
         const orderPayload = {
             customerName:  (info.first + ' ' + info.last).trim(),
@@ -992,15 +996,20 @@
             promoCode:     activePromo ? activePromo.code : '',
             items:         items,
             notes:         info.notes || '',
+            // ---- Meta CAPI deduplication & match quality fields ----
+            eventId:       eventId || '',          // Must match browser Purchase eventID exactly
+            fbp:           _fbCookie('_fbp'),      // Meta browser ID cookie
+            fbc:           _fbCookie('_fbc'),      // Meta click ID cookie (populated from ad clicks)
         };
 
         // Save customer info for Meta Pixel Advanced Matching on future page visits
         try {
             localStorage.setItem('fc_last_customer', JSON.stringify({
-                name:  orderPayload.customerName,
-                email: orderPayload.customerEmail,
-                phone: orderPayload.customerPhone,
-                city:  orderPayload.city,
+                name:     orderPayload.customerName,
+                email:    orderPayload.customerEmail,
+                phone:    orderPayload.customerPhone,
+                city:     orderPayload.city,
+                province: orderPayload.province,   // Added: mapped to 'st' (state) in Pixel
             }));
         } catch(e) {}
 
@@ -1024,7 +1033,7 @@
     // ===== FIRE META PIXEL PURCHASE EVENT =====
     // Fires ONCE per order using a unique event_id for browser+server deduplication
     let _purchaseFired = false;   // Prevent double-fire within same page session
-    function firePixelPurchase(orderId, finalTotal, cartItems) {
+    function firePixelPurchase(orderId, finalTotal, cartItems, preGenEventId) {
         if (_purchaseFired) {
             console.warn('Purchase pixel already fired — skipping duplicate.');
             return;
@@ -1036,8 +1045,9 @@
             return;
         }
 
-        // event_id used for browser↔server deduplication (if CAPI is set up)
-        const eventId = 'purchase_' + (orderId || Date.now());
+        // Use the pre-generated event_id (same one sent to Worker) for deduplication.
+        // Fallback only if something went very wrong.
+        const eventId = preGenEventId || 'purchase_' + (orderId || Date.now());
 
         // Build contents array from cartItems (captured BEFORE cart clear)
         fcPixelPurchase(finalTotal, eventId, orderId, cartItems);
@@ -1067,12 +1077,34 @@
             qty: item.qty
         }));
 
-        // Save order to Worker API and get orderId back
-        const orderId = await saveOrderToWorker(info, payMethod, finalT);
+        // Generate event_id NOW — before Worker call — so browser Pixel and CAPI Worker
+        // both use the exact same ID, enabling Meta deduplication.
+        const _purchaseEventId = 'purchase_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
 
-        // ✅ Fire Purchase pixel RIGHT AFTER order is confirmed in Sanity
-        //    This is the ONLY place the Purchase event fires — after real order creation
-        firePixelPurchase(orderId, finalT, cartSnapshot);
+        // Refresh Advanced Matching with live customer data from this session
+        // (fbq was init'd at page load with localStorage data; this updates it for
+        //  new customers whose info wasn't in localStorage yet)
+        try {
+            if (typeof fbq === 'function') {
+                fbq('init', '965005419926923', {
+                    em:      (info.email    || '').trim().toLowerCase(),
+                    ph:      (info.phone    || '').replace(/\D/g, ''),
+                    fn:      (info.first    || '').trim().toLowerCase(),
+                    ln:      (info.last     || '').trim().toLowerCase(),
+                    ct:      (info.city     || '').trim().toLowerCase(),
+                    st:      (info.province || '').trim().toLowerCase(),
+                    country: 'pk',
+                });
+            }
+        } catch(e) {}
+
+        // Save order to Worker API and get orderId back.
+        // eventId is included in the payload so the Worker can pass it to CAPI.
+        const orderId = await saveOrderToWorker(info, payMethod, finalT, _purchaseEventId);
+
+        // ✅ Fire Purchase pixel RIGHT AFTER order is confirmed in Sanity.
+        //    This is the ONLY place the Purchase event fires — after real order creation.
+        firePixelPurchase(orderId, finalT, cartSnapshot, _purchaseEventId);
 
         setStep(2);
 

@@ -33,11 +33,12 @@
     var _advMatch = {};
     try {
         var _saved = JSON.parse(localStorage.getItem('fc_last_customer') || '{}');
-        if (_saved.email) _advMatch.em = _saved.email.trim().toLowerCase();
-        if (_saved.phone) _advMatch.ph = _saved.phone.replace(/\D/g,'');
-        if (_saved.name)  _advMatch.fn = (_saved.name.trim().split(' ')[0] || '').toLowerCase();
-        if (_saved.name)  _advMatch.ln = (_saved.name.trim().split(' ').slice(-1)[0] || '').toLowerCase();
-        if (_saved.city)  _advMatch.ct = _saved.city.trim().toLowerCase();
+        if (_saved.email)    _advMatch.em      = _saved.email.trim().toLowerCase();
+        if (_saved.phone)    _advMatch.ph      = _saved.phone.replace(/\D/g,'');
+        if (_saved.name)     _advMatch.fn      = (_saved.name.trim().split(' ')[0] || '').toLowerCase();
+        if (_saved.name)     _advMatch.ln      = (_saved.name.trim().split(' ').slice(-1)[0] || '').toLowerCase();
+        if (_saved.city)     _advMatch.ct      = _saved.city.trim().toLowerCase();
+        if (_saved.province) _advMatch.st      = _saved.province.trim().toLowerCase();
         _advMatch.country = 'pk';
     } catch(e) {}
 
