@@ -27,3 +27,7 @@ id      = "575736337c754c85a8ea70ea6d2389ec"
 # Routes — your worker will be available at:
 #   https://fc-cms.farihas-collection.workers.dev
 # You can also add a custom domain if you want.
+
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "fc-images"

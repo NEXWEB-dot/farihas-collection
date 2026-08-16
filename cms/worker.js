@@ -149,6 +149,12 @@ export default {
             return handleGetCatalog(env);
         }
 
+        // ── Route: /api/upload ──
+        if (path === '/api/upload' && method === 'POST') {
+            if (!isAuthorized(request, env)) return err('Unauthorized', 401);
+            return handleUploadImage(request, env);
+        }
+
         // ── Route: /api/orders ──
         if (path === '/api/orders') {
             if (method === 'POST') return handleCreateOrder(request, env);  // PUBLIC
@@ -383,6 +389,40 @@ async function handleGetCatalog(env) {
         });
     } catch (e) {
         return new Response(`<?xml version="1.0" encoding="UTF-8"?><error>${e.message}</error>`, { status: 500, headers: { 'Content-Type': 'application/xml' }});
+    }
+}
+
+// ─── POST /api/upload ────────────────────────────────────────
+// Uploads an image to Cloudflare R2
+async function handleUploadImage(request, env) {
+    try {
+        const formData = await request.formData();
+        const file = formData.get('file');
+        
+        if (!file || !file.name) {
+            return err('No file provided');
+        }
+
+        const ext = file.name.split('.').pop().toLowerCase();
+        // Just a basic extension check, you could do more validation here
+        if (!['png', 'jpg', 'jpeg', 'webp', 'gif'].includes(ext)) {
+            return err('Invalid file type');
+        }
+
+        // Generate a unique filename
+        const filename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${ext}`;
+        
+        // Put the file into R2
+        await env.IMAGES.put(filename, file.stream(), {
+            httpMetadata: { contentType: file.type }
+        });
+
+        // The public URL based on what the user provided
+        const publicUrl = `https://pub-985d44863924446099d8bbd6f10d7d6e.r2.dev/${filename}`;
+
+        return ok({ url: publicUrl });
+    } catch (e) {
+        return err('Upload failed: ' + e.message, 500);
     }
 }
 
