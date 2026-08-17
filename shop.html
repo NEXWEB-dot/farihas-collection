@@ -457,11 +457,12 @@
                 category:    p.category,
                 subCategory: p.subCategory,
                 soldOut:     p.soldOut,
+                salePercent: Number(p.salePercent) || 0,
                 image:       p.images && p.images[0] ? p.images[0] : 'images/placeholder.jpg',
                 images:      p.images || [],
                 size:        rawSize,
                 sizes:       sizes,
-                isSale:      false,
+                isSale:      Number(p.salePercent) > 0,
                 isRarePick:  false,
                 isTagged:    p.subCategory === 'tagged',
             };
@@ -483,6 +484,23 @@
         const image = p.image || '';
         const brand = p.brand || p.tag || 'FARIHA\'S COLLECTION';
         const esc = (s) => String(s).replace(/"/g, '&quot;');
+
+        // Sale / discount price calculation
+        let discountPct = 0;
+        if (siteSettings.globalSaleActive && siteSettings.globalSalePercentage > 0) {
+            discountPct = Number(siteSettings.globalSalePercentage);
+        } else if (p.salePercent > 0) {
+            discountPct = p.salePercent;
+        }
+        const origPrice = discountPct > 0 ? Math.ceil(price / (1 - discountPct / 100) / 100) * 100 : null;
+
+        // Sale badge
+        let saleBadgeHtml = '';
+        if (p.soldOut) {
+            saleBadgeHtml = '<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;z-index:2;">Sold Out</div>';
+        } else if (discountPct > 0) {
+            saleBadgeHtml = `<div style="position:absolute;top:8px;left:8px;background:#111827;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:3px;z-index:2;">SAVE ${discountPct}%</div>`;
+        }
 
         let sizesHtml = '';
         if (p.soldOut === true) {
@@ -510,12 +528,16 @@
             <div class="shoe-card product-card" data-id="${esc(id)}" data-name="${esc(name)}" data-price="${price}" data-image="${esc(image)}">
                 <div class="w-full aspect-square bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden relative mb-3">
                     <img src="${esc(sanityImg(image, { w: 600 }))}" alt="${esc(name)}" class="w-full h-full object-cover transition duration-300" loading="lazy" onerror="this.onerror=null;this.src='images/placeholder.jpg'">
+                    ${saleBadgeHtml}
                     <button class="atc-btn"><i class="ph ph-shopping-bag"></i></button>
                 </div>
                 <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1">${esc(brand)}</p>
                 <h3 class="text-sm font-semibold text-gray-900 mb-1">${esc(name)}</h3>
                 ${sizesHtml}
-                <p class="text-sm font-bold text-gray-900 mt-1">${formatPKR(price)}</p>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                    <p class="text-sm font-bold text-gray-900" style="margin:0;">${formatPKR(price)}</p>
+                    ${origPrice ? `<p style="font-size:0.75rem;color:#9ca3af;text-decoration:line-through;margin:0;">Rs${origPrice.toLocaleString()}</p>` : ''}
+                </div>
                 <button class="add-to-cart-full"><i class="ph ph-shopping-bag"></i> Add to Cart</button>
             </div>
         `;
@@ -837,7 +859,8 @@
                         })()}
                         <div class="flex items-center gap-2">
                             <p class="text-sm font-bold text-gray-900">Rs${finalPrice.toLocaleString()}</p>
-                            ${origPrice ? `<p class="text-xs text-gray-400 line-through">Rs${origPrice.toLocaleString()}</p>` : ''}
+                            ${origPrice ? `<p class="text-xs text-gray-400" style="text-decoration:line-through;">Rs${origPrice.toLocaleString()}</p>` : ''}
+                            ${discountPercent > 0 ? `<span style="font-size:0.6rem;background:#dcfce7;color:#16a34a;padding:2px 5px;border-radius:3px;font-weight:700;">-${discountPercent}%</span>` : ''}
                         </div>
                     </div>
                 </a>
