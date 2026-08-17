@@ -450,9 +450,13 @@
     }
 
     async function fetchWorkerProducts() {
-        const res = await fetch(`${WORKER_URL}/api/products`);
+        const [res, setRes] = await Promise.all([
+            fetch(`${WORKER_URL}/api/products`),
+            fetch(`${WORKER_URL}/api/settings`).catch(() => null)
+        ]);
         if (!res.ok) throw new Error(`Worker request failed: ${res.status} ${res.statusText}`);
         const json = await res.json();
+        const settingsJson = (setRes && setRes.ok) ? await setRes.json() : {};
         const products = (json.products || []).map(p => {
             const rawSize = p.size || '';
             let sizes = [];
@@ -480,7 +484,7 @@
                 isTagged:    p.subCategory === 'tagged',
             };
         });
-        return { settings: json.settings || {}, shoes: products };
+        return { settings: settingsJson, shoes: products };
     }
 
     let siteSettings = {}; // to store global settings

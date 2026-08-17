@@ -873,32 +873,53 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===== INIT =====
     updateCartBadge();
 
-    // ===== WORKER-POWERED BANNER =====
+    // ===== WORKER-POWERED BANNER & MARQUEE =====
     async function loadGlobalBanner() {
         try {
             const WORKER_URL = 'https://fc-cms.sheezarazzak.workers.dev';
-            const res      = await fetch(`${WORKER_URL}/api/settings`);
+            const res = await fetch(`${WORKER_URL}/api/settings`);
+            if (!res.ok) return;
             const settings = await res.json();
-            
-            const banner = document.getElementById('topPinnedBanner');
-            if (banner && settings) {
-                if (settings.isAnnouncementActive && settings.announcementText) {
-                    banner.innerHTML = settings.announcementText;
-                    banner.style.display = 'block';
-                } else if (settings.isAnnouncementActive === false) {
-                    banner.style.display = 'none';
+            if (!settings) return;
+
+            // 1. Marquee Banner (Across All Pages)
+            const mc = document.getElementById('marqueeContainer');
+            const mi = document.getElementById('marqueeInner');
+            const isMarqueeActive = settings.marqueeActive !== false;
+            const messages = Array.isArray(settings.marqueeMessages) ? settings.marqueeMessages.filter(Boolean) : [];
+
+            if (isMarqueeActive && messages.length > 0) {
+                const spanHtml = messages.map(msg => {
+                    let parsedMsg = String(msg).replace(/\[(.*?)\]/g, '<strong style="background:#fff;color:#111;padding:2px 8px;border-radius:4px;letter-spacing:1px;">$1</strong>');
+                    return `<span style="margin-right: 60px; display: inline-flex; align-items: center; gap: 8px;">${parsedMsg}</span>`;
+                }).join('');
+
+                if (mc && mi) {
+                    mi.innerHTML = spanHtml;
+                    mc.style.display = 'block';
+                } else {
+                    const topPinned = document.getElementById('topPinnedBanner');
+                    if (topPinned) {
+                        topPinned.innerHTML = `
+                            <div style="width: 100%; overflow: hidden; white-space: nowrap; box-sizing: border-box;">
+                                <div style="display: inline-block; animation: marquee 30s linear infinite; padding-left: 100%;">
+                                    ${spanHtml}
+                                </div>
+                            </div>
+                        `;
+                        topPinned.style.display = 'block';
+                        topPinned.style.padding = '10px 0';
+                    }
                 }
+            } else {
+                if (mc) mc.style.display = 'none';
+                const topPinned = document.getElementById('topPinnedBanner');
+                if (topPinned) topPinned.style.display = 'none';
             }
 
-            if (settings) {
-                const img1 = document.getElementById('promoBannerImg1');
-                if (img1 && settings.promoBanner1) img1.src = settings.promoBanner1;
-                const img2 = document.getElementById('promoBannerImg2');
-                if (img2 && settings.promoBanner2) img2.src = settings.promoBanner2;
-
-                if (settings.clearanceSaleActive === false) {
-                    document.querySelectorAll('.nav-clearance-link, .filter-pill[data-filter="clearance"], .clearance-banner').forEach(el => el.style.display = 'none');
-                }
+            // 2. Clearance sale visibility
+            if (settings.clearanceSaleActive === false) {
+                document.querySelectorAll('.nav-clearance-link, .filter-pill[data-filter="clearance"], .clearance-banner').forEach(el => el.style.display = 'none');
             }
         } catch (e) {
             console.error('Error loading Worker settings:', e);
