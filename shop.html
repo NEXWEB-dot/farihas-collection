@@ -297,6 +297,19 @@
         </select>
     </div>
 
+    <!-- Size Filter Bar (Dynamic from Dashboard Products) -->
+    <div id="sizeFilterBar" style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; max-width:1400px; margin:0 auto; padding:4px 1.5rem 12px;">
+        <span style="font-size:0.75rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">Size:</span>
+        <button class="size-filter-pill active" data-size="" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #111; background:#111; color:#fff; cursor:pointer; transition:all 0.2s;">All Sizes</button>
+        <button class="size-filter-pill" data-size="35" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">35</button>
+        <button class="size-filter-pill" data-size="36" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">36</button>
+        <button class="size-filter-pill" data-size="37" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">37</button>
+        <button class="size-filter-pill" data-size="38" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">38</button>
+        <button class="size-filter-pill" data-size="39" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">39</button>
+        <button class="size-filter-pill" data-size="40" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">40</button>
+        <button class="size-filter-pill" data-size="41" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">41</button>
+    </div>
+
     <!-- ===== PROMO CODE STRIP ===== -->
     <div id="promoStrip" style="background:linear-gradient(90deg,#1a1a1a 0%,#2d2d2d 100%);color:#fff;padding:7px 20px;display:none;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;position:relative;">
         <span style="font-size:0.9rem;">🏷️</span>
@@ -720,6 +733,24 @@
         });
     }
 
+    if (activeSizeFilter) {
+        const cleanSz = String(activeSizeFilter).trim().toLowerCase().replace(/[^\d.]/g, '');
+        document.querySelectorAll('.size-filter-pill').forEach(p => {
+            const pSz = String(p.dataset.size || '').trim().toLowerCase().replace(/[^\d.]/g, '');
+            const isActive = cleanSz ? (pSz === cleanSz || pSz === cleanSz.split('.')[0]) : !p.dataset.size;
+            p.classList.toggle('active', isActive);
+            if (isActive) {
+                p.style.background = '#111';
+                p.style.color = '#fff';
+                p.style.borderColor = '#111';
+            } else {
+                p.style.background = '#fff';
+                p.style.color = '#374151';
+                p.style.borderColor = '#e5e7eb';
+            }
+        });
+    }
+
     document.querySelectorAll('.filter-pill').forEach(pill => {
         pill.addEventListener('click', () => {
             document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
@@ -735,6 +766,32 @@
         });
     });
 
+    document.querySelectorAll('.size-filter-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+            document.querySelectorAll('.size-filter-pill').forEach(p => {
+                p.classList.remove('active');
+                p.style.background = '#fff';
+                p.style.color = '#374151';
+                p.style.borderColor = '#e5e7eb';
+            });
+            pill.classList.add('active');
+            pill.style.background = '#111';
+            pill.style.color = '#fff';
+            pill.style.borderColor = '#111';
+            activeSizeFilter = pill.dataset.size || '';
+
+            const url = new URL(window.location);
+            if (activeSizeFilter) {
+                url.searchParams.set('size', activeSizeFilter);
+            } else {
+                url.searchParams.delete('size');
+            }
+            window.history.replaceState({}, '', url);
+
+            applyFilterAndSort();
+        });
+    });
+
     document.getElementById('shSortSelect').addEventListener('change', applyFilterAndSort);
     let allProducts = []; // populated by fetchProducts()
 
@@ -742,31 +799,69 @@
         const grid = document.getElementById('productGrid');
         const sortVal = document.getElementById('shSortSelect').value;
 
-        // Filter — checks both primary category and optional subCategory
+        // Category / Type filter — smart matching on dashboard product data
         let visible = activeFilter === 'all'
             ? [...allProducts]
             : allProducts.filter(p => {
+                const cat = String(p.category || '').toLowerCase();
+                const sub = String(p.subCategory || '').toLowerCase();
+                const tag = String(p.tag || '').toLowerCase();
+                const name = String(p.name || '').toLowerCase();
+                const combined = `${cat} ${sub} ${tag} ${name}`;
+
                 if (activeFilter === 'clearance') {
-                    return p._type === 'clearanceSale' || p.isSale === true || (p.category || '').toLowerCase() === 'clearance' || (p.subCategory || '').toLowerCase() === 'clearance' || (p.tag || '').toLowerCase() === 'clearance sale';
+                    return p._type === 'clearanceSale' || p.isSale === true || Number(p.salePercent) > 0 || cat === 'clearance' || sub === 'clearance' || combined.includes('clearance');
                 }
-                const primary = (p.category || '').toLowerCase();
-                const sub = (p.subCategory || '').toLowerCase();
-                return primary === activeFilter || sub === activeFilter;
+                if (activeFilter === 'heels') {
+                    return cat === 'heels' || sub === 'heels' || combined.includes('heel') || combined.includes('stiletto') || combined.includes('wedge');
+                }
+                if (activeFilter === 'flats') {
+                    return cat === 'flats' || sub === 'flats' || combined.includes('flat');
+                }
+                if (activeFilter === 'slides') {
+                    return cat === 'slides' || sub === 'slides' || combined.includes('slide') || combined.includes('mule') || combined.includes('slipper');
+                }
+                if (activeFilter === 'sneakers') {
+                    return cat === 'sneakers' || sub === 'sneakers' || combined.includes('sneaker') || combined.includes('trainer') || combined.includes('jogger');
+                }
+                if (activeFilter === 'pumps') {
+                    return cat === 'pumps' || sub === 'pumps' || combined.includes('pump');
+                }
+                if (activeFilter === 'loafers') {
+                    return cat === 'loafers' || sub === 'loafers' || combined.includes('loafer') || combined.includes('moccasin');
+                }
+                if (activeFilter === 'sandals') {
+                    return cat === 'sandals' || sub === 'sandals' || combined.includes('sandal');
+                }
+                if (activeFilter === 'tagged') {
+                    return sub === 'tagged' || p.isTagged || combined.includes('tagged') || combined.includes('nwt');
+                }
+                if (activeFilter === 'men') {
+                    return cat === 'men' || sub === 'men' || (combined.includes('men') && !combined.includes('women'));
+                }
+                if (activeFilter === 'women') {
+                    return cat === 'women' || sub === 'women' || combined.includes('women');
+                }
+                if (activeFilter === 'unisex') {
+                    return cat === 'unisex' || sub === 'unisex' || combined.includes('unisex');
+                }
+                return cat === activeFilter || sub === activeFilter;
             });
 
         // Shop By Size filter
         if (activeSizeFilter) {
-            const cleanFilter = String(activeSizeFilter).trim().toLowerCase().replace(/[^\d]/g, '');
+            const cleanFilter = String(activeSizeFilter).trim().toLowerCase().replace(/[^\d.]/g, '');
             visible = visible.filter(p => {
-                if (p.size) {
-                    const cleanPSize = String(p.size).trim().toLowerCase().replace(/[^\d]/g, '');
-                    if (cleanPSize === cleanFilter) return true;
-                }
+                const matchVal = (val) => {
+                    if (!val) return false;
+                    const str = String(val).trim().toLowerCase();
+                    const numOnly = str.replace(/[^\d.]/g, '');
+                    return numOnly === cleanFilter || str.includes(cleanFilter) || (cleanFilter.includes('.') ? numOnly.startsWith(cleanFilter.split('.')[0]) : numOnly.startsWith(cleanFilter));
+                };
+
+                if (p.size && matchVal(p.size)) return true;
                 if (Array.isArray(p.sizes) && p.sizes.length > 0) {
-                    return p.sizes.some(s => {
-                        const cleanS = String(s.size || s).trim().toLowerCase().replace(/[^\d]/g, '');
-                        return cleanS === cleanFilter && (Number(s.stock) || 0) > 0;
-                    });
+                    return p.sizes.some(s => matchVal(s.size || s) && (Number(s.stock) || 0) > 0);
                 }
                 return false;
             });

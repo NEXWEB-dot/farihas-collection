@@ -610,17 +610,7 @@
         return url;
     }
     // ============================================
-
-    const SANITY_PROJECT_ID = 'kxnjofhp';
-        const SANITY_DATASET = 'production';
-        const SANITY_API_VERSION = '2024-01-01';
-
-        function sanityQueryUrl(query, params) {
-            const base = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
-            const qs = new URLSearchParams({ query });
-            for (const [k, v] of Object.entries(params || {})) qs.set(`$${k}`, JSON.stringify(v));
-            return `${base}?${qs.toString()}`;
-        }
+    const WORKER_URL = 'https://fc-cms.sheezarazzak.workers.dev';
 
         // ===== CART =====
         // Populated with URL fallback values immediately (so the page isn't blank
@@ -705,7 +695,9 @@
                     category: productRaw.category,
                     subCategory: productRaw.subCategory,
                     soldOut: productRaw.soldOut,
-                    sizes: productRaw.size ? [{size: productRaw.size, stock: 1}] : [],
+                    sizes: (Array.isArray(productRaw.sizes) && productRaw.sizes.length > 0)
+                        ? productRaw.sizes.map(s => typeof s === 'object' ? s : { size: s, stock: productRaw.soldOut ? 0 : 1 })
+                        : (productRaw.size ? [{ size: productRaw.size, stock: productRaw.soldOut ? 0 : 1 }] : []),
                     image: productRaw.images && productRaw.images.length ? productRaw.images[0] : 'images/placeholder.jpg',
                     images: productRaw.images || [],
                     isSale: (productRaw.salePercent > 0),
