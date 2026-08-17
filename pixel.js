@@ -3,9 +3,12 @@
 //  Pixel ID : 965005419926923
 //  Events   : PageView, ViewContent, AddToCart,
 //             InitiateCheckout, Purchase
+//  Manual Advanced Matching & CAPI Deduplication Configured
 // ============================================================
 
 (function () {
+    var PIXEL_ID = '965005419926923';
+
     /* ----------------------------------------------------------
        1.  Base Pixel snippet (standard Meta code, minified)
     ---------------------------------------------------------- */
@@ -27,26 +30,107 @@
     }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
 
     // Disable automatic event tracking (like button clicks) to prevent duplicate events
-    fbq('set', 'autoConfig', false, '965005419926923');
+    fbq('set', 'autoConfig', false, PIXEL_ID);
 
-    // Advanced Matching — reads customer info saved at checkout for better conversion tracking
+    /* ----------------------------------------------------------
+       2.  Manual Advanced Matching Sanitization & Normalization
+           Formats data according to Meta's strict specifications
+    ---------------------------------------------------------- */
+    function sanitizeUserData(data) {
+        if (!data || typeof data !== 'object') return {};
+        var clean = {};
+
+        // Email: lowercase, trimmed, basic format check
+        var rawEmail = String(data.email || data.em || '').trim().toLowerCase();
+        if (rawEmail && rawEmail.indexOf('@') > 0 && rawEmail.indexOf('.') > 0) {
+            clean.em = rawEmail;
+        }
+
+        // Phone: digits only. Standardize Pakistani numbers (03... / 3... -> 923...)
+        var rawPhone = String(data.phone || data.ph || '').replace(/\D/g, '');
+        if (rawPhone) {
+            if (rawPhone.startsWith('03') && rawPhone.length === 11) {
+                rawPhone = '92' + rawPhone.slice(1);
+            } else if (rawPhone.startsWith('3') && rawPhone.length === 10) {
+                rawPhone = '92' + rawPhone;
+            } else if (rawPhone.startsWith('9203') && rawPhone.length === 13) {
+                rawPhone = '92' + rawPhone.slice(3);
+            }
+            if (rawPhone.length >= 10) {
+                clean.ph = rawPhone;
+            }
+        }
+
+        // Name parsing: first name & last name (lowercase letters only)
+        var fullName = String(data.name || data.customerName || '').trim();
+        var rawFn = String(data.firstName || data.fn || (fullName ? fullName.split(/\s+/)[0] : '')).trim().toLowerCase().replace(/[^a-z]/g, '');
+        var rawLn = String(data.lastName  || data.ln || (fullName && fullName.split(/\s+/).length > 1 ? fullName.split(/\s+/).slice(-1)[0] : '')).trim().toLowerCase().replace(/[^a-z]/g, '');
+
+        if (rawFn) clean.fn = rawFn;
+        if (rawLn) clean.ln = rawLn;
+
+        // City: lowercase, letters only, no punctuation
+        var rawCity = String(data.city || data.ct || '').trim().toLowerCase().replace(/[^a-z]/g, '');
+        if (rawCity) clean.ct = rawCity;
+
+        // State / Province: lowercase
+        var rawState = String(data.province || data.state || data.st || '').trim().toLowerCase();
+        if (rawState) clean.st = rawState;
+
+        // Country: ISO 2-letter lowercase code ('pk' for Pakistan)
+        clean.country = data.country ? String(data.country).trim().toLowerCase() : 'pk';
+
+        // External ID (if available)
+        if (data.external_id || data.externalId) {
+            clean.external_id = String(data.external_id || data.externalId).trim();
+        }
+
+        return clean;
+    }
+    window.fcPixelSanitizeUserData = sanitizeUserData;
+
+    // Read stored customer details (e.g. from checkout or previous visits)
     var _advMatch = {};
     try {
         var _saved = JSON.parse(localStorage.getItem('fc_last_customer') || '{}');
-        if (_saved.email)    _advMatch.em      = _saved.email.trim().toLowerCase();
-        if (_saved.phone)    _advMatch.ph      = _saved.phone.replace(/\D/g,'');
-        if (_saved.name)     _advMatch.fn      = (_saved.name.trim().split(' ')[0] || '').toLowerCase();
-        if (_saved.name)     _advMatch.ln      = (_saved.name.trim().split(' ').slice(-1)[0] || '').toLowerCase();
-        if (_saved.city)     _advMatch.ct      = _saved.city.trim().toLowerCase();
-        if (_saved.province) _advMatch.st      = _saved.province.trim().toLowerCase();
-        _advMatch.country = 'pk';
-    } catch(e) {}
+        _advMatch = sanitizeUserData(_saved);
+    } catch (e) {}
 
-    fbq('init', '965005419926923', _advMatch);
-    fbq('track', 'PageView');          // fires on every page automatically
+    // Initialize Meta Pixel with Manual Advanced Matching data if available
+    if (_advMatch.em || _advMatch.ph || _advMatch.fn) {
+        fbq('init', PIXEL_ID, _advMatch);
+    } else {
+        fbq('init', PIXEL_ID);
+    }
+
+    // Standard PageView event (fires once per page)
+    fbq('track', 'PageView');
 
     /* ----------------------------------------------------------
-       2.  Noscript fallback (appended once DOM is ready)
+       3.  Dynamic Advanced Matching Updater
+           Allows forms (like checkout) to update user data in real-time
+    ---------------------------------------------------------- */
+    window.fcPixelSetUserData = function (userData) {
+        if (!userData || typeof userData !== 'object') return;
+        var clean = sanitizeUserData(userData);
+        if (clean.em || clean.ph || clean.fn) {
+            try {
+                var existing = JSON.parse(localStorage.getItem('fc_last_customer') || '{}');
+                var merged = Object.assign({}, existing, userData);
+                localStorage.setItem('fc_last_customer', JSON.stringify(merged));
+            } catch (e) {}
+
+            if (typeof fbq === 'function') {
+                fbq('init', PIXEL_ID, clean);
+                if (typeof fbq.setUserProperties === 'function') {
+                    fbq('setUserProperties', PIXEL_ID, clean);
+                }
+            }
+        }
+    };
+
+    /* ----------------------------------------------------------
+       4.  Noscript fallback (appended once DOM is ready)
     ---------------------------------------------------------- */
     document.addEventListener('DOMContentLoaded', function () {
         var noscript = document.createElement('noscript');
@@ -54,9 +138,8 @@
         img.height = 1;
         img.width = 1;
         img.style.display = 'none';
-        img.src = 'https://www.facebook.com/tr?id=965005419926923&ev=PageView&noscript=1';
+        img.src = 'https://www.facebook.com/tr?id=' + PIXEL_ID + '&ev=PageView&noscript=1';
         noscript.appendChild(img);
-        // Insert right after <body> opens
         var body = document.body;
         if (body && body.firstChild) {
             body.insertBefore(noscript, body.firstChild);
@@ -67,23 +150,23 @@
 })();
 
 /* ----------------------------------------------------------
-   3.  Helper functions — call these from any page script
+   5.  Helper functions — call these from any page script
 ---------------------------------------------------------- */
 
 /**
  * ViewContent — fire when a product detail page fully loads.
  * @param {string} name    Product name
  * @param {number} price   Product price (PKR)
- * @param {string} id      Product ID / Sanity _id
+ * @param {string} id      Product ID
  */
 window.fcPixelViewContent = function (name, price, id) {
     if (typeof fbq === 'undefined') return;
     fbq('track', 'ViewContent', {
-        content_name     : name   || '',
-        content_ids      : [id    || name || ''],
-        content_type     : 'product',
-        value            : Number(price) || 0,
-        currency         : 'PKR'
+        content_name : name || '',
+        content_ids  : [id || name || ''],
+        content_type : 'product',
+        value        : Number(price) || 0,
+        currency     : 'PKR'
     });
 };
 
@@ -91,26 +174,26 @@ window.fcPixelViewContent = function (name, price, id) {
  * AddToCart — fire when a product is added to the cart.
  * @param {string} name    Product name
  * @param {number} price   Unit price (PKR)
- * @param {string} id      Product ID / Sanity _id
+ * @param {string} id      Product ID
  * @param {number} qty     Quantity added (default 1)
  */
 window.fcPixelAddToCart = function (name, price, id, qty) {
     if (typeof fbq === 'undefined') return;
     fbq('track', 'AddToCart', {
-        content_name     : name   || '',
-        content_ids      : [id    || name || ''],
-        content_type     : 'product',
-        value            : (Number(price) || 0) * (Number(qty) || 1),
-        currency         : 'PKR',
-        num_items        : Number(qty) || 1
+        content_name : name || '',
+        content_ids  : [id || name || ''],
+        content_type : 'product',
+        value        : (Number(price) || 0) * (Number(qty) || 1),
+        currency     : 'PKR',
+        num_items    : Number(qty) || 1
     });
 };
 
 /**
- * InitiateCheckout — fire when user clicks "Proceed to Checkout"
- * or lands on the checkout page.
- * @param {number} value    Cart total (PKR)
- * @param {number} numItems Number of items in the cart
+ * InitiateCheckout — fire when user clicks "Proceed to Checkout" or opens checkout page.
+ * @param {number} value     Cart total (PKR)
+ * @param {number} numItems  Number of items in the cart
+ * @param {Array}  cartItems Array of cart item objects
  */
 window.fcPixelInitiateCheckout = function (value, numItems, cartItems) {
     if (typeof fbq === 'undefined') return;
@@ -125,12 +208,12 @@ window.fcPixelInitiateCheckout = function (value, numItems, cartItems) {
     var contentIds = (cartItems || []).map(function (item) { return item.id || item.name || ''; });
 
     fbq('track', 'InitiateCheckout', {
-        value         : Number(value)    || 0,
-        currency      : 'PKR',
-        num_items     : Number(numItems) || 0,
-        content_ids   : contentIds,
-        contents      : contents,
-        content_type  : 'product'
+        value        : Number(value) || 0,
+        currency     : 'PKR',
+        num_items    : Number(numItems) || 0,
+        content_ids  : contentIds,
+        contents     : contents,
+        content_type : 'product'
     });
 };
 
@@ -139,12 +222,8 @@ window.fcPixelInitiateCheckout = function (value, numItems, cartItems) {
  *
  * @param {number} value      Final order total incl. shipping (PKR)
  * @param {string} eventId    Unique event_id for browser↔CAPI deduplication
- *                            (e.g. 'purchase_ORD-1234567890-5678')
- * @param {string} orderId    Sanity order reference ID
- * @param {Array}  cartItems  Array of { name, price, qty } objects
- *
- * ⚠️  Call this ONCE, right after the order is confirmed in Sanity.
- *      Do NOT call it on button click — always call after successful save.
+ * @param {string} orderId    Order reference ID
+ * @param {Array}  cartItems  Array of { id, name, price, qty } objects
  */
 window.fcPixelPurchase = function (value, eventId, orderId, cartItems) {
     if (typeof fbq === 'undefined') return;
@@ -162,12 +241,12 @@ window.fcPixelPurchase = function (value, eventId, orderId, cartItems) {
     // The eventID here must match the eventID sent via Conversions API (CAPI)
     // so Meta can deduplicate browser + server events automatically.
     fbq('track', 'Purchase', {
-        value         : Number(value) || 0,
-        currency      : 'PKR',
-        order_id      : orderId || eventId || '',
-        content_ids   : contentIds,
-        contents      : contents,
-        content_type  : 'product',
-        num_items     : (cartItems || []).reduce(function (s, i) { return s + (Number(i.qty) || 1); }, 0)
+        value        : Number(value) || 0,
+        currency     : 'PKR',
+        order_id     : orderId || eventId || '',
+        content_ids  : contentIds,
+        contents     : contents,
+        content_type : 'product',
+        num_items    : (cartItems || []).reduce(function (s, i) { return s + (Number(i.qty) || 1); }, 0)
     }, { eventID: eventId || ('purchase_' + Date.now()) });
 };

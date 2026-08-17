@@ -103,7 +103,7 @@ https.get(apiUrl, (res) => {
           tag:         p.subCategory || p.category || '',
           description: p.description || p.name || '',
           image:       (p.images && p.images[0]) ? p.images[0] : '',
-          sizes:       (p.sizes || []).map(s => ({ size: s.size || s, stock: s.stock || 1 })),
+          sizes:       (p.sizes && p.sizes.length ? p.sizes : (p.size ? [p.size] : [])).map(s => ({ size: s.size || s, stock: s.stock || 1 })),
           brand:       p.brand || "Fariha's Collection",
           category:    p.category || '',
           inStock:     !p.soldOut,

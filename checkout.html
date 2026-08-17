@@ -1004,13 +1004,24 @@
 
         // Save customer info for Meta Pixel Advanced Matching on future page visits
         try {
-            localStorage.setItem('fc_last_customer', JSON.stringify({
-                name:     orderPayload.customerName,
-                email:    orderPayload.customerEmail,
-                phone:    orderPayload.customerPhone,
-                city:     orderPayload.city,
-                province: orderPayload.province,   // Added: mapped to 'st' (state) in Pixel
-            }));
+            if (typeof window.fcPixelSetUserData === 'function') {
+                window.fcPixelSetUserData({
+                    firstName: info.first,
+                    lastName:  info.last,
+                    email:     orderPayload.customerEmail,
+                    phone:     orderPayload.customerPhone,
+                    city:      orderPayload.city,
+                    province:  orderPayload.province,
+                });
+            } else {
+                localStorage.setItem('fc_last_customer', JSON.stringify({
+                    name:     orderPayload.customerName,
+                    email:    orderPayload.customerEmail,
+                    phone:    orderPayload.customerPhone,
+                    city:     orderPayload.city,
+                    province: orderPayload.province,
+                }));
+            }
         } catch(e) {}
 
         try {
@@ -1082,18 +1093,15 @@
         const _purchaseEventId = 'purchase_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
 
         // Refresh Advanced Matching with live customer data from this session
-        // (fbq was init'd at page load with localStorage data; this updates it for
-        //  new customers whose info wasn't in localStorage yet)
         try {
-            if (typeof fbq === 'function') {
-                fbq('init', '965005419926923', {
-                    em:      (info.email    || '').trim().toLowerCase(),
-                    ph:      (info.phone    || '').replace(/\D/g, ''),
-                    fn:      (info.first    || '').trim().toLowerCase(),
-                    ln:      (info.last     || '').trim().toLowerCase(),
-                    ct:      (info.city     || '').trim().toLowerCase(),
-                    st:      (info.province || '').trim().toLowerCase(),
-                    country: 'pk',
+            if (typeof window.fcPixelSetUserData === 'function') {
+                window.fcPixelSetUserData({
+                    firstName: info.first,
+                    lastName:  info.last,
+                    email:     info.email,
+                    phone:     info.phone,
+                    city:      info.city,
+                    province:  info.province,
                 });
             }
         } catch(e) {}
@@ -1253,8 +1261,39 @@
         renderCart();
     });
 
+    // ===== LIVE ADVANCED MATCHING SYNC =====
+    function syncLiveCustomerToPixel() {
+        if (typeof window.fcPixelSetUserData !== 'function') return;
+        const fn = (document.getElementById('firstName')?.value || '').trim();
+        const ln = (document.getElementById('lastName')?.value || '').trim();
+        const ph = (document.getElementById('phone')?.value || '').trim();
+        const em = (document.getElementById('email')?.value || '').trim();
+        const ct = (document.getElementById('city')?.value || '').trim();
+        const st = (document.getElementById('province')?.value || '').trim();
+
+        if (fn || ln || ph || em) {
+            window.fcPixelSetUserData({
+                firstName: fn,
+                lastName:  ln,
+                phone:     ph,
+                email:     em,
+                city:      ct,
+                province:  st,
+            });
+        }
+    }
+
+    ['firstName', 'lastName', 'phone', 'email', 'city', 'province'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('blur', syncLiveCustomerToPixel);
+            el.addEventListener('change', syncLiveCustomerToPixel);
+        }
+    });
+
     // ===== INIT =====
     renderCart();
+    syncLiveCustomerToPixel();
 
     // Fire InitiateCheckout once per page load, using the same `id` (Sanity _id /
     // Catalog content_id) stored on each cart item — keeps it consistent with the

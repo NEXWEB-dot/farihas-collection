@@ -440,23 +440,33 @@
         const res = await fetch(`${WORKER_URL}/api/products`);
         if (!res.ok) throw new Error(`Worker request failed: ${res.status} ${res.statusText}`);
         const json = await res.json();
-        const products = (json.products || []).map(p => ({
-            _id:         p.id,
-            name:        p.name,
-            price:       p.price,
-            brand:       p.brand,
-            tag:         p.subCategory || p.category,
-            category:    p.category,
-            subCategory: p.subCategory,
-            soldOut:     p.soldOut,
-            image:       p.images && p.images[0] ? p.images[0] : 'images/placeholder.jpg',
-            images:      p.images || [],
-            sizes:       [],
-            isSale:      false,
-            isRarePick:  false,
-            isTagged:    p.subCategory === 'tagged',
-        }));
-        return { settings: {}, shoes: products };
+        const products = (json.products || []).map(p => {
+            const rawSize = p.size || '';
+            let sizes = [];
+            if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                sizes = p.sizes.map(s => typeof s === 'object' ? s : { size: s, stock: p.soldOut ? 0 : 1 });
+            } else if (rawSize) {
+                sizes = [{ size: rawSize, stock: p.soldOut ? 0 : 1 }];
+            }
+            return {
+                _id:         p.id,
+                name:        p.name,
+                price:       p.price,
+                brand:       p.brand,
+                tag:         p.subCategory || p.category,
+                category:    p.category,
+                subCategory: p.subCategory,
+                soldOut:     p.soldOut,
+                image:       p.images && p.images[0] ? p.images[0] : 'images/placeholder.jpg',
+                images:      p.images || [],
+                size:        rawSize,
+                sizes:       sizes,
+                isSale:      false,
+                isRarePick:  false,
+                isTagged:    p.subCategory === 'tagged',
+            };
+        });
+        return { settings: json.settings || {}, shoes: products };
     }
 
     let siteSettings = {}; // to store global settings
@@ -472,19 +482,28 @@
         const price = Number(p.price) || 0;
         const image = p.image || '';
         const brand = p.brand || p.tag || 'FARIHA\'S COLLECTION';
-        // Escape quotes so names/paths with " don't break the data attributes.
         const esc = (s) => String(s).replace(/"/g, '&quot;');
 
         let sizesHtml = '';
-        if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+        if (p.soldOut === true) {
+            sizesHtml = '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+        } else if (Array.isArray(p.sizes) && p.sizes.length > 0) {
             const availableSizes = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
             if (availableSizes.length > 0) {
                 sizesHtml = '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:6px;">' +
-                    availableSizes.map(s => `<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">Size ${esc(s.size)}</span>`).join('') +
+                    availableSizes.map(s => {
+                        const sz = String(s.size).trim();
+                        const displaySz = sz.toLowerCase().startsWith('size') ? sz : `Size: ${sz}`;
+                        return `<span style="font-size:0.7rem; background:#f4f4f5; color:#374151; padding:2px 8px; border-radius:4px; font-weight:700;">${esc(displaySz)}</span>`;
+                    }).join('') +
                     '</div>';
             } else {
                 sizesHtml = '<div style="margin-top:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
             }
+        } else if (p.size) {
+            const sz = String(p.size).trim();
+            const displaySz = sz.toLowerCase().startsWith('size') ? sz : `Size: ${sz}`;
+            sizesHtml = `<div style="margin-top:6px;"><span style="font-size:0.7rem; background:#f4f4f5; color:#374151; padding:2px 8px; border-radius:4px; font-weight:700;">${esc(displaySz)}</span></div>`;
         }
 
         return `
@@ -509,25 +528,20 @@
             const products = data.shoes || [];
             siteSettings = data.settings || {};
 
-            // Render Marquee Banner
-            if (siteSettings.marqueeActive !== false) {
-                const marqueeMsgs = siteSettings.marqueeMessages && siteSettings.marqueeMessages.length > 0 
-                    ? siteSettings.marqueeMessages 
-                    : [
-                        "📹 <strong>Notice:</strong> Please record a complete unboxing video before opening your parcel.",
-                        "🏷️ Use code [WELCOME10] at checkout for a special discount!",
-                        "Premium <strong>Preloved Condition</strong> Shoes — Shipped Across Pakistan"
-                    ];
-                const mc = document.getElementById('marqueeContainer');
-                const mi = document.getElementById('marqueeInner');
+            // Render Marquee Banner (only if active and messages configured in dashboard)
+            const mc = document.getElementById('marqueeContainer');
+            const mi = document.getElementById('marqueeInner');
+            if (siteSettings && siteSettings.marqueeActive === true && Array.isArray(siteSettings.marqueeMessages) && siteSettings.marqueeMessages.length > 0) {
+                const spanHtml = siteSettings.marqueeMessages.map(msg => {
+                    let parsedMsg = msg.replace(/\[(.*?)\]/g, '<strong style="background:#fff;color:#111;padding:2px 8px;border-radius:4px;letter-spacing:1px;">$1</strong>');
+                    return `<span style="margin-right: 60px;">${parsedMsg}</span>`;
+                }).join('');
                 if (mc && mi) {
-                    const spanHtml = marqueeMsgs.map(msg => {
-                        let parsedMsg = msg.replace(/\[(.*?)\]/g, '<strong style="background:#fff;color:#111;padding:2px 8px;border-radius:4px;letter-spacing:1px;">$1</strong>');
-                        return `<span style="margin-right: 60px;">${parsedMsg}</span>`;
-                    }).join('');
                     mi.innerHTML = spanHtml;
                     mc.style.display = 'block';
                 }
+            } else if (mc) {
+                mc.style.display = 'none';
             }
 
             // Render Promo Strip
@@ -720,11 +734,20 @@
 
         // Shop By Size filter
         if (activeSizeFilter) {
-            visible = visible.filter(p =>
-                Array.isArray(p.sizes) && p.sizes.some(s =>
-                    String(s.size).trim() === String(activeSizeFilter).trim() && (Number(s.stock) || 0) > 0
-                )
-            );
+            const cleanFilter = String(activeSizeFilter).trim().toLowerCase().replace(/[^\d]/g, '');
+            visible = visible.filter(p => {
+                if (p.size) {
+                    const cleanPSize = String(p.size).trim().toLowerCase().replace(/[^\d]/g, '');
+                    if (cleanPSize === cleanFilter) return true;
+                }
+                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                    return p.sizes.some(s => {
+                        const cleanS = String(s.size || s).trim().toLowerCase().replace(/[^\d]/g, '');
+                        return cleanS === cleanFilter && (Number(s.stock) || 0) > 0;
+                    });
+                }
+                return false;
+            });
         }
 
         // Shop By Budget filter
@@ -791,13 +814,24 @@
                         <p class="text-[0.65rem] text-gray-400 font-bold tracking-[0.15em] uppercase mb-1">${p.brand || p.tag || 'FARIHA\'S COLLECTION'}</p>
                         <h3 class="text-sm font-semibold text-gray-900 mb-2 leading-tight">${p.name || 'Classic Shoe'}</h3>
                         ${(() => {
+                            const esc = s => String(s).replace(/"/g, '&quot;');
+                            if (p.soldOut === true) {
+                                return '<div style="margin-bottom:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+                            }
                             if (Array.isArray(p.sizes) && p.sizes.length > 0) {
-                                const esc = s => String(s).replace(/"/g, '&quot;');
                                 const available = p.sizes.filter(s => (Number(s.stock) || 0) > 0);
                                 if (available.length > 0) {
-                                    return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:6px;">' + available.map(s => '<span style="font-size:0.65rem; background:#f4f4f5; color:#52525b; padding:2px 6px; border-radius:4px; font-weight:600;">Size ' + esc(s.size) + '</span>').join('') + '</div>';
+                                    return '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:6px;">' + available.map(s => {
+                                        const sz = String(s.size).trim();
+                                        const displaySz = sz.toLowerCase().startsWith('size') ? sz : `Size: ${sz}`;
+                                        return `<span style="font-size:0.7rem; background:#f4f4f5; color:#374151; padding:2px 8px; border-radius:4px; font-weight:700;">${esc(displaySz)}</span>`;
+                                    }).join('') + '</div>';
                                 }
                                 return '<div style="margin-bottom:6px;"><span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600;">Out of Stock</span></div>';
+                            } else if (p.size) {
+                                const sz = String(p.size).trim();
+                                const displaySz = sz.toLowerCase().startsWith('size') ? sz : `Size: ${sz}`;
+                                return `<div style="margin-bottom:6px;"><span style="font-size:0.7rem; background:#f4f4f5; color:#374151; padding:2px 8px; border-radius:4px; font-weight:700;">${esc(displaySz)}</span></div>`;
                             }
                             return '';
                         })()}
