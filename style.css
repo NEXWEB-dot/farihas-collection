@@ -1008,6 +1008,44 @@ button {
 .search-result-item:hover {
     background: var(--color-surface);
 }
+
+/* ===== SIZE CIRCLE BUTTONS (HOMEPAGE & SHOP) ===== */
+.size-circle-btn {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    border: 2px solid #e5e7eb;
+    background: #ffffff;
+    color: #111827;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.size-circle-btn:hover {
+    background: #111827;
+    color: #ffffff;
+    border-color: #111827;
+    transform: translateY(-3px) scale(1.06);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+.size-circle-btn.active {
+    background: #111827;
+    color: #ffffff;
+    border-color: #111827;
+}
+@media (max-width: 640px) {
+    .size-circle-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 0.92rem;
+    }
+}
 .search-result-item img {
     width: 60px;
     height: 60px;

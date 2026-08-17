@@ -183,6 +183,30 @@ document.addEventListener('DOMContentLoaded', () => {
     window.fcChangeQty = changeQty;
 
     // ===== SEARCH OVERLAY =====
+    let _cachedSearchProducts = null;
+    let _searchFetchPromise = null;
+
+    async function ensureSearchProducts() {
+        if (_cachedSearchProducts && _cachedSearchProducts.length > 0) return _cachedSearchProducts;
+        if (_searchFetchPromise) return _searchFetchPromise;
+        
+        const WORKER_URL = 'https://fc-cms.sheezarazzak.workers.dev';
+        _searchFetchPromise = fetch(`${WORKER_URL}/api/products`)
+            .then(res => res.json())
+            .then(json => {
+                _cachedSearchProducts = json.products || [];
+                return _cachedSearchProducts;
+            })
+            .catch(err => {
+                console.error('Failed to load search catalog:', err);
+                return [];
+            })
+            .finally(() => {
+                _searchFetchPromise = null;
+            });
+        return _searchFetchPromise;
+    }
+
     function createSearchOverlay() {
         if (document.getElementById('searchOverlay')) return;
         
@@ -193,8 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="search-overlay-content">
                 <div class="search-bar-wrap">
                     <i class="ph ph-magnifying-glass search-icon"></i>
-                    <input type="text" id="searchInput" placeholder="Search for shoes, brands, categories..." autocomplete="off">
-                    <button id="closeSearch" class="search-close-btn"><i class="ph ph-x"></i></button>
+                    <input type="text" id="searchInput" placeholder="Search for shoes, sizes (e.g. 37), brands..." autocomplete="off">
+                    <button id="closeSearch" class="search-close-btn" aria-label="Close search"><i class="ph ph-x"></i></button>
                 </div>
                 <div id="searchResults" class="search-results"></div>
             </div>
@@ -208,13 +232,28 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const input = document.getElementById('searchInput');
         input.addEventListener('input', performSearch);
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const q = input.value.trim();
+                if (q) {
+                    closeSearch();
+                    window.location.href = `shop.html?search=${encodeURIComponent(q)}`;
+                }
+            } else if (e.key === 'Escape') {
+                closeSearch();
+            }
+        });
     }
 
     function openSearch() {
         createSearchOverlay();
+        ensureSearchProducts(); // prefetch catalog in background
         document.getElementById('searchOverlay').classList.add('active');
         document.body.style.overflow = 'hidden';
-        setTimeout(() => document.getElementById('searchInput').focus(), 200);
+        setTimeout(() => {
+            const input = document.getElementById('searchInput');
+            if (input) input.focus();
+        }, 150);
     }
     function closeSearch() {
         const overlay = document.getElementById('searchOverlay');
@@ -222,45 +261,90 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = '';
     }
 
+    // Expose search globally
+    window.openSearch = openSearch;
+    window.closeSearch = closeSearch;
+
     async function performSearch() {
-        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const input = document.getElementById('searchInput');
+        if (!input) return;
+        const rawQuery = input.value.trim();
+        const query = rawQuery.toLowerCase();
         const resultsContainer = document.getElementById('searchResults');
         
         if (!query) {
-            resultsContainer.innerHTML = '<p class="search-hint">Type to search products...</p>';
+            resultsContainer.innerHTML = '<p class="search-hint">Type to search shoes, sizes (e.g. 37), brands, or categories...</p>';
             return;
         }
 
         resultsContainer.innerHTML = '<p class="search-hint">Searching...</p>';
 
         try {
-            // ── Worker search ──────────────────────────────────────────
-            const WORKER_URL = 'https://fc-cms.sheezarazzak.workers.dev';
-            const url = `${WORKER_URL}/api/products?search=${encodeURIComponent(query)}`;
-            const res = await fetch(url);
-            const json = await res.json();
-            const matches = json.products || [];
+            const allProducts = await ensureSearchProducts();
+            const tokens = query.split(/\s+/).filter(Boolean);
+
+            const matches = allProducts.filter(p => {
+                const name = String(p.name || '').toLowerCase();
+                const brand = String(p.brand || '').toLowerCase();
+                const cat = String(p.category || '').toLowerCase();
+                const sub = String(p.subCategory || '').toLowerCase();
+                const tag = String(p.tag || '').toLowerCase();
+                const size = String(p.size || '').toLowerCase();
+                const sizesStr = Array.isArray(p.sizes) ? p.sizes.map(s => String(s.size || s).toLowerCase()).join(' ') : '';
+                const desc = String(p.description || '').toLowerCase();
+                const price = String(p.price || '');
+
+                const searchableText = `${name} ${brand} ${cat} ${sub} ${tag} ${size} ${sizesStr} ${desc} ${price}`;
+
+                // All tokens must match
+                return tokens.every(token => {
+                    const numToken = token.replace(/[^\d.]/g, '');
+                    if (numToken && (size.includes(numToken) || sizesStr.includes(numToken))) {
+                        return true;
+                    }
+                    return searchableText.includes(token);
+                });
+            });
 
             if (matches.length === 0) {
-                resultsContainer.innerHTML = `<p class="search-hint">No products found for "${query}"</p>`;
+                resultsContainer.innerHTML = `
+                    <div style="text-align:center; padding:30px 10px;">
+                        <p class="search-hint" style="margin-bottom:12px;">No products found for "<strong>${rawQuery}</strong>"</p>
+                        <a href="shop.html" onclick="closeSearch()" style="display:inline-block; font-size:0.85rem; font-weight:700; color:#111; text-decoration:underline;">View all collection</a>
+                    </div>
+                `;
                 return;
             }
 
-            let html = '';
-            matches.forEach(m => {
-                const name  = m.name  || '';
+            let html = `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:0 0 10px; border-bottom:1px solid #e5e7eb; margin-bottom:10px;">
+                    <span style="font-size:0.78rem; font-weight:600; color:#6b7280;">Found ${matches.length} item${matches.length > 1 ? 's' : ''}</span>
+                    <a href="shop.html?search=${encodeURIComponent(rawQuery)}" onclick="closeSearch()" style="font-size:0.78rem; font-weight:700; color:#111; text-decoration:underline;">View all results &rarr;</a>
+                </div>
+            `;
+
+            matches.slice(0, 15).forEach(m => {
+                const name  = m.name  || 'Shoe';
                 const price = Number(m.price) || 0;
-                const image = (m.images && m.images[0]) ? m.images[0] : '';
-                const brand = m.brand || m.subCategory || '';
-                const params = new URLSearchParams({ id: m.id, name, price, image });
+                const image = (m.images && m.images[0]) ? m.images[0] : 'images/placeholder.jpg';
+                const brand = m.brand || m.subCategory || "Fariha's Collection";
+                const sizeText = m.size ? (m.size.toLowerCase().startsWith('size') ? m.size : `Size: ${m.size}`) : '';
+                const isSold = m.soldOut === true;
+                const params = new URLSearchParams({ id: m.id, name, price, image, tag: brand });
                 
                 html += `
-                    <a href="product-detail.html?${params.toString()}" class="search-result-item" style="text-decoration:none; color:inherit;">
-                        <img src="${sanityImg(image, { w: 160 })}" alt="${name.replace(/"/g, '&quot;')}">
-                        <div class="sr-info" style="display:flex; flex-direction:column;">
-                            <span class="search-result-brand">${brand}</span>
-                            <span class="search-result-name">${name}</span>
-                            <span class="search-result-price">Rs${price.toLocaleString()}</span>
+                    <a href="product-detail.html?${params.toString()}" class="search-result-item" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:14px; padding:10px 8px; border-radius:8px; transition:background 0.2s;">
+                        <div style="width:55px; height:55px; border-radius:8px; overflow:hidden; background:#f3f4f6; flex-shrink:0;">
+                            <img src="${image}" alt="${name.replace(/"/g, '&quot;')}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='images/placeholder.jpg'">
+                        </div>
+                        <div class="sr-info" style="display:flex; flex-direction:column; flex:1; min-width:0;">
+                            <span class="search-result-brand" style="font-size:0.68rem; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.5px;">${brand}</span>
+                            <span class="search-result-name" style="font-size:0.88rem; font-weight:600; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${name}</span>
+                            <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+                                <span class="search-result-price" style="font-size:0.85rem; font-weight:700; color:#111;">Rs${price.toLocaleString()}</span>
+                                ${sizeText ? `<span style="font-size:0.68rem; background:#f3f4f6; color:#374151; padding:2px 6px; border-radius:4px; font-weight:700;">${sizeText}</span>` : ''}
+                                ${isSold ? `<span style="font-size:0.65rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:700;">Sold Out</span>` : ''}
+                            </div>
                         </div>
                     </a>
                 `;

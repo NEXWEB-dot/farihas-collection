@@ -268,6 +268,60 @@
         </a>
     </section>
 
+    <!-- Shop By Size (Circle Sizes from Dashboard) -->
+    <section class="section size-circles-section reveal" style="margin: 2rem auto 2.5rem; max-width: 1200px; padding: 0 1.5rem; text-align: center;">
+        <h3 class="section-title" style="margin-bottom: 0.4rem;">Shop By Size</h3>
+        <p style="font-family: 'Poppins', sans-serif; font-size: 0.88rem; color: #6b7280; margin: 0 0 1.5rem;">Select your shoe size to explore matching pairs</p>
+        <div id="sizeCirclesGrid" style="display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; max-width: 800px; margin: 0 auto;">
+            <a href="shop.html?size=35" class="size-circle-btn">35</a>
+            <a href="shop.html?size=36" class="size-circle-btn">36</a>
+            <a href="shop.html?size=37" class="size-circle-btn">37</a>
+            <a href="shop.html?size=38" class="size-circle-btn">38</a>
+            <a href="shop.html?size=39" class="size-circle-btn">39</a>
+            <a href="shop.html?size=40" class="size-circle-btn">40</a>
+            <a href="shop.html?size=41" class="size-circle-btn">41</a>
+        </div>
+    </section>
+
+    <script>
+    (async function loadDashboardSizes() {
+        const WORKER_URL = 'https://fc-cms.sheezarazzak.workers.dev';
+        const container = document.getElementById('sizeCirclesGrid');
+        if (!container) return;
+        try {
+            const res = await fetch(`${WORKER_URL}/api/products`);
+            if (!res.ok) return;
+            const json = await res.json();
+            const products = json.products || [];
+            
+            const sizeCounts = {};
+            products.forEach(p => {
+                let rawSizes = [];
+                if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                    rawSizes = p.sizes.map(s => String(s.size || s).trim());
+                } else if (p.size) {
+                    rawSizes = [String(p.size).trim()];
+                }
+                rawSizes.forEach(sz => {
+                    const clean = sz.replace(/^EU\s*/i, '').replace(/^Size:\s*/i, '').trim();
+                    if (clean && !clean.toLowerCase().includes('one')) {
+                        sizeCounts[clean] = (sizeCounts[clean] || 0) + 1;
+                    }
+                });
+            });
+
+            const uniqueSizes = Object.keys(sizeCounts).sort((a, b) => parseFloat(a) - parseFloat(b));
+            if (uniqueSizes.length > 0) {
+                container.innerHTML = uniqueSizes.map(sz => {
+                    return `<a href="shop.html?size=${encodeURIComponent(sz)}" class="size-circle-btn" title="Size ${sz}">${sz}</a>`;
+                }).join('');
+            }
+        } catch (e) {
+            console.error('Failed to load dashboard sizes:', e);
+        }
+    })();
+    </script>
+
     <!-- Shop By Category -->
     <section class="section category-section reveal">
         <h3 class="section-title">Shop By Category</h3>

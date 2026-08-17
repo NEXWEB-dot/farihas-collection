@@ -595,6 +595,7 @@
             }
 
             allProducts = products; // store for filter/sort
+            populateSizeFilterBar(products);
             applyFilterAndSort(); // respect any filter already set from the URL (e.g. ?filter=men) or user selection
         } catch (err) {
             console.error('Failed to load products from Worker:', err);
@@ -606,6 +607,7 @@
                     allProducts = data.shoes || [];
                     siteSettings = data.settings || {};
                     if (allProducts.length) {
+                        populateSizeFilterBar(allProducts);
                         applyFilterAndSort();
                     } else {
                         grid.innerHTML = '<p class="col-span-full text-center text-sm text-gray-400 py-10">No products found.</p>';
@@ -616,6 +618,69 @@
                 }
             }, 2500);
         }
+    }
+
+    // Dynamic Size Filter Pills Generator
+    function populateSizeFilterBar(products) {
+        const bar = document.getElementById('sizeFilterBar');
+        if (!bar) return;
+        const sizeCounts = {};
+        products.forEach(p => {
+            let rawSizes = [];
+            if (Array.isArray(p.sizes) && p.sizes.length > 0) {
+                rawSizes = p.sizes.map(s => String(s.size || s).trim());
+            } else if (p.size) {
+                rawSizes = [String(p.size).trim()];
+            }
+            rawSizes.forEach(sz => {
+                const clean = sz.replace(/^EU\s*/i, '').replace(/^Size:\s*/i, '').trim();
+                if (clean && !clean.toLowerCase().includes('one')) {
+                    sizeCounts[clean] = (sizeCounts[clean] || 0) + 1;
+                }
+            });
+        });
+
+        const uniqueSizes = Object.keys(sizeCounts).sort((a, b) => parseFloat(a) - parseFloat(b));
+        if (uniqueSizes.length > 0) {
+            const cleanActive = activeSizeFilter ? String(activeSizeFilter).replace(/[^\d.]/g, '') : '';
+            bar.innerHTML = `
+                <span style="font-size:0.75rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">Size:</span>
+                <button class="size-filter-pill${!cleanActive ? ' active' : ''}" data-size="" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid ${!cleanActive ? '#111' : '#e5e7eb'}; background:${!cleanActive ? '#111' : '#fff'}; color:${!cleanActive ? '#fff' : '#374151'}; cursor:pointer; transition:all 0.2s;">All Sizes</button>
+                ${uniqueSizes.map(sz => {
+                    const isActive = cleanActive && (cleanActive === sz.replace(/[^\d.]/g, ''));
+                    return `<button class="size-filter-pill${isActive ? ' active' : ''}" data-size="${sz}" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid ${isActive ? '#111' : '#e5e7eb'}; background:${isActive ? '#111' : '#fff'}; color:${isActive ? '#fff' : '#374151'}; cursor:pointer; transition:all 0.2s;">${sz}</button>`;
+                }).join('')}
+            `;
+            wireSizeFilterPills();
+        }
+    }
+
+    function wireSizeFilterPills() {
+        document.querySelectorAll('.size-filter-pill').forEach(pill => {
+            pill.addEventListener('click', () => {
+                document.querySelectorAll('.size-filter-pill').forEach(p => {
+                    p.classList.remove('active');
+                    p.style.background = '#fff';
+                    p.style.color = '#374151';
+                    p.style.borderColor = '#e5e7eb';
+                });
+                pill.classList.add('active');
+                pill.style.background = '#111';
+                pill.style.color = '#fff';
+                pill.style.borderColor = '#111';
+                activeSizeFilter = pill.dataset.size || '';
+
+                const url = new URL(window.location);
+                if (activeSizeFilter) {
+                    url.searchParams.set('size', activeSizeFilter);
+                } else {
+                    url.searchParams.delete('size');
+                }
+                window.history.replaceState({}, '', url);
+
+                applyFilterAndSort();
+            });
+        });
     }
 
     // Shoe page specific cart logic (self-contained, syncs with main cart via localStorage)
@@ -687,10 +752,6 @@
 
     document.getElementById('searchToggle').addEventListener('click', () => {
         if (window.openSearch) window.openSearch();
-        else {
-            const q = prompt('Search for a shoe:');
-            if (q) window.location.href = `shop.html?q=${encodeURIComponent(q)}`;
-        }
     });
 
     document.getElementById('menuToggle').addEventListener('click', () => {
@@ -719,9 +780,10 @@
     // ===== FILTER & SORT =====
     let activeFilter = 'all';
     
-    // Check URL for initial filter
+    // Check URL for initial filter & search
     const urlParams = new URLSearchParams(window.location.search);
-    const initialFilter = urlParams.get('filter');
+    const initialFilter  = urlParams.get('filter');
+    let activeSearch     = (urlParams.get('search') || urlParams.get('q') || '').trim();
     let activeSizeFilter = urlParams.get('size') || '';      // e.g. '37'
     let activeMaxPrice   = urlParams.get('maxprice') ? Number(urlParams.get('maxprice')) : null;
     let activeMinPrice   = urlParams.get('minprice') ? Number(urlParams.get('minprice')) : null;
@@ -730,24 +792,6 @@
         activeFilter = initialFilter.toLowerCase();
         document.querySelectorAll('.filter-pill').forEach(p => {
             p.classList.toggle('active', p.dataset.filter === activeFilter);
-        });
-    }
-
-    if (activeSizeFilter) {
-        const cleanSz = String(activeSizeFilter).trim().toLowerCase().replace(/[^\d.]/g, '');
-        document.querySelectorAll('.size-filter-pill').forEach(p => {
-            const pSz = String(p.dataset.size || '').trim().toLowerCase().replace(/[^\d.]/g, '');
-            const isActive = cleanSz ? (pSz === cleanSz || pSz === cleanSz.split('.')[0]) : !p.dataset.size;
-            p.classList.toggle('active', isActive);
-            if (isActive) {
-                p.style.background = '#111';
-                p.style.color = '#fff';
-                p.style.borderColor = '#111';
-            } else {
-                p.style.background = '#fff';
-                p.style.color = '#374151';
-                p.style.borderColor = '#e5e7eb';
-            }
         });
     }
 
@@ -766,32 +810,6 @@
         });
     });
 
-    document.querySelectorAll('.size-filter-pill').forEach(pill => {
-        pill.addEventListener('click', () => {
-            document.querySelectorAll('.size-filter-pill').forEach(p => {
-                p.classList.remove('active');
-                p.style.background = '#fff';
-                p.style.color = '#374151';
-                p.style.borderColor = '#e5e7eb';
-            });
-            pill.classList.add('active');
-            pill.style.background = '#111';
-            pill.style.color = '#fff';
-            pill.style.borderColor = '#111';
-            activeSizeFilter = pill.dataset.size || '';
-
-            const url = new URL(window.location);
-            if (activeSizeFilter) {
-                url.searchParams.set('size', activeSizeFilter);
-            } else {
-                url.searchParams.delete('size');
-            }
-            window.history.replaceState({}, '', url);
-
-            applyFilterAndSort();
-        });
-    });
-
     document.getElementById('shSortSelect').addEventListener('change', applyFilterAndSort);
     let allProducts = []; // populated by fetchProducts()
 
@@ -799,10 +817,33 @@
         const grid = document.getElementById('productGrid');
         const sortVal = document.getElementById('shSortSelect').value;
 
-        // Category / Type filter — smart matching on dashboard product data
-        let visible = activeFilter === 'all'
-            ? [...allProducts]
-            : allProducts.filter(p => {
+        let visible = [...allProducts];
+
+        // 1. Search Query Filter
+        if (activeSearch) {
+            const tokens = activeSearch.toLowerCase().split(/\s+/).filter(Boolean);
+            visible = visible.filter(p => {
+                const name = String(p.name || '').toLowerCase();
+                const brand = String(p.brand || '').toLowerCase();
+                const cat = String(p.category || '').toLowerCase();
+                const sub = String(p.subCategory || '').toLowerCase();
+                const tag = String(p.tag || '').toLowerCase();
+                const size = String(p.size || '').toLowerCase();
+                const sizesStr = Array.isArray(p.sizes) ? p.sizes.map(s => String(s.size || s).toLowerCase()).join(' ') : '';
+                const desc = String(p.description || '').toLowerCase();
+                const combined = `${name} ${brand} ${cat} ${sub} ${tag} ${size} ${sizesStr} ${desc} ${p.price}`;
+
+                return tokens.every(tok => {
+                    const num = tok.replace(/[^\d.]/g, '');
+                    if (num && (size.includes(num) || sizesStr.includes(num))) return true;
+                    return combined.includes(tok);
+                });
+            });
+        }
+
+        // 2. Category / Type filter — smart matching on dashboard product data
+        if (activeFilter !== 'all') {
+            visible = visible.filter(p => {
                 const cat = String(p.category || '').toLowerCase();
                 const sub = String(p.subCategory || '').toLowerCase();
                 const tag = String(p.tag || '').toLowerCase();
@@ -847,8 +888,9 @@
                 }
                 return cat === activeFilter || sub === activeFilter;
             });
+        }
 
-        // Shop By Size filter
+        // 3. Shop By Size filter
         if (activeSizeFilter) {
             const cleanFilter = String(activeSizeFilter).trim().toLowerCase().replace(/[^\d.]/g, '');
             visible = visible.filter(p => {
@@ -866,7 +908,6 @@
                 return false;
             });
         }
-
         // Shop By Budget filter
         if (activeMaxPrice !== null) {
             visible = visible.filter(p => Number(p.price) <= activeMaxPrice);
