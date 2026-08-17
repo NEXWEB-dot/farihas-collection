@@ -43,7 +43,7 @@ function generateXML(products) {
       <g:link>${esc(link)}</g:link>
       <g:image_link>${p.image}</g:image_link>
       <g:price>${p.price} PKR</g:price>
-      <g:availability>in stock</g:availability>
+      <g:availability>${p.inStock ? 'in stock' : 'out of stock'}</g:availability>
       <g:condition>${cond}</g:condition>
       <g:brand>${esc(brand)}</g:brand>
       <g:google_product_category>187</g:google_product_category>
