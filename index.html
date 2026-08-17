@@ -366,10 +366,22 @@
 
     <!-- Trendy Items -->
     <section class="section trendy-section reveal">
-        <h3 class="section-title">Trendy Item</h3>
+        <h3 class="section-title" style="margin-bottom:0.5rem;">Trendy Item</h3>
+        
+        <!-- Size Bar -->
+        <div class="section-size-bar" style="display:flex; justify-content:center; align-items:center; gap:6px; flex-wrap:wrap; margin:0 auto 1.5rem; max-width:800px; padding:0 1rem;">
+            <span style="font-size:0.75rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">SIZE:</span>
+            <a href="shop.html" class="size-pill-btn active">All Sizes</a>
+            <a href="shop.html?size=35" class="size-pill-btn">35</a>
+            <a href="shop.html?size=36" class="size-pill-btn">36</a>
+            <a href="shop.html?size=37" class="size-pill-btn">37</a>
+            <a href="shop.html?size=38" class="size-pill-btn">38</a>
+            <a href="shop.html?size=39" class="size-pill-btn">39</a>
+            <a href="shop.html?size=40" class="size-pill-btn">40</a>
+            <a href="shop.html?size=41" class="size-pill-btn">41</a>
+        </div>
         
         <div class="product-grid" id="productGrid">
-            
             <div id="homeProductLoading" class="col-span-full category-grid w-full">
                 <script>
                     document.write(Array(4).fill('<div class="w-full mb-4"><div class="w-full aspect-[4/5] skeleton rounded-lg mb-4"></div><div class="h-3 w-1/3 skeleton rounded mb-2"></div><div class="h-4 w-3/4 skeleton rounded mb-3"></div><div class="h-4 w-1/4 skeleton rounded"></div></div>').join(''));
@@ -380,13 +392,12 @@
     </section>
 
     <script>
-    // ===== SANITY DYNAMIC PRODUCTS ON HOME PAGE =====
     (async function loadHomeProducts() {
         const WORKER_URL = 'https://fc-cms.sheezarazzak.workers.dev';
         const PLACEHOLDER = 'images/placeholder.jpg';
         const grid = document.getElementById('productGrid');
         try {
-            const res = await fetch(`${WORKER_URL}/api/products?limit=8`);
+            const res = await fetch(`${WORKER_URL}/api/products`);
             const json = await res.json();
             const products = json.products || [];
 
@@ -406,10 +417,8 @@
                 const params = new URLSearchParams({ id, name, price, image, tag });
                 const esc = s => String(s).replace(/"/g, '&quot;');
 
-                // Sold out check
-                const isOutOfStock = p.soldOut === true || (p.size && false); // Placeholder logic
-                const saleBadge = (p.salePercent && Number(p.salePercent) > 0) ? '<div style="position:absolute;top:10px;left:10px;background:#111827;color:#fff;font-size:0.65rem;font-weight:700;padding:4px 8px;border-radius:4px;z-index:2;text-transform:uppercase;letter-spacing:1px;">SAVE ' + p.salePercent + '%</div>' : '';
-                const badgeHtml = isOutOfStock ? '<div style="position:absolute;top:10px;left:10px;background:#e53935;color:#fff;font-size:0.65rem;font-weight:700;padding:4px 8px;border-radius:4px;z-index:2;text-transform:uppercase;letter-spacing:1px;">Sold Out</div>' : saleBadge;
+                const saleBadge = (p.salePercent && Number(p.salePercent) > 0) ? `<div style="position:absolute;top:8px;left:8px;background:#111827;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">SAVE ${p.salePercent}%</div>` : '';
+                const badgeHtml = p.soldOut ? '<div style="position:absolute;top:8px;left:8px;background:#dc2626;color:#fff;font-size:0.6rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border-radius:3px;">Sold Out</div>' : saleBadge;
 
                 return `
                     <a href="product-detail.html?${params.toString()}"
@@ -433,7 +442,6 @@
                 `;
             }).join('');
 
-            // Re-trigger scroll reveal for newly added cards
             document.querySelectorAll('#productGrid .reveal-up').forEach(el => {
                 if (typeof scrollObserver !== 'undefined') scrollObserver.observe(el);
                 else el.classList.add('visible');
@@ -448,9 +456,22 @@
 
     <!-- Heels Section -->
     <section class="section trendy-section reveal" style="margin-top:0;">
-        <h3 class="section-title">Heels</h3>
+        <h3 class="section-title" style="margin-bottom:0.5rem;">Heels</h3>
+        
+        <!-- Size Bar -->
+        <div class="section-size-bar" style="display:flex; justify-content:center; align-items:center; gap:6px; flex-wrap:wrap; margin:0 auto 1.5rem; max-width:800px; padding:0 1rem;">
+            <span style="font-size:0.75rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">SIZE:</span>
+            <a href="shop.html?filter=heels" class="size-pill-btn active">All Sizes</a>
+            <a href="shop.html?filter=heels&size=35" class="size-pill-btn">35</a>
+            <a href="shop.html?filter=heels&size=36" class="size-pill-btn">36</a>
+            <a href="shop.html?filter=heels&size=37" class="size-pill-btn">37</a>
+            <a href="shop.html?filter=heels&size=38" class="size-pill-btn">38</a>
+            <a href="shop.html?filter=heels&size=39" class="size-pill-btn">39</a>
+            <a href="shop.html?filter=heels&size=40" class="size-pill-btn">40</a>
+            <a href="shop.html?filter=heels&size=41" class="size-pill-btn">41</a>
+        </div>
+        
         <div class="product-grid" id="heelsGrid">
-            
             <div id="heelsLoading" class="col-span-full category-grid w-full">
                 <script>
                     document.write(Array(4).fill('<div class="w-full mb-4"><div class="w-full aspect-[4/5] skeleton rounded-lg mb-4"></div><div class="h-3 w-1/3 skeleton rounded mb-2"></div><div class="h-4 w-3/4 skeleton rounded mb-3"></div><div class="h-4 w-1/4 skeleton rounded"></div></div>').join(''));
@@ -469,7 +490,12 @@
         try {
             const res = await fetch(`${WORKER_URL}/api/products`);
             const json = await res.json();
-            const products = (json.products || []).filter(p => p.category === 'heels' || p.subCategory === 'heels');
+            const products = (json.products || []).filter(p => {
+                const cat = String(p.category || '').toLowerCase();
+                const sub = String(p.subCategory || '').toLowerCase();
+                const name = String(p.name || '').toLowerCase();
+                return cat === 'heels' || sub === 'heels' || name.includes('heel') || name.includes('stiletto') || name.includes('wedge');
+            });
 
             if (!products.length) {
                 grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No heels available right now.</p>';
@@ -527,9 +553,22 @@
 
     <!-- Flats Section -->
     <section class="section trendy-section reveal" style="margin-top:0;">
-        <h3 class="section-title">Flats</h3>
+        <h3 class="section-title" style="margin-bottom:0.5rem;">Flats</h3>
+        
+        <!-- Size Bar -->
+        <div class="section-size-bar" style="display:flex; justify-content:center; align-items:center; gap:6px; flex-wrap:wrap; margin:0 auto 1.5rem; max-width:800px; padding:0 1rem;">
+            <span style="font-size:0.75rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">SIZE:</span>
+            <a href="shop.html?filter=flats" class="size-pill-btn active">All Sizes</a>
+            <a href="shop.html?filter=flats&size=35" class="size-pill-btn">35</a>
+            <a href="shop.html?filter=flats&size=36" class="size-pill-btn">36</a>
+            <a href="shop.html?filter=flats&size=37" class="size-pill-btn">37</a>
+            <a href="shop.html?filter=flats&size=38" class="size-pill-btn">38</a>
+            <a href="shop.html?filter=flats&size=39" class="size-pill-btn">39</a>
+            <a href="shop.html?filter=flats&size=40" class="size-pill-btn">40</a>
+            <a href="shop.html?filter=flats&size=41" class="size-pill-btn">41</a>
+        </div>
+        
         <div class="product-grid" id="flatsGrid">
-            
             <div id="flatsLoading" class="col-span-full category-grid w-full">
                 <script>
                     document.write(Array(4).fill('<div class="w-full mb-4"><div class="w-full aspect-[4/5] skeleton rounded-lg mb-4"></div><div class="h-3 w-1/3 skeleton rounded mb-2"></div><div class="h-4 w-3/4 skeleton rounded mb-3"></div><div class="h-4 w-1/4 skeleton rounded"></div></div>').join(''));
@@ -548,7 +587,12 @@
         try {
             const res = await fetch(`${WORKER_URL}/api/products`);
             const json = await res.json();
-            const products = (json.products || []).filter(p => p.category === 'flats' || p.subCategory === 'flats');
+            const products = (json.products || []).filter(p => {
+                const cat = String(p.category || '').toLowerCase();
+                const sub = String(p.subCategory || '').toLowerCase();
+                const name = String(p.name || '').toLowerCase();
+                return cat === 'flats' || sub === 'flats' || name.includes('flat') || name.includes('ballerina');
+            });
 
             if (!products.length) {
                 grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No flats available right now.</p>';
@@ -605,9 +649,22 @@
 
     <!-- Slides Section -->
     <section class="section trendy-section reveal" style="margin-top:0;">
-        <h3 class="section-title">Slides</h3>
+        <h3 class="section-title" style="margin-bottom:0.5rem;">Slides</h3>
+        
+        <!-- Size Bar -->
+        <div class="section-size-bar" style="display:flex; justify-content:center; align-items:center; gap:6px; flex-wrap:wrap; margin:0 auto 1.5rem; max-width:800px; padding:0 1rem;">
+            <span style="font-size:0.75rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">SIZE:</span>
+            <a href="shop.html?filter=slides" class="size-pill-btn active">All Sizes</a>
+            <a href="shop.html?filter=slides&size=35" class="size-pill-btn">35</a>
+            <a href="shop.html?filter=slides&size=36" class="size-pill-btn">36</a>
+            <a href="shop.html?filter=slides&size=37" class="size-pill-btn">37</a>
+            <a href="shop.html?filter=slides&size=38" class="size-pill-btn">38</a>
+            <a href="shop.html?filter=slides&size=39" class="size-pill-btn">39</a>
+            <a href="shop.html?filter=slides&size=40" class="size-pill-btn">40</a>
+            <a href="shop.html?filter=slides&size=41" class="size-pill-btn">41</a>
+        </div>
+        
         <div class="product-grid" id="slidesGrid">
-            
             <div id="slidesLoading" class="col-span-full category-grid w-full">
                 <script>
                     document.write(Array(4).fill('<div class="w-full mb-4"><div class="w-full aspect-[4/5] skeleton rounded-lg mb-4"></div><div class="h-3 w-1/3 skeleton rounded mb-2"></div><div class="h-4 w-3/4 skeleton rounded mb-3"></div><div class="h-4 w-1/4 skeleton rounded"></div></div>').join(''));
@@ -626,7 +683,12 @@
         try {
             const res = await fetch(`${WORKER_URL}/api/products`);
             const json = await res.json();
-            const products = (json.products || []).filter(p => p.category === 'slides' || p.subCategory === 'slides');
+            const products = (json.products || []).filter(p => {
+                const cat = String(p.category || '').toLowerCase();
+                const sub = String(p.subCategory || '').toLowerCase();
+                const name = String(p.name || '').toLowerCase();
+                return cat === 'slides' || sub === 'slides' || name.includes('slide') || name.includes('mule') || name.includes('slipper');
+            });
 
             if (!products.length) {
                 grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No slides available right now.</p>';
@@ -683,9 +745,22 @@
 
     <!-- Sneakers Section -->
     <section class="section trendy-section reveal" style="margin-top:0;">
-        <h3 class="section-title">Sneakers</h3>
+        <h3 class="section-title" style="margin-bottom:0.5rem;">Sneakers</h3>
+        
+        <!-- Size Bar -->
+        <div class="section-size-bar" style="display:flex; justify-content:center; align-items:center; gap:6px; flex-wrap:wrap; margin:0 auto 1.5rem; max-width:800px; padding:0 1rem;">
+            <span style="font-size:0.75rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">SIZE:</span>
+            <a href="shop.html?filter=sneakers" class="size-pill-btn active">All Sizes</a>
+            <a href="shop.html?filter=sneakers&size=35" class="size-pill-btn">35</a>
+            <a href="shop.html?filter=sneakers&size=36" class="size-pill-btn">36</a>
+            <a href="shop.html?filter=sneakers&size=37" class="size-pill-btn">37</a>
+            <a href="shop.html?filter=sneakers&size=38" class="size-pill-btn">38</a>
+            <a href="shop.html?filter=sneakers&size=39" class="size-pill-btn">39</a>
+            <a href="shop.html?filter=sneakers&size=40" class="size-pill-btn">40</a>
+            <a href="shop.html?filter=sneakers&size=41" class="size-pill-btn">41</a>
+        </div>
+        
         <div class="product-grid" id="sneakersGrid">
-            
             <div id="sneakersLoading" class="col-span-full category-grid w-full">
                 <script>
                     document.write(Array(4).fill('<div class="w-full mb-4"><div class="w-full aspect-[4/5] skeleton rounded-lg mb-4"></div><div class="h-3 w-1/3 skeleton rounded mb-2"></div><div class="h-4 w-3/4 skeleton rounded mb-3"></div><div class="h-4 w-1/4 skeleton rounded"></div></div>').join(''));
@@ -704,7 +779,12 @@
         try {
             const res = await fetch(`${WORKER_URL}/api/products`);
             const json = await res.json();
-            const products = (json.products || []).filter(p => p.category === 'sneakers' || p.subCategory === 'sneakers');
+            const products = (json.products || []).filter(p => {
+                const cat = String(p.category || '').toLowerCase();
+                const sub = String(p.subCategory || '').toLowerCase();
+                const name = String(p.name || '').toLowerCase();
+                return cat === 'sneakers' || sub === 'sneakers' || name.includes('sneaker') || name.includes('trainer') || name.includes('jogger');
+            });
 
             if (!products.length) {
                 grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No sneakers available right now.</p>';
@@ -761,9 +841,22 @@
 
     <!-- Pumps Section -->
     <section class="section trendy-section reveal" style="margin-top:0;">
-        <h3 class="section-title">Pumps</h3>
+        <h3 class="section-title" style="margin-bottom:0.5rem;">Pumps</h3>
+        
+        <!-- Size Bar -->
+        <div class="section-size-bar" style="display:flex; justify-content:center; align-items:center; gap:6px; flex-wrap:wrap; margin:0 auto 1.5rem; max-width:800px; padding:0 1rem;">
+            <span style="font-size:0.75rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">SIZE:</span>
+            <a href="shop.html?filter=pumps" class="size-pill-btn active">All Sizes</a>
+            <a href="shop.html?filter=pumps&size=35" class="size-pill-btn">35</a>
+            <a href="shop.html?filter=pumps&size=36" class="size-pill-btn">36</a>
+            <a href="shop.html?filter=pumps&size=37" class="size-pill-btn">37</a>
+            <a href="shop.html?filter=pumps&size=38" class="size-pill-btn">38</a>
+            <a href="shop.html?filter=pumps&size=39" class="size-pill-btn">39</a>
+            <a href="shop.html?filter=pumps&size=40" class="size-pill-btn">40</a>
+            <a href="shop.html?filter=pumps&size=41" class="size-pill-btn">41</a>
+        </div>
+        
         <div class="product-grid" id="pumpsGrid">
-            
             <div id="pumpsLoading" class="col-span-full category-grid w-full">
                 <script>
                     document.write(Array(4).fill('<div class="w-full mb-4"><div class="w-full aspect-[4/5] skeleton rounded-lg mb-4"></div><div class="h-3 w-1/3 skeleton rounded mb-2"></div><div class="h-4 w-3/4 skeleton rounded mb-3"></div><div class="h-4 w-1/4 skeleton rounded"></div></div>').join(''));
@@ -782,7 +875,12 @@
         try {
             const res = await fetch(`${WORKER_URL}/api/products`);
             const json = await res.json();
-            const products = (json.products || []).filter(p => p.category === 'pumps' || p.subCategory === 'pumps');
+            const products = (json.products || []).filter(p => {
+                const cat = String(p.category || '').toLowerCase();
+                const sub = String(p.subCategory || '').toLowerCase();
+                const name = String(p.name || '').toLowerCase();
+                return cat === 'pumps' || sub === 'pumps' || name.includes('pump');
+            });
 
             if (!products.length) {
                 grid.innerHTML = '<p style="text-align:center;color:#aaa;padding:40px 0;">No pumps available right now.</p>';
