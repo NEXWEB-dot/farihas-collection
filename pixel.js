@@ -103,8 +103,54 @@
         fbq('init', PIXEL_ID);
     }
 
-    // Standard PageView event (fires once per page)
+    // Standard PageView event (fires once per page — browser side)
     fbq('track', 'PageView');
+
+    /* ----------------------------------------------------------
+       3b. Server-Side CAPI PageView (fires once per page)
+           Sends PageView to Cloudflare Worker which relays it to
+           Meta's Conversions API — covers ad-blocked / iOS browsers
+           and resolves the "Improve CAPI coverage" warning.
+    ---------------------------------------------------------- */
+    (function () {
+        try {
+            var _pvEventId = 'pv_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+            var _url = window.location.href;
+            var _ref = document.referrer || '';
+            var _ua  = navigator.userAgent || '';
+
+            // Read Meta cookies for higher Event Match Quality
+            function _fbCk(n) {
+                var m = document.cookie.match(new RegExp('(?:^|; )' + n + '=([^;]*)'));
+                return m ? decodeURIComponent(m[1]) : '';
+            }
+
+            // Read stored customer data for Advanced Matching on CAPI side
+            var _cm = {};
+            try { _cm = JSON.parse(localStorage.getItem('fc_last_customer') || '{}'); } catch(e) {}
+
+            var _payload = {
+                eventName:  'PageView',
+                eventId:    _pvEventId,
+                eventUrl:   _url,
+                referrer:   _ref,
+                userAgent:  _ua,
+                fbp:        _fbCk('_fbp'),
+                fbc:        _fbCk('_fbc'),
+                userData:   _cm  // Advanced Matching fields (email, phone, etc.)
+            };
+
+            // Fire-and-forget — does not block page rendering
+            fetch('https://fc-cms.sheezarazzak.workers.dev/api/capi-event', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(_payload),
+                keepalive: true   // Ensures request completes even if page navigates away
+            }).catch(function () {
+                // Silent fail — browser pixel already fired above, no user impact
+            });
+        } catch (e) {}
+    })();
 
     /* ----------------------------------------------------------
        3.  Dynamic Advanced Matching Updater
