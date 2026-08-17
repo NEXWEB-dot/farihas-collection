@@ -3,18 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Shop premium preloved and new condition shoes at Fariha's Collection. Nationwide shipping available in Pakistan.">
-    <meta property="og:title" content="Fariha's Collection - Premium Preloved Shoes">
-    <meta property="og:description" content="Shop premium preloved and new condition shoes at Fariha's Collection. Nationwide shipping available in Pakistan.">
-    <meta property="og:image" content="images/hero_closet.jpg">
-    <meta property="og:url" content="https://farihascollection.com">
-    <link rel="icon" type="image/jpeg" href="images/favicon.jpg">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ffffff">
     <title id="pageTitle">Product Details | Fariha's Collection</title>
-    <!-- Meta Pixel -->
-    <script src="pixel.js"></script>
-    <meta name="description" content="Shop quality preloved shoes at Fariha's Collection &mdash; authentic details, real photos.">
+    <meta name="description" id="metaDesc" content="Shop quality preloved shoes at Fariha's Collection &mdash; authentic details, original brand, and real photos.">
+
+    <!-- Open Graph / Facebook / WhatsApp / iMessage / LinkedIn -->
+    <meta property="og:type" content="product">
+    <meta property="og:site_name" content="Fariha's Collection">
+    <meta property="og:url" id="ogUrl" content="https://farihascollection.com">
+    <meta property="og:title" id="ogTitle" content="Fariha's Collection &mdash; Preloved Footwear">
+    <meta property="og:description" id="ogDesc" content="Shop quality preloved shoes at Fariha's Collection &mdash; authentic details, real photos, and Cash on Delivery across Pakistan.">
+    <meta property="og:image" id="ogImage" content="https://farihascollection.com/images/9.jpg">
+    <meta property="og:image:secure_url" id="ogImageSecure" content="https://farihascollection.com/images/9.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="800">
+
+    <!-- Twitter / X Card / Discord / Slack -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twTitle" content="Fariha's Collection &mdash; Preloved Footwear">
+    <meta name="twitter:description" id="twDesc" content="Shop quality preloved shoes at Fariha's Collection &mdash; authentic details, real photos.">
+    <meta name="twitter:image" id="twImage" content="https://farihascollection.com/images/9.jpg">
+
+    <link rel="icon" type="image/jpeg" href="images/favicon.jpg">
+    <link rel="apple-touch-icon" href="images/favicon.jpg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111111">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -789,6 +802,19 @@
             document.getElementById('breadcrumbName').textContent = name;
             document.getElementById('pdTitleName').textContent = name;
             document.getElementById('pdPriceVal').textContent = "Rs" + finalPrice.toLocaleString();
+            
+            // Dynamic Social Sharing Tags
+            const shareImg = allImages[0] || 'https://farihascollection.com/images/9.jpg';
+            const shareDesc = `${name} - ${p.brand ? p.brand + ' - ' : ''}Rs ${finalPrice.toLocaleString()} | Size: ${p.size || 'Standard'}. Shop original preloved shoes with Cash on Delivery at Fariha's Collection.`;
+            document.getElementById('ogTitle')?.setAttribute('content', `${name} — Fariha's Collection`);
+            document.getElementById('ogDesc')?.setAttribute('content', shareDesc);
+            document.getElementById('ogImage')?.setAttribute('content', shareImg);
+            document.getElementById('ogImageSecure')?.setAttribute('content', shareImg);
+            document.getElementById('ogUrl')?.setAttribute('content', window.location.href);
+            document.getElementById('twTitle')?.setAttribute('content', `${name} — Fariha's Collection`);
+            document.getElementById('twDesc')?.setAttribute('content', shareDesc);
+            document.getElementById('twImage')?.setAttribute('content', shareImg);
+            document.getElementById('metaDesc')?.setAttribute('content', shareDesc);
             
             const origPriceEl = document.getElementById('pdPriceOriginal');
             const badgeEl = document.getElementById('pdDiscountBadge');
