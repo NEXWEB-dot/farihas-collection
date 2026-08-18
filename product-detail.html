@@ -1138,26 +1138,38 @@
             }
         }
 
-        function getCart() { return JSON.parse(localStorage.getItem('fc_cart') || '[]'); }
-        function saveCart(c) { localStorage.setItem('fc_cart', JSON.stringify(c)); updateBadge(); }
+        function getCart() {
+            try {
+                const c = JSON.parse(localStorage.getItem('fc_cart') || '[]');
+                return Array.isArray(c) ? c : [];
+            } catch (e) {
+                return [];
+            }
+        }
+        function saveCart(c) {
+            localStorage.setItem('fc_cart', JSON.stringify(c));
+            updateBadge();
+        }
 
         function updateBadge() {
-            const count = getCart().reduce((s, i) => s + i.qty, 0);
+            const count = getCart().reduce((s, i) => s + (Number(i.qty) || 1), 0);
             const badge = document.getElementById('cartBadge');
-            badge.textContent = count;
-            badge.style.display = count > 0 ? 'flex' : 'none';
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'flex' : 'none';
+            }
         }
 
         function addToCart() {
             const cart = getCart();
             const key = PRODUCT.name + (selectedSize ? ' · ' + selectedSize : '');
-            const id = PRODUCT._id;
-            const ex = cart.find(i => i.id === id || (i.name === key && !i.id));
+            const id = PRODUCT._id || '';
+            const ex = cart.find(i => i.name === key && (id ? i.id === id : true));
             if (ex) {
-                ex.qty++;
-                if (!ex.id) ex.id = id;
+                ex.qty = (Number(ex.qty) || 1) + 1;
+                if (!ex.id && id) ex.id = id;
             } else {
-                cart.push({ id, name: key, price: PRODUCT.price, image: PRODUCT.image, qty: 1 });
+                cart.push({ id, name: key, price: Number(PRODUCT.price) || 0, image: PRODUCT.image || '', qty: 1 });
             }
             saveCart(cart);
             showNotif('✓ Added to cart' + (selectedSize ? ' — ' + selectedSize : ''));

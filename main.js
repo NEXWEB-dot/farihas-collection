@@ -7,16 +7,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
 
     // ===== CART SYSTEM =====
-    let cart = JSON.parse(localStorage.getItem('fc_cart') || '[]');
+    function getCart() {
+        try {
+            const c = JSON.parse(localStorage.getItem('fc_cart') || '[]');
+            return Array.isArray(c) ? c : [];
+        } catch (e) {
+            return [];
+        }
+    }
 
-    function saveCart() {
+    function saveCart(cart) {
         localStorage.setItem('fc_cart', JSON.stringify(cart));
         updateCartBadge();
     }
 
     function updateCartBadge() {
         const badges = document.querySelectorAll('.cart-badge');
-        const count = cart.reduce((sum, item) => sum + item.qty, 0);
+        const cart = getCart();
+        const count = cart.reduce((sum, item) => sum + (Number(item.qty) || 1), 0);
         badges.forEach(badge => {
             badge.textContent = count;
             badge.style.display = count > 0 ? 'flex' : 'none';
@@ -24,32 +32,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addToCart(id, name, price, image) {
-        const existing = cart.find(item => item.id === id || (item.name === name && !item.id));
+        const cart = getCart();
+        const existing = cart.find(item => (id && item.id === id && item.name === name) || (item.name === name));
         if (existing) {
-            existing.qty++;
-            if (!existing.id) existing.id = id;
+            existing.qty = (Number(existing.qty) || 1) + 1;
+            if (!existing.id && id) existing.id = id;
         } else {
-            cart.push({ id, name, price, image, qty: 1 });
+            cart.push({ id: id || '', name, price: Number(price) || 0, image: image || '', qty: 1 });
         }
-        saveCart();
+        saveCart(cart);
         showNotification(`${name} added to cart!`);
         if (window.fcPixelAddToCart) window.fcPixelAddToCart(name, price, id, 1);
     }
 
     function removeFromCart(index) {
+        const cart = getCart();
         cart.splice(index, 1);
-        saveCart();
+        saveCart(cart);
         renderCartPanel();
     }
 
     function changeQty(index, delta) {
-        cart[index].qty += delta;
+        const cart = getCart();
+        if (!cart[index]) return;
+        cart[index].qty = (Number(cart[index].qty) || 1) + delta;
         if (cart[index].qty <= 0) {
             cart.splice(index, 1);
         }
-        saveCart();
+        saveCart(cart);
         renderCartPanel();
     }
+
+    updateCartBadge();
 
     // ===== NOTIFICATION =====
     function showNotification(message) {
@@ -116,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const footerContainer = document.getElementById('cartFooter');
         if (!itemsContainer || !footerContainer) return;
 
+        const cart = getCart();
         if (cart.length === 0) {
             itemsContainer.innerHTML = '<div class="cart-empty"><i class="ph ph-shopping-bag" style="font-size:3rem;color:#ccc;"></i><p>Your cart is empty</p></div>';
             footerContainer.innerHTML = '';
@@ -125,19 +140,22 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = '';
         let total = 0;
         cart.forEach((item, i) => {
-            const itemTotal = item.price * item.qty;
+            const price = Number(item.price) || 0;
+            const qty = Number(item.qty) || 1;
+            const itemTotal = price * qty;
             total += itemTotal;
+            const itemImg = item.image || 'images/placeholder.jpg';
             html += `
                 <div class="cart-item">
                     <div class="cart-item-img">
-                        <img src="${item.image}" alt="${item.name}">
+                        <img src="${itemImg}" alt="${item.name || 'Product'}">
                     </div>
                     <div class="cart-item-info">
-                        <h4>${item.name}</h4>
-                        <p class="cart-item-price">Rs${item.price.toLocaleString()}</p>
+                        <h4>${item.name || 'Product'}</h4>
+                        <p class="cart-item-price">Rs${price.toLocaleString()}</p>
                         <div class="cart-qty-controls">
                             <button onclick="window.fcChangeQty(${i}, -1)">−</button>
-                            <span>${item.qty}</span>
+                            <span>${qty}</span>
                             <button onclick="window.fcChangeQty(${i}, 1)">+</button>
                         </div>
                     </div>
@@ -160,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ===== WHATSAPP CHECKOUT =====
     function checkoutWhatsApp() {
+        const cart = getCart();
         if (cart.length === 0) return;
         
         const phone = '923090625199';
@@ -167,9 +186,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let total = 0;
         
         cart.forEach((item, i) => {
-            const itemTotal = item.price * item.qty;
+            const price = Number(item.price) || 0;
+            const qty = Number(item.qty) || 1;
+            const itemTotal = price * qty;
             total += itemTotal;
-            message += `${i + 1}. *${item.name}*\n   Qty: ${item.qty} × Rs${item.price.toLocaleString()} = Rs${itemTotal.toLocaleString()}\n\n`;
+            message += `${i + 1}. *${item.name}*\n   Qty: ${qty} × Rs${price.toLocaleString()} = Rs${itemTotal.toLocaleString()}\n\n`;
         });
         
         message += `---\n💰 *Total: Rs${total.toLocaleString()}*\n\nPlease confirm my order. Thank you!`;
@@ -179,6 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Expose functions globally for inline onclick handlers
+    window.fcAddToCart = addToCart;
+    window.fcGetCart = getCart;
+    window.fcSaveCart = saveCart;
+    window.fcUpdateCartBadge = updateCartBadge;
     window.fcRemoveFromCart = removeFromCart;
     window.fcChangeQty = changeQty;
 

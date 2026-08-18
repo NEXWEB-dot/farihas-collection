@@ -709,12 +709,19 @@
     // Shoe page specific cart logic (self-contained, syncs with main cart via localStorage)
     const WHATSAPP_NUMBER = '923090625199'; // Change to real number
 
-    function getCart() { return JSON.parse(localStorage.getItem('fc_cart') || '[]'); }
+    function getCart() {
+        try {
+            const c = JSON.parse(localStorage.getItem('fc_cart') || '[]');
+            return Array.isArray(c) ? c : [];
+        } catch (e) {
+            return [];
+        }
+    }
     function saveCart(cart) { localStorage.setItem('fc_cart', JSON.stringify(cart)); updateBadge(); }
 
     function updateBadge() {
         const cart = getCart();
-        const count = cart.reduce((s, i) => s + i.qty, 0);
+        const count = cart.reduce((s, i) => s + (Number(i.qty) || 1), 0);
         document.querySelectorAll('.cart-badge').forEach(b => {
             b.textContent = count;
             b.style.display = count > 0 ? 'flex' : 'none';
@@ -723,12 +730,12 @@
 
     function addToCart(id, name, price, image) {
         const cart = getCart();
-        const ex = cart.find(i => i.id === id || (i.name === name && !i.id));
+        const ex = cart.find(i => (id && i.id === id && i.name === name) || (i.name === name));
         if (ex) {
-            ex.qty++;
-            if (!ex.id) ex.id = id;
+            ex.qty = (Number(ex.qty) || 1) + 1;
+            if (!ex.id && id) ex.id = id;
         } else {
-            cart.push({ id, name, price: Number(price), image, qty: 1 });
+            cart.push({ id: id || '', name, price: Number(price) || 0, image: image || '', qty: 1 });
         }
         saveCart(cart);
         showNotif(`✔ ${name} added to cart!`);
