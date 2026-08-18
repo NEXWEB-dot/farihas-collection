@@ -103,8 +103,11 @@
         fbq('init', PIXEL_ID);
     }
 
-    // Standard PageView event (fires once per page — browser side)
-    fbq('track', 'PageView');
+    // Generate unique eventId for PageView deduplication between browser Pixel and server CAPI
+    var _pvEventId = 'pv_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+
+    // Standard PageView event (fires once per page — browser side with deduplication key)
+    fbq('track', 'PageView', {}, { eventID: _pvEventId });
 
     /* ----------------------------------------------------------
        3b. Server-Side CAPI PageView (fires once per page)
@@ -114,7 +117,6 @@
     ---------------------------------------------------------- */
     (function () {
         try {
-            var _pvEventId = 'pv_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
             var _url = window.location.href;
             var _ref = document.referrer || '';
             var _ua  = navigator.userAgent || '';
