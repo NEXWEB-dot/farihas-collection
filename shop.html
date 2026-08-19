@@ -128,7 +128,7 @@
         }
         .sort-select:focus { border-color:#111; }
 
-        /* Size Filter Bar & Circular Swatches */
+        /* Size Filter Bar & Rectangular Box Swatches */
         .size-filter-bar {
             display: flex;
             align-items: center;
@@ -149,65 +149,54 @@
         }
         .size-filter-pill {
             font-family: 'Poppins', sans-serif;
-            font-size: 0.78rem;
-            font-weight: 700;
-            border: 1.5px solid #e5e7eb;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: 1.5px solid #222;
+            border-radius: 2px;
             background: #ffffff;
-            color: #374151;
+            color: #111;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
             user-select: none;
-        }
-        .size-filter-pill.circle-swatch {
-            width: 40px;
+            min-width: 72px;
             height: 40px;
-            min-width: 40px;
-            border-radius: 50%;
-            aspect-ratio: 1 / 1;
-            padding: 0;
-            text-align: center;
-            line-height: 1;
+            padding: 0 14px;
+            box-sizing: border-box;
         }
         .size-filter-pill.all-sizes-btn {
-            height: 40px;
-            border-radius: 999px;
+            min-width: 85px;
             padding: 0 16px;
         }
         .size-filter-pill:hover {
-            border-color: #111;
-            color: #111;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            border-color: #000;
+            background: #f8f8f8;
+            color: #000;
         }
         .size-filter-pill.active {
-            border-color: #111;
-            background: #111;
+            border-color: #000;
+            background: #000;
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-        }
-        .size-filter-pill.active:hover {
-            transform: translateY(-1px);
+            font-weight: 700;
         }
         @media (max-width: 640px) {
             .size-filter-bar {
                 gap: 6px;
                 padding: 4px 1rem 10px;
             }
-            .size-filter-pill.circle-swatch {
-                width: 36px;
+            .size-filter-pill {
+                min-width: 58px;
                 height: 36px;
-                min-width: 36px;
+                padding: 0 10px;
                 font-size: 0.75rem;
             }
             .size-filter-pill.all-sizes-btn {
-                height: 36px;
+                min-width: 72px;
                 padding: 0 12px;
-                font-size: 0.75rem;
             }
         }
 
@@ -403,13 +392,13 @@
     <div id="sizeFilterBar" class="size-filter-bar">
         <span class="size-filter-label">Size:</span>
         <button class="size-filter-pill all-sizes-btn active" data-size="">All Sizes</button>
-        <button class="size-filter-pill circle-swatch" data-size="35">35</button>
-        <button class="size-filter-pill circle-swatch" data-size="36">36</button>
-        <button class="size-filter-pill circle-swatch" data-size="37">37</button>
-        <button class="size-filter-pill circle-swatch" data-size="38">38</button>
-        <button class="size-filter-pill circle-swatch" data-size="39">39</button>
-        <button class="size-filter-pill circle-swatch" data-size="40">40</button>
-        <button class="size-filter-pill circle-swatch" data-size="41">41</button>
+        <button class="size-filter-pill" data-size="35">EU 35</button>
+        <button class="size-filter-pill" data-size="36">EU 36</button>
+        <button class="size-filter-pill" data-size="37">EU 37</button>
+        <button class="size-filter-pill" data-size="38">EU 38</button>
+        <button class="size-filter-pill" data-size="39">EU 39</button>
+        <button class="size-filter-pill" data-size="40">EU 40</button>
+        <button class="size-filter-pill" data-size="41">EU 41</button>
     </div>
 
     <!-- ===== PROMO CODE STRIP ===== -->
@@ -754,7 +743,8 @@
                 <button class="size-filter-pill all-sizes-btn${!cleanActive ? ' active' : ''}" data-size="">All Sizes</button>
                 ${uniqueSizes.map(sz => {
                     const isActive = cleanActive && (cleanActive === sz.replace(/[^\d.]/g, ''));
-                    return `<button class="size-filter-pill circle-swatch${isActive ? ' active' : ''}" data-size="${sz}">${sz}</button>`;
+                    const label = sz.toLowerCase().startsWith('eu') ? sz : `EU ${sz}`;
+                    return `<button class="size-filter-pill${isActive ? ' active' : ''}" data-size="${sz}">${label}</button>`;
                 }).join('')}
             `;
             wireSizeFilterPills();

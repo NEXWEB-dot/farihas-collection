@@ -189,39 +189,33 @@
             display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; align-items: center;
         }
         .pd-size-btn {
-            width: 48px; height: 48px; min-width: 48px;
-            border-radius: 50%; aspect-ratio: 1 / 1;
-            padding: 0;
-            border: 1.5px solid #e5e7eb;
+            min-width: 76px; height: 42px; padding: 0 14px;
+            border-radius: 2px;
+            border: 1.5px solid #222;
             background: #ffffff; font-family: 'Poppins', sans-serif;
-            font-size: 0.85rem; font-weight: 600; color: #1f2937;
+            font-size: 0.85rem; font-weight: 600; letter-spacing: 0.5px; color: #111;
             cursor: pointer;
             display: inline-flex; align-items: center; justify-content: center;
             text-align: center; line-height: 1;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
             position: relative;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
             user-select: none;
         }
         .pd-size-btn:not(.out-of-stock):hover {
-            border-color: #111;
-            color: #111;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: #000;
+            background: #f8f8f8;
+            color: #000;
         }
         .pd-size-btn.selected {
-            border-color: #111;
-            background: #111;
+            border-color: #000;
+            background: #000;
             color: #ffffff;
             font-weight: 700;
-            box-shadow: 0 4px 14px rgba(17, 24, 39, 0.25);
-            transform: scale(1.04);
         }
         .pd-size-btn.out-of-stock {
-            color: #9ca3af;
-            border-color: #e5e7eb;
-            background: #f9fafb;
-            opacity: 0.45;
+            color: #bbb;
+            border-color: #ddd;
+            background: #fff;
             cursor: not-allowed;
             position: relative;
             overflow: hidden;
@@ -229,23 +223,20 @@
         .pd-size-btn.out-of-stock::after {
             content: '';
             position: absolute;
-            top: 50%; left: 50%;
-            width: 72%; height: 1.5px;
-            background: #9ca3af;
-            transform: translate(-50%, -50%) rotate(-45deg);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to top right, transparent calc(50% - 0.75px), #bbb calc(50% - 0.75px), #bbb calc(50% + 0.75px), transparent calc(50% + 0.75px));
             pointer-events: none;
         }
         .pd-size-btn.out-of-stock:hover {
-            border-color: #e5e7eb;
-            color: #9ca3af;
-            transform: none;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border-color: #ddd;
+            color: #bbb;
+            background: #fff;
         }
 
         @media (max-width: 480px) {
             .pd-sizes { gap: 8px; }
             .pd-size-btn {
-                width: 44px; height: 44px; min-width: 44px;
+                min-width: 64px; height: 38px; padding: 0 10px;
                 font-size: 0.8rem;
             }
         }

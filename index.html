@@ -290,18 +290,23 @@
         </a>
     </section>
 
-    <!-- Shop By Size (Circle Sizes from Dashboard) -->
+    <!-- Shop By Size (Rectangular Sizes from Dashboard) -->
     <section class="section size-circles-section reveal" style="margin: 2rem auto 2.5rem; max-width: 1200px; padding: 0 1.5rem; text-align: center;">
         <h3 class="section-title" style="margin-bottom: 0.4rem;">Shop By Size</h3>
-        <p style="font-family: 'Poppins', sans-serif; font-size: 0.88rem; color: #6b7280; margin: 0 0 1.5rem;">Select your shoe size to explore matching pairs</p>
-        <div id="sizeCirclesGrid" style="display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; max-width: 800px; margin: 0 auto;">
-            <a href="shop.html?size=35" class="size-circle-btn">35</a>
-            <a href="shop.html?size=36" class="size-circle-btn">36</a>
-            <a href="shop.html?size=37" class="size-circle-btn">37</a>
-            <a href="shop.html?size=38" class="size-circle-btn">38</a>
-            <a href="shop.html?size=39" class="size-circle-btn">39</a>
-            <a href="shop.html?size=40" class="size-circle-btn">40</a>
-            <a href="shop.html?size=41" class="size-circle-btn">41</a>
+        <p style="font-family: 'Poppins', sans-serif; font-size: 0.88rem; color: #6b7280; margin: 0 0 1.5rem;">Select your size to see matching pairs available for you</p>
+        <div id="sizeCirclesGrid" style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; max-width: 900px; margin: 0 auto;">
+            <a href="shop.html?size=35" class="size-circle-btn">EU 35</a>
+            <a href="shop.html?size=36" class="size-circle-btn">EU 36</a>
+            <a href="shop.html?size=37" class="size-circle-btn">EU 37</a>
+            <a href="shop.html?size=38" class="size-circle-btn">EU 38</a>
+            <a href="shop.html?size=39" class="size-circle-btn">EU 39</a>
+            <a href="shop.html?size=40" class="size-circle-btn">EU 40</a>
+            <a href="shop.html?size=41" class="size-circle-btn">EU 41</a>
+        </div>
+        <div style="margin-top: 1.25rem;">
+            <a href="size-guide.html" target="_blank" style="display:inline-flex; align-items:center; gap:6px; font-family:'Poppins',sans-serif; font-size:0.75rem; font-weight:700; color:#555; text-decoration:none; letter-spacing:1px; text-transform:uppercase; border-bottom: 1.5px solid #bbb; padding-bottom: 2px;" onmouseover="this.style.color='#000';this.style.borderColor='#000'" onmouseout="this.style.color='#555';this.style.borderColor='#bbb'">
+                <i class="ph ph-ruler" style="font-size:1.05rem;"></i> Size Guide
+            </a>
         </div>
     </section>
 
@@ -335,7 +340,8 @@
             const uniqueSizes = Object.keys(sizeCounts).sort((a, b) => parseFloat(a) - parseFloat(b));
             if (uniqueSizes.length > 0) {
                 container.innerHTML = uniqueSizes.map(sz => {
-                    return `<a href="shop.html?size=${encodeURIComponent(sz)}" class="size-circle-btn" title="Size ${sz}">${sz}</a>`;
+                    const label = sz.toLowerCase().startsWith('eu') ? sz : `EU ${sz}`;
+                    return `<a href="shop.html?size=${encodeURIComponent(sz)}" class="size-circle-btn" title="Size ${sz}">${label}</a>`;
                 }).join('');
             }
         } catch (e) {
