@@ -128,6 +128,89 @@
         }
         .sort-select:focus { border-color:#111; }
 
+        /* Size Filter Bar & Circular Swatches */
+        .size-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 6px 1.5rem 14px;
+        }
+        .size-filter-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 4px;
+            user-select: none;
+        }
+        .size-filter-pill {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border: 1.5px solid #e5e7eb;
+            background: #ffffff;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            user-select: none;
+        }
+        .size-filter-pill.circle-swatch {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            border-radius: 50%;
+            aspect-ratio: 1 / 1;
+            padding: 0;
+            text-align: center;
+            line-height: 1;
+        }
+        .size-filter-pill.all-sizes-btn {
+            height: 40px;
+            border-radius: 999px;
+            padding: 0 16px;
+        }
+        .size-filter-pill:hover {
+            border-color: #111;
+            color: #111;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+        .size-filter-pill.active {
+            border-color: #111;
+            background: #111;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+        }
+        .size-filter-pill.active:hover {
+            transform: translateY(-1px);
+        }
+        @media (max-width: 640px) {
+            .size-filter-bar {
+                gap: 6px;
+                padding: 4px 1rem 10px;
+            }
+            .size-filter-pill.circle-swatch {
+                width: 36px;
+                height: 36px;
+                min-width: 36px;
+                font-size: 0.75rem;
+            }
+            .size-filter-pill.all-sizes-btn {
+                height: 36px;
+                padding: 0 12px;
+                font-size: 0.75rem;
+            }
+        }
+
         /* See Our Reviews button */
         .see-reviews-btn {
             display:inline-flex; align-items:center; gap:6px;
@@ -317,16 +400,16 @@
     </div>
 
     <!-- Size Filter Bar (Dynamic from Dashboard Products) -->
-    <div id="sizeFilterBar" style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; max-width:1400px; margin:0 auto; padding:4px 1.5rem 12px;">
-        <span style="font-size:0.75rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">Size:</span>
-        <button class="size-filter-pill active" data-size="" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #111; background:#111; color:#fff; cursor:pointer; transition:all 0.2s;">All Sizes</button>
-        <button class="size-filter-pill" data-size="35" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">35</button>
-        <button class="size-filter-pill" data-size="36" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">36</button>
-        <button class="size-filter-pill" data-size="37" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">37</button>
-        <button class="size-filter-pill" data-size="38" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">38</button>
-        <button class="size-filter-pill" data-size="39" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">39</button>
-        <button class="size-filter-pill" data-size="40" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">40</button>
-        <button class="size-filter-pill" data-size="41" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid #e5e7eb; background:#fff; color:#374151; cursor:pointer; transition:all 0.2s;">41</button>
+    <div id="sizeFilterBar" class="size-filter-bar">
+        <span class="size-filter-label">Size:</span>
+        <button class="size-filter-pill all-sizes-btn active" data-size="">All Sizes</button>
+        <button class="size-filter-pill circle-swatch" data-size="35">35</button>
+        <button class="size-filter-pill circle-swatch" data-size="36">36</button>
+        <button class="size-filter-pill circle-swatch" data-size="37">37</button>
+        <button class="size-filter-pill circle-swatch" data-size="38">38</button>
+        <button class="size-filter-pill circle-swatch" data-size="39">39</button>
+        <button class="size-filter-pill circle-swatch" data-size="40">40</button>
+        <button class="size-filter-pill circle-swatch" data-size="41">41</button>
     </div>
 
     <!-- ===== PROMO CODE STRIP ===== -->
@@ -667,11 +750,11 @@
         if (uniqueSizes.length > 0) {
             const cleanActive = activeSizeFilter ? String(activeSizeFilter).replace(/[^\d.]/g, '') : '';
             bar.innerHTML = `
-                <span style="font-size:0.75rem; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:0.5px; margin-right:4px;">Size:</span>
-                <button class="size-filter-pill${!cleanActive ? ' active' : ''}" data-size="" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid ${!cleanActive ? '#111' : '#e5e7eb'}; background:${!cleanActive ? '#111' : '#fff'}; color:${!cleanActive ? '#fff' : '#374151'}; cursor:pointer; transition:all 0.2s;">All Sizes</button>
+                <span class="size-filter-label">Size:</span>
+                <button class="size-filter-pill all-sizes-btn${!cleanActive ? ' active' : ''}" data-size="">All Sizes</button>
                 ${uniqueSizes.map(sz => {
                     const isActive = cleanActive && (cleanActive === sz.replace(/[^\d.]/g, ''));
-                    return `<button class="size-filter-pill${isActive ? ' active' : ''}" data-size="${sz}" style="padding:4px 12px; border-radius:999px; font-size:0.75rem; font-weight:700; border:1px solid ${isActive ? '#111' : '#e5e7eb'}; background:${isActive ? '#111' : '#fff'}; color:${isActive ? '#fff' : '#374151'}; cursor:pointer; transition:all 0.2s;">${sz}</button>`;
+                    return `<button class="size-filter-pill circle-swatch${isActive ? ' active' : ''}" data-size="${sz}">${sz}</button>`;
                 }).join('')}
             `;
             wireSizeFilterPills();
@@ -683,14 +766,8 @@
             pill.addEventListener('click', () => {
                 document.querySelectorAll('.size-filter-pill').forEach(p => {
                     p.classList.remove('active');
-                    p.style.background = '#fff';
-                    p.style.color = '#374151';
-                    p.style.borderColor = '#e5e7eb';
                 });
                 pill.classList.add('active');
-                pill.style.background = '#111';
-                pill.style.color = '#fff';
-                pill.style.borderColor = '#111';
                 activeSizeFilter = pill.dataset.size || '';
 
                 const url = new URL(window.location);

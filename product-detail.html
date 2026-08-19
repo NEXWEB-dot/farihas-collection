@@ -186,27 +186,68 @@
         .pd-label a { font-weight: 500; color: #e8699a; text-decoration: underline; font-size: 0.75rem; letter-spacing: 0; }
 
         .pd-sizes {
-            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+            display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; align-items: center;
         }
         .pd-size-btn {
-            min-width: 56px; height: 44px; padding: 0 12px;
-            border: 1.5px solid #e0e0e0; border-radius: 10px;
-            background: #fff; font-family: 'Poppins', sans-serif;
-            font-size: 0.85rem; font-weight: 600; color: #333;
-            cursor: pointer; transition: all 0.2s; position: relative;
+            width: 48px; height: 48px; min-width: 48px;
+            border-radius: 50%; aspect-ratio: 1 / 1;
+            padding: 0;
+            border: 1.5px solid #e5e7eb;
+            background: #ffffff; font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem; font-weight: 600; color: #1f2937;
+            cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center;
+            text-align: center; line-height: 1;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            user-select: none;
         }
-        .pd-size-btn:hover { border-color: #111; color: #111; }
+        .pd-size-btn:not(.out-of-stock):hover {
+            border-color: #111;
+            color: #111;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
         .pd-size-btn.selected {
-            border-color: #111; background: #111; color: #fff;
+            border-color: #111;
+            background: #111;
+            color: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(17, 24, 39, 0.25);
+            transform: scale(1.04);
         }
         .pd-size-btn.out-of-stock {
-            color: #ccc; border-color: #eee; cursor: not-allowed;
+            color: #9ca3af;
+            border-color: #e5e7eb;
+            background: #f9fafb;
+            opacity: 0.45;
+            cursor: not-allowed;
+            position: relative;
+            overflow: hidden;
         }
         .pd-size-btn.out-of-stock::after {
-            content: ''; position: absolute;
-            top: 50%; left: 50%; width: 80%; height: 1px;
-            background: #ddd;
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 72%; height: 1.5px;
+            background: #9ca3af;
             transform: translate(-50%, -50%) rotate(-45deg);
+            pointer-events: none;
+        }
+        .pd-size-btn.out-of-stock:hover {
+            border-color: #e5e7eb;
+            color: #9ca3af;
+            transform: none;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+
+        @media (max-width: 480px) {
+            .pd-sizes { gap: 8px; }
+            .pd-size-btn {
+                width: 44px; height: 44px; min-width: 44px;
+                font-size: 0.8rem;
+            }
         }
 
         /* Condition line */
